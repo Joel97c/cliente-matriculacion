@@ -1,21 +1,30 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { LayoutComponent } from './layout.component';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
+import {LayoutComponent} from './layout.component';
+import {AuthGuard} from '../shared/guard';
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
         children: [
-            { path: '', redirectTo: 'dashboard', pathMatch: 'prefix' },
-            { path: 'dashboard', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
-            { path: 'charts', loadChildren: () => import('./charts/charts.module').then(m => m.ChartsModule) },
-            { path: 'tables', loadChildren: () => import('./tables/tables.module').then(m => m.TablesModule) },
-            { path: 'forms', loadChildren: () => import('./form/form.module').then(m => m.FormModule) },
-            { path: 'bs-element', loadChildren: () => import('./bs-element/bs-element.module').then(m => m.BsElementModule) },
-            { path: 'grid', loadChildren: () => import('./grid/grid.module').then(m => m.GridModule) },
-            { path: 'components', loadChildren: () => import('./bs-component/bs-component.module').then(m => m.BsComponentModule) },
-            { path: 'blank-page', loadChildren: () => import('./blank-page/blank-page.module').then(m => m.BlankPageModule) }
+            {path: '', redirectTo: 'dashboard', pathMatch: 'prefix'},
+            {
+                path: 'dashboard-matricula',
+                loadChildren: () =>
+                    import('./matriculacion/matricula/dashboard/dashboard-matricula.module')
+                        .then(m => m.DashboardMatriculaModule), canActivate: [AuthGuard]
+            },
+            {
+                path: 'dashboard-cupo',
+                loadChildren: () => import('./matriculacion/cupo/dashboard/dashboard-cupo.module').then(m => m.DashboardCupoModule)
+            },
+            {
+                path: 'perfil-estudiante',
+                loadChildren: () => import('./matriculacion/perfil-estudiante/perfil-estudiante.module').then(m => m.PerfilEstudianteModule)
+            },
+            {path: 'matricula', loadChildren: () => import('./matriculacion/matricula/matricula.module').then(m => m.MatriculaModule)},
+            {path: 'cupos', loadChildren: () => import('./matriculacion/cupo/cupo.module').then(m => m.CupoModule)},
         ]
     }
 ];
@@ -24,4 +33,5 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class LayoutRoutingModule {}
+export class LayoutRoutingModule {
+}

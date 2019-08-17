@@ -2,8 +2,16 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import {Token} from '../app/layout/matriculacion/modelos/token.model';
+
 export const environment = {
-  production: false
+    production: true,
+    // API_URL: 'http://127.0.0.1:8000/api/',
+    // API_URL_PUBLIC: 'http://127.0.0.1:8000/'
+    // API_URL: 'http://172.16.11.110:8000/api/',
+    // API_URL_PUBLIC: 'http://172.16.11.110:8000/'
+    API_URL: 'http://134.209.209.73/matriculacion/server/api/',
+    API_URL_PUBLIC: 'http://134.209.209.73/matriculacion/server/'
 };
 
 /*

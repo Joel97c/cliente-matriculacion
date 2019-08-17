@@ -8,13 +8,14 @@ import { LanguageTranslationModule } from './shared/modules/language-translation
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthGuard } from './shared';
-
+import {NgxSpinnerModule} from 'ngx-spinner';
 @NgModule({
     imports: [
         CommonModule,
         BrowserModule,
         BrowserAnimationsModule,
         HttpClientModule,
+        NgxSpinnerModule,
         LanguageTranslationModule,
         AppRoutingModule
     ],
