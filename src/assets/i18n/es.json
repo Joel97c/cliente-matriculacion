@@ -36,5 +36,10 @@
     "Password": "Contraseña",
     "Repeat Password": "Repetir Contraseña",
     "Register": "Registrarse",
-    "Log in": "Entrar"
+    "Log in": "Entrar",
+    "Configurations": "Configuraciones",
+    "Quotas": "Cupos",
+    "Registration": "Matriculas",
+    "Users": "Usuarios"
+
 }

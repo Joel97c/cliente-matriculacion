@@ -17,14 +17,29 @@ const routes: Routes = [
             },
             {
                 path: 'dashboard-cupo',
-                loadChildren: () => import('./matriculacion/cupo/dashboard/dashboard-cupo.module').then(m => m.DashboardCupoModule)
+                loadChildren: () => import('./matriculacion/cupo/dashboard/dashboard-cupo.module').then(m => m.DashboardCupoModule),
+                canActivate: [AuthGuard]
             },
             {
                 path: 'perfil-estudiante',
-                loadChildren: () => import('./matriculacion/perfil-estudiante/perfil-estudiante.module').then(m => m.PerfilEstudianteModule)
+                loadChildren: () => import('./matriculacion/perfil-estudiante/perfil-estudiante.module').then(m => m.PerfilEstudianteModule),
+                canActivate: [AuthGuard]
             },
-            {path: 'matricula', loadChildren: () => import('./matriculacion/matricula/matricula.module').then(m => m.MatriculaModule)},
-            {path: 'cupos', loadChildren: () => import('./matriculacion/cupo/cupo.module').then(m => m.CupoModule)},
+            {
+                path: 'matricula',
+                loadChildren: () => import('./matriculacion/matricula/matricula.module').then(m => m.MatriculaModule),
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'cupos',
+                loadChildren: () => import('./matriculacion/cupo/cupo.module').then(m => m.CupoModule),
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'ajustes',
+                loadChildren: () => import('./matriculacion/ajuste/ajuste.module').then(m => m.AjusteModule),
+                canActivate: [AuthGuard]
+            },
         ]
     }
 ];

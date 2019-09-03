@@ -1,21 +1,38 @@
 <div class="login-page" [@routerTransition]>
     <div class="row justify-content-md-center">
         <div class="col-md-4">
-            <img src="assets/images/logo.png" width="150px" class="user-avatar" />
-            <h1>SB Admin BS4 Angular8</h1>
+            <img src="assets/images/logo.png" class="user-avatar" width="150px"/>
+            <h1>IGNUG</h1>
             <form role="form">
                 <div class="form-content">
                     <div class="form-group">
-                        <input type="text" ng-model="name" class="form-control input-underline input-lg" id="" placeholder="{{ 'Email' | translate }}">
+                        <label for="userName">
+                            <i class="fa fa-envelope">
+                                {{ 'Institutional Email' | translate }}
+                            </i>
+                        </label>
+                        <div class="form-group input-group">
+                            <input type="text" [(ngModel)]="userName" class="form-control input-underline input-lg" id="userName"
+                                   [disabled]="!validateLogin" name="userName" placeholder="">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text  input-underline input-lg" id="basic-addon1">@yavirac.edu.ec</span>
+                            </div>
+                        </div>
                     </div>
-
                     <div class="form-group">
-                        <input type="password" class="form-control input-underline input-lg" id="" placeholder="{{ 'Password' | translate }}">
+                        <label for="userName">
+                            <i class="fa fa-key">
+                                {{ 'Password' | translate }}<i class="fa fa-question btn"
+                                                               title="Su contraseña por defecto es su número de cédula"></i>
+                            </i>
+                        </label>
+                        <input type="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password"
+                               name="password" placeholder="" (keyup)="onLoggedin($event)" [disabled]="!validateLogin">
                     </div>
                 </div>
-                <a class="btn rounded-btn" [routerLink]="['/dashboard']" (click)="onLoggedin()">{{ 'Log in' | translate }}</a>
-                &nbsp;
-                <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>
+                <a class="btn rounded-btn" (click)="onLoggedin(13)">{{ 'Log in' | translate }}</a>
+                <a class="btn rounded-btn m-3" (click)="forgotPassword()">¿{{ 'Forgot Password' | translate }}?</a>
+                <!--        <a class="btn rounded-btn" [routerLink]="['/signup']">{{ 'Register' | translate }}</a>-->
             </form>
         </div>
     </div>

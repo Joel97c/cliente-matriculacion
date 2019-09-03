@@ -1,69 +1,67 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
     <div class="list-group">
-        <a routerLink="/dashboard" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a routerLink="/dashboard-matricula" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
             <i class="fa fa-fw fa-dashboard"></i>&nbsp;
             <span>{{ 'Dashboard' | translate }}</span>
         </a>
-        <a [routerLink]="['/charts']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-bar-chart-o"></i>&nbsp;
-            <span>{{ 'Charts' | translate }}</span>
+
+        <a routerLink="/dashboard-cupo" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='1'">
+            <i class=" fa fa-fw fa-dashboard"></i>&nbsp;
+            <span>{{ 'Dashboard' | translate }}</span>
         </a>
-        <a [routerLink]="['/tables']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-table"></i>&nbsp;
-            <span>{{ 'Tables' | translate }}</span>
+        <!--Perfil Estudiante-->
+        <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='2'">
+            <i class="fa fa-fw fa-user"></i>&nbsp;
+            <span>{{ 'Profile' | translate }}</span>
         </a>
-        <a [routerLink]="['/forms']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-edit"></i>&nbsp;
-            <span>{{ 'Forms' | translate }}</span>
+        <a [routerLink]="['/matricula']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
+            <i class="fa fa-fw fa-certificate"></i>&nbsp;
+            <span>{{ 'Registration' | translate }}</span>
         </a>
-        <a [routerLink]="['/bs-element']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-fw fa-desktop"></i>&nbsp;
-            <span>{{ 'Bootstrap Element' | translate }}</span>
+        <a [routerLink]="['/cupos']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='1' || user.role.rol=='4'">
+            <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
+            <span>{{ 'Quotas' | translate }}</span>
         </a>
-        <a [routerLink]="['/grid']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a [routerLink]="['/estudiantes']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='0'">
+            <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
+            <span>{{ 'Students' | translate }}</span>
+        </a>
+        <a [routerLink]="['/ajustes']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
             <i class="fa fa-fw fa-wrench"></i>&nbsp;
-            <span>{{ 'Bootstrap Grid' | translate }}</span>
+            <span>{{ 'Settings' | translate }}</span>
         </a>
-        <a [routerLink]="['/components']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-th-list"></i>&nbsp;
-            <span>{{ 'Component' | translate }}</span>
+        <a [routerLink]="['/usuarios']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Users' | translate }}</span>
         </a>
-        <div class="nested-menu">
-            <a class="list-group-item" (click)="addExpandClass('pages')">
-                <i class="fa fa-plus"></i>&nbsp;
-                <span>{{ 'Menu' | translate }}</span>
-            </a>
-            <li class="nested" [class.expand]="showMenu === 'pages'">
-                <ul class="submenu">
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>{{ 'Submenu' | translate }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>{{ 'Submenu' | translate }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-monument"></i>&nbsp;
-                            <span>{{ 'Submenu' | translate }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </div>
-        <a [routerLink]="['/blank-page']" [routerLinkActive]="['router-link-active']" class="list-group-item">
-            <i class="fa fa-file-o"></i>&nbsp;
-            <span>{{ 'Blank Page' | translate }}</span>
-        </a>
-        <a href="http://www.strapui.com/" class="list-group-item">
-            <i class="fa fa-caret-down"></i>&nbsp;
-            <span>{{ 'More Themes' | translate }}</span>
-        </a>
+
+
+        <!--    <div class="nested-menu">-->
+        <!--      <a class="list-group-item" (click)="addExpandClass('pages')">-->
+        <!--        <i class="fa fa-plus"></i>&nbsp;-->
+        <!--        <span>{{ 'Menu' | translate }}</span>-->
+        <!--      </a>-->
+        <!--      <li class="nested" [class.expand]="showMenu === 'pages'">-->
+        <!--        <ul class="submenu">-->
+        <!--          <li>-->
+        <!--            <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']"-->
+        <!--               class="list-group-item">-->
+        <!--              <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;-->
+        <!--              <span>{{ 'Student Profile' | translate }}</span>-->
+        <!--            </a>-->
+        <!--          </li>-->
+
+        <!--        </ul>-->
+        <!--      </li>-->
+        <!--    </div>-->
 
         <div class="header-fields">
             <a (click)="rltAndLtr()" class="list-group-item">
@@ -81,33 +79,8 @@
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)" (click)="changeLang('fr')">
-                                {{ 'French' | translate }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" (click)="changeLang('ur')">
-                                {{ 'Urdu' | translate }}
-                            </a>
-                        </li>
-                        <li>
                             <a href="javascript:void(0)" (click)="changeLang('es')">
                                 {{ 'Spanish' | translate }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" (click)="changeLang('it')">
-                                {{ 'Italian' | translate }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" (click)="changeLang('fa')">
-                                {{ 'Farsi' | translate }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)" (click)="changeLang('de')">
-                                {{ 'German' | translate }}
                             </a>
                         </li>
                     </ul>
@@ -115,7 +88,7 @@
             </div>
             <div class="nested-menu">
                 <a class="list-group-item" (click)="addExpandClass('profile')">
-                    <span><i class="fa fa-user"></i>&nbsp; John Smith</span>
+                    <span><i class="fa fa-user"></i>&nbsp; {{user.name}}</span>
                 </a>
                 <li class="nested" [class.expand]="showMenu === 'profile'">
                     <ul class="submenu">
@@ -125,13 +98,16 @@
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)">
-                                <span><i class="fa fa-fw fa-envelope"></i> {{ 'Inbox' | translate }}</span>
+                            <a [routerLink]="['/perfil-estudiante']" [routerLinkActive]="['router-link-active']"
+                               class="dropdown-item"
+                               *ngIf="user.role.rol == '2'">
+                                <i class="fa fa-fw fa-user"></i>&nbsp;
+                                <span>{{ 'Profile' | translate }}</span>
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)">
-                                <span><i class="fa fa-fw fa-gear"></i> {{ 'Settings' | translate }}</span>
+                            <a [routerLink]="['/reset-password']">
+                                <i class="fa fa-fw fa-key"></i> {{ 'Password' | translate }}
                             </a>
                         </li>
                         <li>
@@ -145,7 +121,7 @@
         </div>
     </div>
     <div class="toggle-button" [ngClass]="{collapsed: collapsed}" (click)="toggleCollapsed()">
-        <i class="fa fa-fw fa-angle-double-{{collapsed?'right':'left'}}"></i>&nbsp;
+        <i class="fa fa-fw fa-angle-double-left"></i>&nbsp;
         <span>{{ 'Collapse Sidebar' | translate }}</span>
     </div>
 </nav>

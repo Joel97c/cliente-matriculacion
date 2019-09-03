@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
-import {$} from 'protractor';
-import {Observable} from 'rxjs';
 import {Token} from './modelos/token.model';
 
 @Injectable({

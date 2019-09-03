@@ -1,52 +1,87 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import {Component, OnInit} from '@angular/core';
+import {Router, NavigationEnd} from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+import {ServiceService} from '../../matriculacion/service.service';
+import {PeriodoLectivo} from '../../matriculacion/modelos/periodo-lectivo.model';
+import {NgxSpinnerService} from 'ngx-spinner';
+import {User} from '../../matriculacion/modelos/user.model';
 
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss']
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-    public pushRightClass: string;
+  public pushRightClass: string;
+  public periodoLectivoActual: PeriodoLectivo;
+  user: User;
 
-    constructor(private translate: TranslateService, public router: Router) {
+  constructor(
+    private spinner: NgxSpinnerService,
+    private service: ServiceService,
+    private translate: TranslateService,
+    public router: Router
+  ) {
 
-        this.router.events.subscribe(val => {
-            if (
-                val instanceof NavigationEnd &&
-                window.innerWidth <= 992 &&
-                this.isToggled()
-            ) {
-                this.toggleSidebar();
-            }
-        });
-    }
+    this.translate.addLangs([ 'es']);
+    this.translate.setDefaultLang('es');
+    const browserLang = this.translate.getBrowserLang();
+    this.translate.use(browserLang.match(/es/) ? browserLang : 'en');
 
-    ngOnInit() {
-        this.pushRightClass = 'push-right';
-    }
+    this.router.events.subscribe(val => {
+      if (
+        val instanceof NavigationEnd &&
+        window.innerWidth <= 992 &&
+        this.isToggled()
+      ) {
+        this.toggleSidebar();
+      }
+    });
+  }
 
-    isToggled(): boolean {
-        const dom: Element = document.querySelector('body');
-        return dom.classList.contains(this.pushRightClass);
-    }
+  ngOnInit() {
+    this.user = JSON.parse(localStorage.getItem('user')) as User;
+    this.periodoLectivoActual = new PeriodoLectivo();
+    this.getPeriodoLectivoActual();
+    this.pushRightClass = 'push-right';
+    this.translate.setDefaultLang('es');
+    this.changeLang('es');
+  }
 
-    toggleSidebar() {
-        const dom: any = document.querySelector('body');
-        dom.classList.toggle(this.pushRightClass);
-    }
+  isToggled(): boolean {
+    const dom: Element = document.querySelector('body');
+    return dom.classList.contains(this.pushRightClass);
+  }
 
-    rltAndLtr() {
-        const dom: any = document.querySelector('body');
-        dom.classList.toggle('rtl');
-    }
+  toggleSidebar() {
+    const dom: any = document.querySelector('body');
+    dom.classList.toggle(this.pushRightClass);
+  }
 
-    onLoggedout() {
-        localStorage.removeItem('isLoggedin');
-    }
+  rltAndLtr() {
+    const dom: any = document.querySelector('body');
+    dom.classList.toggle('rtl');
+  }
 
-    changeLang(language: string) {
-        this.translate.use(language);
-    }
+  onLoggedout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('isLoggedin');
+  }
+
+  changeLang(language: string) {
+    this.translate.use(language);
+  }
+
+  getPeriodoLectivoActual() {
+    this.spinner.show();
+    this.service.get('periodo_lectivos/actual').subscribe(
+      response => {
+        this.periodoLectivoActual = response['periodo_lectivo_actual'];
+        this.spinner.hide();
+      },
+      error => {
+        this.spinner.hide();
+      });
+  }
 }
