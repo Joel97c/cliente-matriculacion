@@ -1,12 +1,18 @@
-<div class="row mt-3" *ngIf="!flagAsignaturasCupo">
-    <div class="col-lg-2 col-xs-12">
-        <h5 class="text-muted">MATRICULACIÓN:</h5>
+<div class="row">
+    <div class="col-lg-12">
+        <h4 class="text-muted">
+            MATRICULACIÓN:
+            <b [ngClass]="{'text-danger':p.estado!='ACTUAL','text-success':p.estado=='ACTUAL'}">
+                {{txtPeridoActualHistorico}} : {{p.nombre}}</b>
+        </h4>
     </div>
-    <div class="col-lg-6 col-xs-12">
+</div>
+<div class="row mt-3" *ngIf="!flagAsignaturasCupo">
+    <div class="col-lg-5 col-xs-12">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon-carrera">
-              CARRERAS:
+              CARRERA:
             </span>
             </div>
             <select [(ngModel)]="carrera.id" class="form-control"
@@ -29,11 +35,11 @@
                    placeholder="Identificación, apellidos o nombres">
         </div>
     </div>
-    <div class="col-lg-4 col-xs-12" *ngIf="carrera.id!=0">
+    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id!=0">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon-periodo">
-            Periodo:
+            Periodo Académico:
             </span>
                 <select [(ngModel)]="periodoAcademico" class="form-control"
                         id="periodoAcademico" name="periodoAcademico" required
@@ -47,8 +53,22 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id!=0">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon-periodo-historico">
+            Periodo Lectivo:
+            </span>
+                <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
+                        class="form-control-sm" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
+                        (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
+                    <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                            *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
-
 <hr>
 <!--Buscador-->
 <div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
@@ -98,17 +118,18 @@
     <div class="col-lg-12">
         <table class="table table-hover table-sm table-responsive">
             <thead class="table-default">
-            <th width="10%" *ngIf="carrera.id==0" >Carrera</th>
+            <th width="10%" *ngIf="carrera.id==0">Carrera</th>
             <th width="10%">Cédula</th>
-            <th width="35%">Estudiante</th>
+            <th width="25%" *ngIf="carrera.id==0">Estudiante</th>
+            <th width="30%" *ngIf="carrera.id!=0">Estudiante</th>
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
             <th width="10%">Estado</th>
-            <th width="10%" class="text-center">
+            <th width="15%" class="text-center">
                 <button type="button" class="btn btn-success ml-1 btn-sm" (click)="getAprobados(actual_page)"
                         title="Actulizar">
-                    <span class="{{messages['bottomRefresh']['icon']}}"></span>
+                    <span class="{{messages['buttonRefresh']['icon']}}"></span>
                 </button>
             </th>
             </thead>
@@ -127,29 +148,32 @@
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO')"
+                            [disabled]="!(cupo.estado=='MATRICULADO')||p.estado!='ACTUAL'"
                             id="tipoMatricula" name="tipoMatricula" required
                             (change)="updateMatricula(cupo)">
-                        <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
+                        <option value="{{tipoMatricula.id}}"
+                                *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
                         </option>
                     </select>
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO')"
+                            [disabled]="!(cupo.estado=='MATRICULADO') || p.estado!='ACTUAL'"
                             id="periodoAcademicoMatricula" name="periodoAcademicoMatricula" required
                             (change)="updateMatricula(cupo)">
-                        <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos">
+                        <option value="{{periodoAcademico.id}}"
+                                *ngFor="let periodoAcademico of peridoAcademicos">
                             {{periodoAcademico.nombre}}
                         </option>
                     </select>
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.jornada" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO')"
+                            [disabled]="!(cupo.estado=='MATRICULADO') || p.estado!='ACTUAL'"
                             id="jornadaMatricula" name="jornadaMatricula" required (change)="updateMatricula(cupo)">
-                        <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
+                        <option value="{{jornada.codigo}}"
+                                *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
                         </option>
                     </select>
@@ -159,28 +183,32 @@
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn ml-1 btn-sm" (click)="matricular(cupo)" title="Matricular"
-                            [ngClass]="{'btn-success':cupo.estado=='MATRICULADO',
-                  'btn-primary':cupo.estado=='APROBADO'}"
+                            [ngClass]="{'btn-success':cupo.estado=='MATRICULADO','btn-primary':cupo.estado=='APROBADO'}"
                             [disabled]="cupo.estado=='MATRICULADO'"
-                            *ngIf="cupo.estado=='APROBADO'">
-                        <span class="{{messages['bottomCheck']['icon']}}"></span>
+                            *ngIf="cupo.estado=='APROBADO' && p.estado=='ACTUAL'">
+                        <span class="{{messages['buttonCheck']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-info ml-1 btn-sm" (click)="getCertificadoMatricula(cupo)"
                             title="Imprimir Certificado"
                             *ngIf="cupo.estado=='MATRICULADO'">
-                        <span class="{{messages['bottomPrint']['icon']}}"></span>
+                        <span class="{{messages['buttonPrint']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-warning ml-1 btn-sm text-white"
                             (click)="getDetalleMatricula(cupo)"
-                            title="Asignaturas" *ngIf="cupo.estado=='APROBADO' || cupo.estado=='MATRICULADO'">
-                <span class="{{messages['bottomUpdate']['icon']}}">
+                            title="Cambiar Asignaturas"
+                            *ngIf="cupo.estado=='APROBADO' || cupo.estado=='MATRICULADO'">
+                <span class="{{messages['buttonUpdate']['icon']}}">
 
                 </span>
                     </button>
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteMatricula(cupo)"
                             title="Anular Matrícula"
-                            *ngIf="cupo.estado=='MATRICULADO'">
-                        <span class="{{messages['bottomCancel']['icon']}}"></span>
+                            *ngIf="cupo.estado=='MATRICULADO' && p.estado=='ACTUAL'">
+                        <span class="{{messages['buttonCancel']['icon']}}"></span>
+                    </button>
+                    <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="deleteMatricula(cupo)"
+                            title="Desertar Estudiante" *ngIf="p.estado=='ACTUAL'">
+                        <span class="{{messages['buttonDesert']['icon']}}"></span>
                     </button>
                 </td>
             </tr>
@@ -253,9 +281,9 @@
             <th width="5%">
                 <button type="button" class="btn btn-success ml-1 btn-sm"
                         (click)="openDetalleMatricula(contentDetalleMatricula)"
-                        *ngIf="matriculaSeleccionada.estado=='MATRICULADO'" title="Añadir">
-                <span class="{{messages['bottomAdd']['icon']}}">
-                  {{messages['bottomAdd']['text']}}
+                        *ngIf="matriculaSeleccionada.estado=='MATRICULADO' && p.estado=='ACTUAL'" title="Añadir">
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
                 </span>
                 </button>
             </th>
@@ -264,7 +292,7 @@
             <tr *ngFor="let detalle of detalleMatricula">
                 <td>
                     <select [(ngModel)]="detalle.asignatura.id" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO'"
+                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
                             id="detalleAsignatura" name="detalleAsignatura" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
@@ -274,7 +302,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.numero_matricula" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO'"
+                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
                             id="numero_matricula" name="numero_matricula" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{numerMatricula.codigo}}" *ngFor="let numerMatricula of numerosMatricula">
@@ -284,7 +312,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.jornada" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO'"
+                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
                             id="jornada" name="jornada" required (change)="updateDetalleMatricula(detalle)">
                         <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
@@ -293,7 +321,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO'"
+                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
                             id="tipo_matricula" name="tipo_matricula" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
@@ -307,8 +335,8 @@
                 <td class="text-center">
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleMatricula(detalle)"
                             title="Anular Matricular"
-                            *ngIf="detalle.estado=='MATRICULADO'">
-                        <span class="{{messages['bottomCancel']['icon']}}"></span>
+                            *ngIf="detalle.estado=='MATRICULADO' && p.estado=='ACTUAL'">
+                        <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
                 </td>
             </tr>

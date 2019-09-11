@@ -30,7 +30,10 @@ import {User} from '../modelos/user.model';
 })
 
 export class MatriculaComponent implements OnInit {
+    p: PeriodoLectivo;
+    txtPeridoActualHistorico: string;
     buscadorEstudianteGeneral: string;
+    public periodosLectivos: Array<PeriodoLectivo>;
     archivoTemp: any;
     notificacion: Notificacion;
     doc: any;
@@ -79,6 +82,8 @@ export class MatriculaComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.p = new PeriodoLectivo();
+        this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.buscador = '';
         this.notificacion = new Notificacion();
@@ -108,6 +113,7 @@ export class MatriculaComponent implements OnInit {
         this.getPeriodoLectivoActual();
         this.getPeriodoLectivos();
         this.getTiposMatricula();
+        this.getPeriodosLectivos();
     }
 
     createDetalleMatricula(razonNuevaAsignatura: string) {
@@ -290,7 +296,8 @@ export class MatriculaComponent implements OnInit {
             + '&apellido2=' + this.buscador
             + '&nombre1=' + this.buscador
             + '&nombre2=' + this.buscador
-            + '&carrera_id=' + this.carrera.id;
+            + '&carrera_id=' + this.carrera.id
+            + '&periodo_lectivo_id=' + this.p.id;
         this.spinner.show();
         this.service.get('matriculas/aprobado' + parametros).subscribe(
             response => {
@@ -314,7 +321,7 @@ export class MatriculaComponent implements OnInit {
             + '&nombre2=' + this.buscadorEstudianteGeneral
             + '&carrera_id=' + this.carrera.id;
         this.spinner.show();
-        this.service.get('matriculas/aprobado_general' + parametros).subscribe(
+        this.service.get('estudiantes/historicos' + parametros).subscribe(
             response => {
                 this.cupos = response['cupo'];
                 this.spinner.hide();
@@ -326,7 +333,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     getAprobados(page: number) {
-        console.log(this.carrera.id == 0);
+        this.flagPagination = true;
         if (this.carrera.id != 0) {
             this.spinner.show();
             this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
@@ -334,18 +341,15 @@ export class MatriculaComponent implements OnInit {
             this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id;
             this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id;
             this.actual_page = page;
-            const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id +
+            const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.p.id +
                 '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page
                 + '&page=' + page;
             this.service.get('matriculas/aprobados' + parametros).subscribe(
                 response => {
-
                     this.cupos = response['cupos']['data'];
                     this.total_pages = response['pagination']['last_page'];
                     this.total_register = response['pagination']['total'];
                     this.crearNumerosPaginacion();
-
-
                     this.spinner.hide();
                 },
                 error => {
@@ -379,7 +383,7 @@ export class MatriculaComponent implements OnInit {
         if (this.carrera.id != 0) {
             const parametros =
                 '?carrera_id=' + this.carrera.id
-                + '&periodo_lectivo_id=' + this.periodoLectivoActual.id
+                + '&periodo_lectivo_id=' + this.p.id
                 + '&periodo_academico_id=' + this.periodoAcademico;
             this.service.get('detalle_matriculas/count' + parametros)
                 .subscribe(
@@ -500,7 +504,6 @@ export class MatriculaComponent implements OnInit {
         }
         this.getAprobados(this.actual_page);
     }
-
 
     async updateMatricula(matricula: Matricula) {
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
@@ -778,5 +781,36 @@ export class MatriculaComponent implements OnInit {
             this.archivoTemp = '';
             swal.fire('Seleccione un periodo', '', 'warning');
         }
+    }
+
+    cambiarPeriodoLectivoActual() {
+        this.periodosLectivos.forEach(value => {
+            if (value.id == this.periodoLectivoActual.id) {
+                this.p = value;
+                if (value.estado != 'ACTUAL') {
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
+                } else {
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                }
+                this.getAprobados(1);
+            }
+        });
+    }
+
+    getPeriodosLectivos() {
+        this.spinner.show();
+        this.service.get('periodo_lectivos/historicos').subscribe(
+            response => {
+                this.periodosLectivos = response['periodos_lectivos_historicos'];
+                this.periodosLectivos.forEach(value => {
+                    if (value.estado == 'ACTUAL') {
+                        this.p = value;
+                    }
+                });
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+            });
     }
 }

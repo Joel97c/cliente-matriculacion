@@ -3,7 +3,7 @@
         <div class="col-md-4">
             <img src="assets/images/logo.png" class="user-avatar" width="150px"/>
             <h1>IGNUG</h1>
-            <form role="form">
+            <form role="form" *ngIf="validateLogin">
                 <div class="form-content">
                     <div class="form-group">
                         <label for="userName">
@@ -12,7 +12,8 @@
                             </i>
                         </label>
                         <div class="form-group input-group">
-                            <input type="text" [(ngModel)]="userName" class="form-control input-underline input-lg" id="userName"
+                            <input type="text" [(ngModel)]="userName" class="form-control input-underline input-lg"
+                                   id="userName"
                                    [disabled]="!validateLogin" name="userName" placeholder="">
                             <div class="input-group-prepend">
                                 <span class="input-group-text  input-underline input-lg" id="basic-addon1">@yavirac.edu.ec</span>
@@ -26,7 +27,8 @@
                                                                title="Su contraseña por defecto es su número de cédula"></i>
                             </i>
                         </label>
-                        <input type="password" [(ngModel)]="password" class="form-control input-underline input-lg" id="password"
+                        <input type="password" [(ngModel)]="password" class="form-control input-underline input-lg"
+                               id="password"
                                name="password" placeholder="" (keyup)="onLoggedin($event)" [disabled]="!validateLogin">
                     </div>
                 </div>

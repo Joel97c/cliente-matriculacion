@@ -160,17 +160,17 @@
                             [ngClass]="{'btn-success':cupo.estado=='APROBADO','btn-primary':cupo.estado=='EN_PROCESO'}"
                             [disabled]="cupo.estado=='APROBADO' || cupo.estado=='MATRICULADO'"
                             *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
-                        <span class="{{messages['bottomCheck']['icon']}}"></span>
+                        <span class="{{messages['buttonCheck']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-warning ml-1 btn-sm text-white" (click)="getDetalleMatricula(cupo)"
                             title="Asignaturas" *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
-                <span class="{{messages['bottomUpdate']['icon']}}">
+                <span class="{{messages['buttonUpdate']['icon']}}">
 
                 </span>
                     </button>
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteCupo(cupo)" title="Eliminar"
                             *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
-                        <span class="{{messages['bottomDelete']['icon']}}"></span>
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>
                 </td>
             </tr>
@@ -242,8 +242,8 @@
                         (click)="openDetalleMatricula(contentDetalleMatricula)"
                         *ngIf="matriculaSeleccionada.estado=='EN_PROCESO' || matriculaSeleccionada.estado=='APROBADO'"
                         title="Añadir nueva asignatura">
-                <span class="{{messages['bottomAdd']['icon']}}">
-                  {{messages['bottomAdd']['text']}}
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
                 </span>
                 </button>
             </th>
@@ -288,7 +288,7 @@
                 <td class="text-center">
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleCupo(detalle)" title="Eliminar"
                             *ngIf="detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO'">
-                        <span class="{{messages['bottomDelete']['icon']}}"></span>
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>
                 </td>
             </tr>
