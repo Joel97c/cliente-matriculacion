@@ -8,6 +8,7 @@
     </div>
 </div>
 <div class="row mt-3" *ngIf="!flagAsignaturasCupo">
+    <!--    Combo Carreras-->
     <div class="col-lg-5 col-xs-12">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -24,7 +25,8 @@
             </select>
         </div>
     </div>
-    <div class="col-lg-4 col-xs-12" *ngIf="carrera.id==0">
+    <!--    Buscador todas las carreras-->
+    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id==0">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text fa fa-search" id="basic-addon-buscadorEstudiante"></span>
@@ -35,6 +37,7 @@
                    placeholder="Identificación, apellidos o nombres">
         </div>
     </div>
+    <!--    Combo periodo academico-->
     <div class="col-lg-3 col-xs-12" *ngIf="carrera.id!=0">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
@@ -53,14 +56,15 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id!=0">
+    <!--    Combo periodo lectivo-->
+    <div class="col-lg-4 col-xs-12">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon-periodo-historico">
             Periodo Lectivo:
             </span>
                 <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
-                        class="form-control-sm" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
+                        class="form-control" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
                         (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
                     <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                             *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
@@ -127,8 +131,8 @@
             <th width="10%">Jornada</th>
             <th width="10%">Estado</th>
             <th width="15%" class="text-center">
-                <button type="button" class="btn btn-success ml-1 btn-sm" (click)="getAprobados(actual_page)"
-                        title="Actulizar">
+                <button *ngIf="this.carrera.id!=0" type="button" class="btn btn-success ml-1 btn-sm"
+                        (click)="getAprobados(actual_page)" title="Actulizar">
                     <span class="{{messages['buttonRefresh']['icon']}}"></span>
                 </button>
             </th>
@@ -194,9 +198,7 @@
                         <span class="{{messages['buttonPrint']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-warning ml-1 btn-sm text-white"
-                            (click)="getDetalleMatricula(cupo)"
-                            title="Cambiar Asignaturas"
-                            *ngIf="cupo.estado=='APROBADO' || cupo.estado=='MATRICULADO'">
+                            (click)="getDetalleMatricula(cupo)" title="Ver Asignaturas">
                 <span class="{{messages['buttonUpdate']['icon']}}">
 
                 </span>
@@ -206,8 +208,8 @@
                             *ngIf="cupo.estado=='MATRICULADO' && p.estado=='ACTUAL'">
                         <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
-                    <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="deleteMatricula(cupo)"
-                            title="Desertar Estudiante" *ngIf="p.estado=='ACTUAL'">
+                    <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
+                            title="Desertar Estudiante" *ngIf="p.estado=='ACTUAL' && cupo.estado=='MATRICULADO'">
                         <span class="{{messages['buttonDesert']['icon']}}"></span>
                     </button>
                 </td>
@@ -233,6 +235,11 @@
         </h6>
         <h6>
             ANULADOS: {{total_detalle_matriculas_anulados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            DESERTORES: {{total_detalle_matriculas_desertores}}
         </h6>
     </div>
     <div class="col-lg-6">

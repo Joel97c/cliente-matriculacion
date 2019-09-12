@@ -30,6 +30,7 @@ import {User} from '../modelos/user.model';
 })
 
 export class MatriculaComponent implements OnInit {
+    estudiantesHistoricos: Array<Estudiante>;
     p: PeriodoLectivo;
     txtPeridoActualHistorico: string;
     buscadorEstudianteGeneral: string;
@@ -41,6 +42,7 @@ export class MatriculaComponent implements OnInit {
     total_detalle_matriculas_matriculados: number;
     total_detalle_matriculas_aprobados: number;
     total_detalle_matriculas_en_proceso: number;
+    total_detalle_matriculas_desertores: number;
     urlExportCuposPeriodoAcademico: string;
     urlExportCuposCarrera: string;
     urlExportMatrizSniese: string;
@@ -82,6 +84,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.estudiantesHistoricos = new Array<Estudiante>();
         this.p = new PeriodoLectivo();
         this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
@@ -199,6 +202,39 @@ export class MatriculaComponent implements OnInit {
                         this.service.delete('matriculas/matricula?id=' + matricula.id).subscribe(
                             response => {
                                 if (this.buscador.trim() === '') {
+                                    this.getDetalleMatriculasForMalla();
+                                    this.getAprobados(this.actual_page);
+                                } else {
+                                    this.getAprobado();
+                                }
+                                this.spinner.hide();
+                                swal.fire(this.messages['deleteSuccess']);
+                                this.sendEmailNotificacion('Anulación de Matrícula', razonAnularMatricula);
+                            },
+                            error => {
+                                this.spinner.hide();
+                                swal.fire(this.messages['error500']);
+                            });
+                    }
+                });
+        } else {
+            if (!(razonAnularMatricula === undefined)) {
+                swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+            }
+        }
+    }
+
+    async desertMatricula(matricula: Matricula) {
+        const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
+        if (razonAnularMatricula) {
+            swal.fire(this.messages['deleteRegistrationQuestion'])
+                .then((result) => {
+                    if (result.value) {
+                        this.spinner.show();
+                        this.service.delete('matriculas/desert?id=' + matricula.id).subscribe(
+                            response => {
+                                if (this.buscador.trim() === '') {
+                                    this.getDetalleMatriculasForMalla();
                                     this.getAprobados(this.actual_page);
                                 } else {
                                     this.getAprobado();
@@ -319,7 +355,7 @@ export class MatriculaComponent implements OnInit {
             + '&apellido2=' + this.buscadorEstudianteGeneral
             + '&nombre1=' + this.buscadorEstudianteGeneral
             + '&nombre2=' + this.buscadorEstudianteGeneral
-            + '&carrera_id=' + this.carrera.id;
+            + '&periodo_lectivo_id=' + this.p.id;
         this.spinner.show();
         this.service.get('estudiantes/historicos' + parametros).subscribe(
             response => {
@@ -337,9 +373,11 @@ export class MatriculaComponent implements OnInit {
         if (this.carrera.id != 0) {
             this.spinner.show();
             this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
-                + '&periodo_academico_id=' + this.periodoAcademico;
-            this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id;
-            this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id;
+                + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.p.id;
+            this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
+                + '&periodo_lectivo_id=' + this.p.id;
+            this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id
+                + '&periodo_lectivo_id=' + this.p.id;
             this.actual_page = page;
             const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.p.id +
                 '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page
@@ -393,6 +431,7 @@ export class MatriculaComponent implements OnInit {
                         this.total_detalle_matriculas_aprobados = response['aprobados_count'];
                         this.total_detalle_matriculas_matriculados = response['matriculados_count'];
                         this.total_detalle_matriculas_en_proceso = response['en_proceso_count'];
+                        this.total_detalle_matriculas_desertores = response['desertores_count'];
 
                     },
                     error => {
@@ -564,6 +603,7 @@ export class MatriculaComponent implements OnInit {
                 if (result.value) {
                     this.service.get('matriculas/validate_cupo?matricula_id=' + cupo.id + '&estado=MATRICULADO').subscribe(
                         response => {
+                            this.getDetalleMatriculasForMalla();
                             this.getAprobados(this.actual_page);
                             // swal.fire(this.messages['validateRegistrationSuccess']);
                             this.getCertificadoMatricula(cupo);
@@ -784,6 +824,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     cambiarPeriodoLectivoActual() {
+        this.buscadorEstudianteGeneral = '';
         this.periodosLectivos.forEach(value => {
             if (value.id == this.periodoLectivoActual.id) {
                 this.p = value;
