@@ -6,7 +6,7 @@
                     Código
                 </th>
                 <th width="20%">
-                    Periodo
+                    Periodo Lectivo
                 </th>
                 <th width="15%">
                     Fecha Inicio Periodo
@@ -26,38 +26,83 @@
                     </button>
                 </th>
             </tr>
-            <tr *ngFor="let periodo of periodosLectivos">
+            <tr *ngFor="let periodo of periodosLectivos" [ngClass]="{'bg-primary text-white': periodo.estado=='ACTUAL'}">
                 <td>
-                    <input type="text" [(ngModel)]="periodo.codigo" class="form-control-sm">
+<!--                    <input type="text" [(ngModel)]="periodo.codigo" class="form-control">-->
+                    {{periodo.codigo}}
                 </td>
                 <td>
-                    <input type="text" [(ngModel)]="periodo.nombre" class="form-control">
+<!--                    <input type="text" [(ngModel)]="periodo.nombre" class="form-control">-->
+                    {{periodo.nombre}}
                 </td>
                 <td>
-                    <input type="date" [(ngModel)]="periodo.fecha_inicio_periodo" class="form-control-sm">
+<!--                    <input type="text" [(ngModel)]="periodo.fecha_inicio_periodo" class="form-control">-->
+                    {{periodo.fecha_inicio_periodo}}
                 </td>
                 <td>
-                    <input type="date" [(ngModel)]="periodo.fecha_fin_periodo" class="form-control-sm">
+<!--                    <input type="text" [(ngModel)]="periodo.fecha_fin_periodo" class="form-control">-->
+                    {{periodo.fecha_fin_periodo}}
                 </td>
                 <td>
-                    {{periodo.estado}}
+                    <b *ngIf="periodo.estado=='ACTUAL' || periodo.estado=='HISTORICO'"
+                       [ngClass]="{'text-white':periodo.estado=='ACTUAL'}">{{periodo.estado}}</b>
                 </td>
                 <td>
-                    <button class="btn btn-danger ml-1 btn-sm"
-                            (click)="openPeriodoLectivo(contentPeriodoLectivo,periodo)"
-                            *ngIf="periodo.estado=='ACTIVO'">
-                        <span class="{{messages['buttonCancel']['icon']}}"></span>
-                    </button>
-                    <button class="btn btn-primary ml-1 btn-sm" *ngIf="periodo.estado=='ACTUAL'">
-                        <span class="{{messages['buttonCheck']['icon']}}"></span>
+                    <button *ngIf="periodo.estado!='ACTUAL'"
+                            (click)="activatePeriodoLectivo(periodo)"
+                            class="btn btn-primary ml-1 btn-sm" title="Abrir Periodo Lectivo">
+                        <span class="{{messages['buttonActivatePeriodo']['icon']}}"></span>
                     </button>
                     <button class="btn btn-warning ml-1 btn-sm text-white"
-                            (click)="openPeriodoLectivo(contentPeriodoLectivo,periodo)">
+                            (click)="openPeriodoLectivo(contentPeriodoLectivo,periodo)"
+                            *ngIf="periodo.estado=='ACTIVO'"
+                            title="Actualizar">
                         <span class="{{messages['buttonUpdate']['icon']}}"></span>
+                    </button>
+                    <button class="btn btn-danger ml-1 btn-sm"
+                            (click)="closePeriodoLectivo(periodo)"
+                            *ngIf="periodo.estado=='ACTUAL'" title="Cerrar Periodo Lectivo">
+                        <span class="{{messages['buttonClosePeriodo']['icon']}}"></span>
+                    </button>
+                    <button class="btn btn-danger ml-1 btn-sm"
+                            (click)="closePeriodoLectivo(periodo)"
+                            *ngIf="periodo.estado=='ACTIVO'" title="Eliminar Periodo Lectivo">
+                        <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>
                 </td>
             </tr>
         </table>
+
+        <!--Cupos totales y paginacion-->
+        <div class="row">
+            <div class="col-lg-6">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)" tabindex="-1"
+                               (click)="firstPagina()">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                               (click)="paginacion(false)">Previous</a>
+                        </li>
+                        <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                            *ngFor="let page of total_pages_pagination"
+                            (click)="getPeriodosLectivos(page)">
+                            <a class="page-link" href="javascript:void(0)">{{page}}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                               (click)="lastPagina()">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
     </div>
 </div>
 

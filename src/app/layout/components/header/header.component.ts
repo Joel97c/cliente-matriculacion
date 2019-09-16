@@ -42,7 +42,7 @@ export class HeaderComponent implements OnInit {
     ngOnInit() {
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.periodoLectivoActual = new PeriodoLectivo();
-        this.getPeriodoLectivoActual();
+        // this.getPeriodoLectivoActual();
         this.pushRightClass = 'push-right';
         this.translate.setDefaultLang('es');
         this.changeLang('es');

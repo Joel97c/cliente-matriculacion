@@ -469,6 +469,8 @@ export const catalogos = {
             buttonPrint: {'icon': 'fa fa-print', 'text': 'Imprimir'},
             buttonSearch: {'icon': 'fa fa-search', 'text': ''},
             buttonCheck: {'icon': 'fa fa-check', 'text': 'Confirmar'},
+            buttonActivatePeriodo: {'icon': 'fa fa-calendar-check-o', 'text': ''},
+            buttonClosePeriodo: {'icon': 'fa fa-calendar-times-o', 'text': ''},
             buttonRefresh: {'icon': 'fa fa-refresh', 'text': 'Confirmar'},
             buttonView: {'icon': 'fa fa-eye', 'text': ''},
             buttonPaginationNext: {'icon': 'fa fa-trash', 'text': 'Atrás'},

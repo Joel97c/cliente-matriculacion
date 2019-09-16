@@ -64,8 +64,8 @@ export class MatriculaComponent implements OnInit {
     total_register: number;
     total_pages_pagination: Array<any>;
     total_pages_temp: number;
-    total_detalle_matriculas_for_malla: Array<any>;
     flagPagination: boolean;
+    total_detalle_matriculas_for_malla: Array<any>;
     messages: any;
     matriculaSeleccionada: Matricula;
     carrera: Carrera;
@@ -86,7 +86,7 @@ export class MatriculaComponent implements OnInit {
     ngOnInit() {
         this.estudiantesHistoricos = new Array<Estudiante>();
         this.p = new PeriodoLectivo();
-        this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+        this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.buscador = '';
         this.notificacion = new Notificacion();
@@ -101,7 +101,6 @@ export class MatriculaComponent implements OnInit {
         this.jornadas = catalogos.jornadas;
         this.numerosMatricula = catalogos.numerosMatricula;
         this.flagAsignaturasCupo = false;
-
         this.rutaActual = this.router.url;
         this.matriculaSeleccionada = new Matricula();
         this.periodoLectivoActual = new PeriodoLectivo();
@@ -316,10 +315,15 @@ export class MatriculaComponent implements OnInit {
     }
 
     filterEstudianteGeneral(event) {
-        if (event.which === 13 && this.buscadorEstudianteGeneral.length > 0) {
-            this.flagPagination = false;
-            this.getAprobadoGeneral();
+        if (this.periodoLectivoActual.id !== 0) {
+            if (event.which === 13 && this.buscadorEstudianteGeneral.length > 0) {
+                this.flagPagination = false;
+                this.getAprobadoGeneral();
+            }
+        } else {
+            swal.fire('Seleccione un Periodo Lectivo');
         }
+
     }
 
     getAprobado() {
@@ -456,7 +460,12 @@ export class MatriculaComponent implements OnInit {
     getPeriodoLectivoActual() {
         this.service.get('periodo_lectivos/actual').subscribe(
             response => {
-                this.periodoLectivoActual = response['periodo_lectivo_actual'];
+                if (response['periodo_lectivo_actual'] == null) {
+                    this.periodoLectivoActual = new PeriodoLectivo();
+                } else {
+                    this.periodoLectivoActual = response['periodo_lectivo_actual'];
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                }
             },
             error => {
                 this.spinner.hide();

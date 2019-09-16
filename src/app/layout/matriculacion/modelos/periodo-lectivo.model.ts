@@ -15,6 +15,7 @@ export class PeriodoLectivo {
   estado: string;
 
   constructor() {
+      this.id = 0;
     this.codigo = '';
   }
 }

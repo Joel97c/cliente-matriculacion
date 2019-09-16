@@ -25,19 +25,38 @@ export class Seccion1Component implements OnInit {
     periodosLectivos: Array<PeriodoLectivo>;
     periodoLectivoSeleccionado: PeriodoLectivo;
     messages: any;
+    actual_page: number;
+    records_per_page: number;
+    total_pages: number;
+    total_register: number;
+    total_pages_pagination: Array<any>;
+    total_pages_temp: number;
+    flagPagination: boolean;
 
     ngOnInit() {
+        this.flagPagination = true;
+        this.total_pages_pagination = new Array<any>();
+        this.total_pages_temp = 10;
+        this.records_per_page = 7;
+        this.actual_page = 1;
+        this.total_pages = 1;
         this.periodosLectivos = new Array<PeriodoLectivo>();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.messages = catalogos.messages;
-        this.getPeriodosLectivos();
+        this.getPeriodosLectivos(1);
     }
 
-    getPeriodosLectivos() {
+    getPeriodosLectivos(page: number) {
         this.spinner.show();
-        this.service.get('periodo_lectivos').subscribe(
+        this.actual_page = page;
+        const parameters = '?' + 'records_per_page=' + this.records_per_page
+            + '&page=' + page;
+        this.service.get('periodo_lectivos' + parameters).subscribe(
             response => {
-                this.periodosLectivos = response['periodos_lectivos'];
+                this.periodosLectivos = response['periodos_lectivos']['data'];
+                this.total_pages = response['pagination']['last_page'];
+                this.total_register = response['pagination']['total'];
+                this.crearNumerosPaginacion();
                 this.spinner.hide();
             },
             error => {
@@ -58,7 +77,7 @@ export class Seccion1Component implements OnInit {
                     if (periodoLectivo == null) {
                         this.createPeriodoLectivo();
                     } else {
-                        this.updatePeriodoLectivo(periodoLectivo);
+                        this.updatePeriodoLectivo();
                     }
                 }
             }), (resultCancel => {
@@ -71,9 +90,10 @@ export class Seccion1Component implements OnInit {
         this.spinner.show();
         this.periodoLectivoSeleccionado.codigo = this.periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4)
             + '-' + this.periodoLectivoSeleccionado.codigo;
+        this.validateFechas();
         this.service.post('periodo_lectivos', {'periodo_lectivo': this.periodoLectivoSeleccionado}).subscribe(
             response => {
-                this.getPeriodosLectivos();
+                this.getPeriodosLectivos(this.actual_page);
                 this.spinner.hide();
             },
             error => {
@@ -86,9 +106,10 @@ export class Seccion1Component implements OnInit {
             });
     }
 
-    updatePeriodoLectivo(periodoLectivo: PeriodoLectivo) {
+    updatePeriodoLectivo() {
         this.spinner.show();
-        this.service.post('periodo_lectivos', {'periodo_lectivo': periodoLectivo}).subscribe(
+        this.validateFechas();
+        this.service.update('periodo_lectivos', {'periodo_lectivo': this.periodoLectivoSeleccionado}).subscribe(
             response => {
                 this.spinner.hide();
             },
@@ -100,5 +121,117 @@ export class Seccion1Component implements OnInit {
                     swal.fire(this.messages['error500']);
                 }
             });
+    }
+
+    closePeriodoLectivo(periodoLectivo: PeriodoLectivo) {
+        this.spinner.show();
+        this.service.update('periodo_lectivos/cerrar', {'periodo_lectivo': periodoLectivo}).subscribe(
+            response => {
+                this.getPeriodosLectivos(this.actual_page);
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+                if (error.error.errorInfo[0] === '23505') {
+                    swal.fire(this.messages['error23505']);
+                } else {
+                    swal.fire(this.messages['error500']);
+                }
+            });
+    }
+
+    activatePeriodoLectivo(periodoLectivo: PeriodoLectivo) {
+        this.spinner.show();
+        this.service.update('periodo_lectivos/activar', {'periodo_lectivo': periodoLectivo}).subscribe(
+            response => {
+                this.getPeriodosLectivos(this.actual_page);
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+                if (error.error.errorInfo[0] === '23505') {
+                    swal.fire(this.messages['error23505']);
+                } else {
+                    swal.fire(this.messages['error500']);
+                }
+            });
+    }
+
+    validateFechas() {
+        if (this.periodoLectivoSeleccionado.fecha_inicio_cupo == null) {
+            this.periodoLectivoSeleccionado.fecha_inicio_cupo = this.periodoLectivoSeleccionado.fecha_inicio_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_inicio_ordinaria == null) {
+            this.periodoLectivoSeleccionado.fecha_inicio_ordinaria = this.periodoLectivoSeleccionado.fecha_inicio_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_inicio_extraordinaria == null) {
+            this.periodoLectivoSeleccionado.fecha_inicio_extraordinaria = this.periodoLectivoSeleccionado.fecha_inicio_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_inicio_especial == null) {
+            this.periodoLectivoSeleccionado.fecha_inicio_especial = this.periodoLectivoSeleccionado.fecha_inicio_periodo;
+        }
+
+        if (this.periodoLectivoSeleccionado.fecha_fin_cupo == null) {
+            this.periodoLectivoSeleccionado.fecha_fin_cupo = this.periodoLectivoSeleccionado.fecha_fin_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_fin_ordinaria == null) {
+            this.periodoLectivoSeleccionado.fecha_fin_ordinaria = this.periodoLectivoSeleccionado.fecha_fin_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_fin_extraordinaria == null) {
+            this.periodoLectivoSeleccionado.fecha_fin_extraordinaria = this.periodoLectivoSeleccionado.fecha_fin_periodo;
+        }
+        if (this.periodoLectivoSeleccionado.fecha_fin_especial == null) {
+            this.periodoLectivoSeleccionado.fecha_fin_especial = this.periodoLectivoSeleccionado.fecha_fin_periodo;
+        }
+
+    }
+
+    crearNumerosPaginacion() {
+        if (this.total_pages > 10) {
+            for (let i = 0; i < 10; i++) {
+                this.total_pages_pagination[i] = i + this.total_pages_temp - 9;
+            }
+        } else {
+            this.total_pages_pagination = new Array<any>();
+            for (let i = 0; i < this.total_pages; i++) {
+                this.total_pages_pagination[i] = i + 1;
+            }
+        }
+    }
+
+    firstPagina() {
+        this.getPeriodosLectivos(1);
+        this.total_pages_temp = 10;
+        this.crearNumerosPaginacion();
+    }
+
+    lastPagina() {
+        this.getPeriodosLectivos(this.total_pages);
+        this.total_pages_temp = this.total_pages;
+        this.crearNumerosPaginacion();
+    }
+
+    paginacion(siguiente: boolean) {
+        if (siguiente) {
+            if (this.actual_page === this.total_pages) {
+                return;
+            } else {
+                if (this.total_pages_temp !== this.total_pages) {
+                    this.total_pages_temp++;
+                    this.crearNumerosPaginacion();
+                }
+
+                this.actual_page++;
+            }
+        } else {
+            if (this.actual_page === 1) {
+                return;
+            } else {
+                this.actual_page--;
+                this.total_pages_temp--;
+                this.crearNumerosPaginacion();
+            }
+        }
+        this.getPeriodosLectivos(this.actual_page);
     }
 }
