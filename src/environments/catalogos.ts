@@ -415,7 +415,7 @@ export const catalogos = {
                 'type': 'error',
                 'title': 'Oops! registro duplicado',
                 'text': 'Vuelve a intentar',
-                'timer': 3000,
+                'timer': 5000,
                 'showConfirmButton': true,
                 'backdrop': 'rgba(255, 0, 0,0.4)'
             },
@@ -462,6 +462,7 @@ export const catalogos = {
             },
             saveConfirmationDialog: {'ok': 'Guardar', 'cancel': 'Cancelar', 'iconOk': 'fa fa-save', 'iconCancel': 'fa fa-close'},
             requiredFields: {'icon': '*', 'text': 'Todos los campos son obligatorios'},
+            buttonCreate: {'icon': 'fa fa-save', 'text': 'Guardar'},
             buttonAdd: {'icon': 'fa fa-plus', 'text': 'Añadir'},
             buttonUpdate: {'icon': 'fa fa-edit', 'text': ''},
             buttonDelete: {'icon': 'fa fa-trash', 'text': ''},

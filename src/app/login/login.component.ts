@@ -57,19 +57,28 @@ export class LoginComponent implements OnInit {
                 response => {
                     localStorage.setItem('token', JSON.stringify(response['access_token']));
                     localStorage.setItem('isLoggedin', 'true');
-                    this.service.get('users?email=' + this.userName).subscribe(response2 => {
-                        localStorage.setItem('user', JSON.stringify(response2['user']));
-                        if (response2['user']['role']['rol'] === '1') {
-                            this.router.navigate(['dashboard-cupo']);
-                        }
-                        if (response2['user']['role']['rol'] === '2') {
-                            this.router.navigate(['perfil-estudiante']);
-                        }
-                        if (response2['user']['role']['rol'] === '3') {
-                            this.router.navigate(['dashboard-matricula']);
-                        }
-                        if (response2['user']['role']['rol'] === '4') {
-                            this.router.navigate(['dashboard-matricula']);
+                    this.service.get('usuarios/login?email=' + this.userName).subscribe(response2 => {
+                        if (response2['usuario']['estado'] === 'ACTIVO') {
+                            localStorage.setItem('user', JSON.stringify(response2['usuario']));
+                            if (response2['usuario']['role']['rol'] === '1') {
+                                this.router.navigate(['dashboard-cupo']);
+                            }
+                            if (response2['usuario']['role']['rol'] === '2') {
+                                this.router.navigate(['perfil-estudiante']);
+                            }
+                            if (response2['usuario']['role']['rol'] === '3') {
+                                this.router.navigate(['dashboard-matricula']);
+                            }
+                            if (response2['usuario']['role']['rol'] === '4') {
+                                this.router.navigate(['dashboard-matricula']);
+                            }
+                        } else if (response2['usuario']['estado'] === 'INACTIVO'){
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                            localStorage.removeItem('isLoggedin');
+                            swal.fire('Usuario INACTIVO', 'Su usuario se encuentra inactivo, consulte al administrador',
+                                'warning');
+                            this.validateLogin = true;
                         }
                     });
                     this.validateLogin = false;

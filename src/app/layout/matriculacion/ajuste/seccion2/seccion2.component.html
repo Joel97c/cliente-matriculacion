@@ -1,307 +1,207 @@
 <div class="card mt-1">
-  <div class="card-body">
-    <form name="datosPersnalesform" method="post" #formCtrl="ngForm">
-      <div class="row ml-2">
-        <div class="col-lg-12 col-sm-12">
-          <h6 class="text-muted"><b class="text-danger">* </b>Todos los campos son obligatorios</h6>
-          <table class="table table-responsive">
-            <tr>
-              <td width="50%" colspan="2">
-                <label for="etnia">
-                  <b class="text-danger">*</b> 14. Etnia:
-                </label>
-                <select [(ngModel)]="estudiante.etnia" class="form-control"
-                        [ngClass]="{'backgroundTextFieldWarning':estudiante.etnia=='0','backgroundTextFieldSuccess':estudiante.etnia!='0'}"
-                        id="etnia" name="etnia" required (change)="validateEtnia();updateEstudiante()">
-                  <option value="0" selected>SELECCIONE...</option>
-                  <option value="{{etnina.codigo}}" *ngFor="let etnina of etnias">
-                    {{etnina.descripcion}}
-                  </option>
-                </select>
-              </td>
-              <td width="50%" colspan="2">
-                <div *ngIf="estudiante.etnia=='1'">
-                  <label for="puebloNacionalidad">
-                    <b class="text-danger">*</b> 15. Pueblo Nacionalidad:
-                  </label>
-                  <select [(ngModel)]="estudiante.pueblo_nacionalidad" class="form-control"
-                          id="puebloNacionalidad" name="puebloNacionalidad"
-                          [required]="estudiante.etnia=='1' ||estudiante.etnia=='8'"
-                          [disabled]="estudiante.etnia!='1' && estudiante.etnia!='8'"
-                          [ngClass]="{'backgroundTextFieldWarning':estudiante.pueblo_nacionalidad=='0','backgroundTextFieldSuccess':estudiante.pueblo_nacionalidad!='0'}"
-                          (change)="updateEstudiante()">
-                    <option value="0" selected>SELECCIONE...</option>
-                    <option value="{{puebloNacionalidad.codigo}}"
-                            *ngFor="let puebloNacionalidad of pueblosNacionalidad">
-                      {{puebloNacionalidad.descripcion}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <label for="hablaIdiomaAncestral">
-                  <b class="text-danger">*</b> 16. ¿Habla algún idioma ancestral?
-                </label>
-                <select [(ngModel)]="informacionEstudiante.habla_idioma_ancestral" class="form-control"
-                        id="hablaIdiomaAncestral" name="hablaIdiomaAncestral" required
-                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.habla_idioma_ancestral=='0','backgroundTextFieldSuccess':informacionEstudiante.habla_idioma_ancestral!='0'}"
-                        (change)="validateIdiomaAncestral();updateEstudiante()">
-                  <option value="0" selected>SELECCIONE...</option>
-                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
-                    {{opcion.descripcion}}
-                  </option>
-                </select>
-              </td>
-              <td colspan="2">
-                <div *ngIf="informacionEstudiante.habla_idioma_ancestral=='1'">
-                  <label for="idiomaAncestral">
-                    <b class="text-danger">*</b> Especifíque Idioma Ancestral:
-                  </label>
-                  <input type="text" [(ngModel)]="informacionEstudiante.idioma_ancestral"
-                         class="form-control text-uppercase" id="idiomaAncestral" name="idiomaAncestral"
-                         [required]="informacionEstudiante.habla_idioma_ancestral=='1'"
-                         [disabled]="informacionEstudiante.habla_idioma_ancestral!='1'"
-                         [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.idioma_ancestral==null||informacionEstudiante.idioma_ancestral=='','backgroundTextFieldSuccess':informacionEstudiante.idioma_ancestral!=''&&informacionEstudiante.idioma_ancestral!=''}"
-                         (focusout)="updateEstudiante()">
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <label for="paisNacionalidad">
-                  <b class="text-danger">*</b> 19. País Nacionalidad:
-                </label>
-                <select type="text" class="form-control" id="paisNacionalidad" name="paisNacionalidad"
-                        [(ngModel)]="ubicacionNacimiento.pais_id" placeholder="País Nacionalidad" required
-                        (change)="validatePaisNacionalidad()"
-                        [ngClass]="{'backgroundTextFieldWarning':ubicacionNacimiento.pais_id=='0','backgroundTextFieldSuccess':ubicacionNacimiento.pais_id!='0'}">
-                  <option value="0">SELECCIONE...</option>
-                  <option value="{{pais.id}}" *ngFor="let pais of paises">
-                    {{pais.nombre}}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <div *ngIf="ubicacionNacimiento.pais_id=='1'">
-                  <label for="provinciaNacimiento">
-                    <b class="text-danger">*</b> 20. Provincia Nacimiento:
-                  </label>
-                  <select type="text" class="form-control" [(ngModel)]="ubicacionNacimiento.provincia_id"
-                          (change)="getCantonesNacimiento(ubicacionNacimiento.provincia_id)"
-                          id="provinciaNacimiento"
-                          name="provinciaNacimiento" [disabled]="ubicacionNacimiento.pais_id!='1'"
-                          [ngClass]="{'backgroundTextFieldWarning':ubicacionNacimiento.provincia_id=='0','backgroundTextFieldSuccess':ubicacionNacimiento.provincia_id!='0'}">
-                    <option value="0">SELECCIONE...</option>
-                    <option value="{{provincia.id}}" *ngFor="let provincia of provincias">
-                      {{provincia.nombre}}
-                    </option>
-                  </select>
-                </div>
-                <div *ngIf="ubicacionNacimiento.pais_id!='1' && ubicacionNacimiento.pais_id!='0'">
-                  <label for="categoriaMigratoria">
-                    <b class="text-danger">*</b> 22. Categoria Migratoria:
-                  </label>
-                  <select type="text" [(ngModel)]="informacionEstudiante.categoria_migratoria" class="form-control"
-                          id="categoriaMigratoria" name="categoriaMigratoria"
-                          [required]="ubicacionNacimiento.pais_id!='1'"
-                          [disabled]="ubicacionNacimiento.pais_id=='1' || ubicacionNacimiento.pais_id=='0'"
-                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.categoria_migratoria=='0','backgroundTextFieldSuccess':informacionEstudiante.categoria_migratoria!='0'}"
-                          (change)="updateEstudiante()">
-                    <option value="0">SELECCIONE...</option>
-                    <option value="{{categoriaMigratoria.codigo}}"
-                            *ngFor="let categoriaMigratoria of categoriasMigratoria">
-                      {{categoriaMigratoria.descripcion}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div *ngIf="ubicacionNacimiento.provincia_id!='0'">
-                  <label for="cantonNacimiento">
-                    <b class="text-danger">*</b> 21. Cantón Nacimiento:
-                  </label>
-                  <select type="text" [(ngModel)]="estudiante.canton_nacimiento.id" class="form-control"
-                          id="cantonNacimiento" name="cantonNacimiento" [disabled]="ubicacionNacimiento.pais_id!='1'"
-                          [ngClass]="{'backgroundTextFieldWarning':estudiante.canton_nacimiento.id=='0','backgroundTextFieldSuccess':estudiante.canton_nacimiento.id!='0'}"
-                          (change)="updateEstudiante()">
-                    <option value="0">SELECCIONE PROVINCIA...</option>
-                    <option value="{{canton.id}}" *ngFor="let canton of cantonesNacimiento">
-                      {{canton.nombre}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                <label for="paisResidencia">
-                  <b class="text-danger">*</b> 23. País de Residencia:
-                </label>
-                <select type="text" [(ngModel)]="ubicacionResidencia.pais_id" class="form-control"
-                        id="paisResidencia" name="paisResidencia" placeholder="País Residencia" required
-                        (change)="validatePaisResidencia()"
-                        [ngClass]="{'backgroundTextFieldWarning':ubicacionResidencia.pais_id=='0','backgroundTextFieldSuccess':ubicacionResidencia.pais_id!='0'}">
-                  <option value="0">SELECCIONE...</option>
-                  <option value="{{pais.id}}" *ngFor="let pais of paises">
-                    {{pais.nombre}}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <div *ngIf="ubicacionResidencia.pais_id=='1'">
-                  <label for="provinciaResidencia">
-                    <b class="text-danger">*</b> 24. Provincia de Residencia:
-                  </label>
-                  <select type="text" [(ngModel)]="ubicacionResidencia.provincia_id" class="form-control"
-                          (change)="getCantonesResidencia(ubicacionResidencia.provincia_id)"
-                          id="provinciaResidencia"
-                          name="provinciaResidencia" [required]="ubicacionResidencia.pais_id=='1'"
-                          [disabled]="ubicacionResidencia.pais_id!='1'"
-                          [ngClass]="{'backgroundTextFieldWarning':ubicacionResidencia.provincia_id=='0','backgroundTextFieldSuccess':ubicacionResidencia.provincia_id!='0'}">
-                    <option value="0">SELECCIONE...</option>
-                    <option value="{{provincia.id}}" *ngFor="let provincia of provincias">
-                      {{provincia.nombre}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td>
-                <div *ngIf="ubicacionResidencia.provincia_id!='0'">
-                  <label for="cantonResidencia">
-                    <b class="text-danger">*</b> 25. Cantón de Residencia:
-                  </label>
-                  <select type="text" [(ngModel)]="informacionEstudiante.canton_residencia.id" class="form-control"
-                          id="cantonResidencia" name="cantonResidencia" [required]="ubicacionResidencia.pais_id=='1'"
-                          [disabled]="ubicacionResidencia.pais_id!='1'"
-                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.canton_residencia.id=='0','backgroundTextFieldSuccess':informacionEstudiante.canton_residencia.id!='0'}"
-                          (change)="updateEstudiante()">
-                    <option value="0">SELECCIONE PROVINCIA...</option>
-                    <option value="{{canton.id}}" *ngFor="let canton of cantonesResidencia">
-                      {{canton.nombre}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="fechaNacimiento">
-                  <b class="text-danger">*</b> 17. Fecha de Nacimiento:
-                </label>
-                <input type="date" [(ngModel)]="estudiante.fecha_nacimiento" class="form-control" id="fechaNacimiento"
-                       name="fechaNacimiento" required (change)="calculateEdad()" disabled
-                       (focusout)="updateEstudiante()">
-              </td>
-              <td>
-                <label for="tipoSangre">
-                  <b class="text-danger">*</b> 18. Tipo Sangre:
-                </label>
-                <select [(ngModel)]="estudiante.tipo_sangre" class="form-control"
-                        id="tipoSangre" name="tipoSangre" required
-                        [ngClass]="{'backgroundTextFieldWarning':estudiante.tipo_sangre=='0','backgroundTextFieldSuccess':estudiante.tipo_sangre!='0'}"
-                        (change)="updateEstudiante()">
-                  <option value="0" selected>SELECCIONE...</option>
-                  <option value="{{tipoSangre.codigo}}" *ngFor="let tipoSangre of tiposSangre">
-                    {{tipoSangre.descripcion}}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <label for="estadoCivil">
-                  <b class="text-danger">*</b> 26. Estado Civil:
-                </label>
-                <select [(ngModel)]="informacionEstudiante.estado_civil" class="form-control"
-                        id="estadoCivil" name="estadoCivil" required
-                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.estado_civil=='0','backgroundTextFieldSuccess':informacionEstudiante.estado_civil!='0'}"
-                        (change)="updateEstudiante()">
-                  <option value="0" selected>SELECCIONE...</option>
-                  <option value="{{estadoCivil.codigo}}" *ngFor="let estadoCivil of estadosCivil">
-                    {{estadoCivil.descripcion}}
-                  </option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label for="tieneCarnetConadis">
-                  <b class="text-danger">*</b> 27. ¿Tiene Alguna Discapacidad?
-                </label>
-                <select [(ngModel)]="informacionEstudiante.tiene_discapacidad" class="form-control"
-                        id="tieneCarnetConadis" name="tieneCarnetConadis" required
-                        (change)="validateDiscapacidad();updateEstudiante()"
-                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.tiene_discapacidad=='0',
-                        'backgroundTextFieldSuccess':informacionEstudiante.tiene_discapacidad!='0'}">
-                  <option value="0" selected>SELECCIONE...</option>
-                  <option value="{{opcion.codigo}}" *ngFor="let opcion of opcionesSiNo">
-                    {{opcion.descripcion}}
-                  </option>
-                </select>
-              </td>
-              <td>
-                <div *ngIf="informacionEstudiante.tiene_discapacidad=='1'">
-                  <label for="numeroCarnetConadis">
-                    <b class="text-danger">*</b> 28. Número Carnet Conadis:
-                  </label>
-                  <input type="text" [(ngModel)]="informacionEstudiante.numero_carnet_conadis"
-                         class="form-control text-uppercase"
-                         id="numeroCarnetConadis" name="numeroCarnetConadis" placeholder="Ej. 123456789"
-                         [required]="informacionEstudiante.tiene_discapacidad=='1'"
-                         [disabled]="informacionEstudiante.tiene_discapacidad!='1'"
-                         [ngClass]="{'backgroundTextFieldWarning': informacionEstudiante.numero_carnet_conadis==null||informacionEstudiante.numero_carnet_conadis.trim()=='','backgroundTextFieldSuccess':informacionEstudiante.tiene_discapacidad!='0'}"
-                         (focusout)="updateEstudiante()">
-                </div>
-              </td>
-              <td>
-                <div *ngIf="informacionEstudiante.tiene_discapacidad=='1'">
-                  <label for="porcentajeDiscapacidad">
-                    <b class="text-danger">*</b> 29. Porcentaje Discapacidad:
-                  </label>
-                  <div class="input-group mb-3">
+    <div class="card-body">
+        <!--Buscador-->
+        <div class="row">
+            <div class="col-lg-4 col-xs-12">
+                <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                      <input type="number" min="1" max="100" [(ngModel)]="informacionEstudiante.porcentaje_discapacidad"
-                             class="form-control"
-                             id="porcentajeDiscapacidad" name="porcentajeDiscapacidad"
-                             [required]="informacionEstudiante.tiene_discapacidad=='1'"
-                             [disabled]="informacionEstudiante.tiene_discapacidad!='1'"
-                             [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.porcentaje_discapacidad==null ||informacionEstudiante.porcentaje_discapacidad=='',
-                           'backgroundTextFieldSuccess':informacionEstudiante.porcentaje_discapacidad!=null || informacionEstudiante.porcentaje_discapacidad!=''}"
-                             (focusout)="updateEstudiante()">
-                      <span class="input-group-text" id="basic-addon-periodo">%</span>
+                        <span class="input-group-text fa fa-search" id="basic-addon-buscar"></span>
                     </div>
-                  </div>
+                    <input type="text" class="form-control text-uppercase" [(ngModel)]="buscador"
+                           (keyup)="filter($event)"
+                           placeholder="Identificación, apellidos o nombres">
                 </div>
-              </td>
-              <td>
-                <div *ngIf="informacionEstudiante.tiene_discapacidad=='1'">
-                  <label for="tipoDiscapacidad">
-                    <b class="text-danger">*</b> 30. Tipo Discapacidad:
-                  </label>
-                  <select [(ngModel)]="informacionEstudiante.tipo_discapacidad" class="form-control"
-                          id="tipoDiscapacidad" name="tipoDiscapacidad"
-                          [required]="informacionEstudiante.tiene_discapacidad=='1'"
-                          [disabled]="informacionEstudiante.tiene_discapacidad!='1'"
-                          [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.tipo_discapacidad==0,
-                           'backgroundTextFieldSuccess':informacionEstudiante.tipo_discapacidad!=0 }"
-                          (change)="updateEstudiante()">
-                    <option value="0" selected>SELECCIONE...</option>
-                    <option value="{{tipoDiscapacidad.codigo}}" *ngFor="let tipoDiscapacidad of tiposDiscapacidad">
-                      {{tipoDiscapacidad.descripcion}}
-                    </option>
-                  </select>
-                </div>
-              </td>
-            </tr>
-          </table>
+            </div>
         </div>
-      </div>
-    </form>
-  </div>
+        <table class="table table-responsive table-hover">
+            <thead class="table-default text-center">
+            <th width="15%">
+                Identificación
+            </th>
+            <th width="25%">
+                Usuario
+            </th>
+            <th width="25%">
+                Correo Institucional
+            </th>
+            <th width="15%">
+                Perfil
+            </th>
+            <th width="15%">
+                Estado
+            </th>
+            <th width="5%">
+                <button type="button" class="btn btn-success ml-1 btn-sm" title="Añadir nuevo Usuario"
+                        (click)="openUsuario(contentUsuario,null)">
+                <span class="{{messages['buttonAdd']['icon']}}">
+                  {{messages['buttonAdd']['text']}}
+                </span>
+                </button>
+            </th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let usuario of usuarios">
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="usuario.user_name" class="form-control">-->
+                    {{usuario.user_name}}
+                </td>
+                <td>
+                    <!--                    <input type="text" [(ngModel)]="usuario.name" class="form-control">-->
+                    {{usuario.name}}
+                </td>
+                <td>
+                    <!--                    <input type="email" [(ngModel)]="usuario.email" class="form-control">-->
+                    {{usuario.email}}
+                </td>
+                <td class="text-center">
+                    <select name="rol" id="rol" [(ngModel)]="usuario.role.id" class="form-control-sm"
+                            (change)="updateUsuario(usuario)">
+                        <option value="{{rol.id}}" *ngFor="let rol of roles">{{rol.descripcion}}</option>
+                    </select>
+                </td>
+                <td class="text-center">
+                    <select name="estado" id="estado" [(ngModel)]="usuario.estado"
+                            [ngClass]="{'bg-danger text-white': usuario.estado=='INACTIVO'}"
+                            class="form-control-sm"
+                            (change)="updateUsuario(usuario)">
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="btn btn-warning ml-1 btn-sm text-white" (click)="openUsuario(contentUsuario,usuario)"
+                            title="Actualizar">
+                        <span class="{{messages['buttonUpdate']['icon']}}"></span>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!--Paginacion-->
+        <div class="row">
+            <div class="col-lg-6">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)" tabindex="-1"
+                               (click)="firstPagina()">First</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                               (click)="paginacion(false)">Previous</a>
+                        </li>
+                        <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                            *ngFor="let page of total_pages_pagination"
+                            (click)="getUsuarios(page)">
+                            <a class="page-link" href="javascript:void(0)">{{page}}</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                               (click)="lastPagina()">Last</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </div>
 </div>
 
-<div class="row mt-3" *ngIf="estadoDatos!=''">
-  <div class="col-lg-12">
-    <span class="fa fa-save btn btn-link"> {{estadoDatos}}</span>
-  </div>
-</div>
+<ng-template #contentUsuario let-c="close" let-d="dismiss">
+    <form name="cupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Usuario</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Identificacion-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="identificacion">
+                        <b class="text-danger">*</b> Identificación:
+                    </label>
+                    <input id="identificacion" name="identificacion" type="text"
+                           [(ngModel)]="usuarioSeleccionado.user_name"
+                           class="text-uppercase form-control" required>
+                </div>
+            </div>
+            <!--Nombre-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="nombre">
+                        <b class="text-danger">*</b> Apellido y Nombre:
+                    </label>
+                    <input id="nombre" name="nombre" type="text" [(ngModel)]="usuarioSeleccionado.name"
+                           class="text-uppercase form-control" placeholder="Pérez Juan" required>
+                </div>
+            </div>
+
+            <!--Correo-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="nombre">
+                        <b class="text-danger">*</b> Correo Electrónico Institucional:
+                    </label>
+                    <input id="correo" name="correo" type="email" [(ngModel)]="usuarioSeleccionado.email"
+                           class="text-lowercase form-control" required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="perfil">
+                        <b class="text-danger">*</b> Perfil:
+                    </label>
+                    <select name="perfil" id="perfil" [(ngModel)]="usuarioSeleccionado.role.id" class="form-control"
+                            required>
+                        <option value="{{rol.id}}" *ngFor="let rol of roles">{{rol.descripcion}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="perfil">
+                        <b class="text-danger">*</b> Estado:
+                    </label>
+                    <select name="estadoEdit" id="estadoEdit" [(ngModel)]="usuarioSeleccionado.estado"
+                            [ngClass]="{'bg-danger text-white': usuarioSeleccionado.estado=='INACTIVO'}"
+                            class="form-control" required>
+                        <option value="ACTIVO">ACTIVO</option>
+                        <option value="INACTIVO">INACTIVO</option>
+                    </select>
+                </div>
+            </div>
+            <!--Carreras-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label>
+                        Carreras:
+                    </label>
+                    <div *ngFor="let carrera of carreras">
+                        <input id="{{carrera.id}}" name="{{carrera.id}}" type="checkbox" class="text-uppercase"
+                               (click)="seleccionarCarrera(carrera)" [(ngModel)]="carrera.seleccionada">
+                        <label for="{{carrera.id}}"> {{carrera.descripcion}}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>

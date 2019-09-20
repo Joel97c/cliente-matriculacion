@@ -1,17 +1,20 @@
 import {Injectable} from '@angular/core';
 import {Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
 import {User} from '../../layout/matriculacion/modelos/user.model';
+import {ServiceService} from '../../layout/matriculacion/service.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
     user: User;
+    userAux: User;
 
-    constructor(private router: Router) {
-
+    constructor(private router: Router, private service: ServiceService) {
+        this.user = JSON.parse(localStorage.getItem('user')) as User;
+        this.userAux = new User();
     }
 
     canActivate(route: ActivatedRouteSnapshot) {
-        this.user = JSON.parse(localStorage.getItem('user')) as User;
+        this.getUsuario();
         if (localStorage.getItem('isLoggedin') === 'true') {
             switch (route['_routerState']['url']) {
                 case '/dashboard-matricula':
@@ -65,5 +68,15 @@ export class AuthGuard implements CanActivate {
             this.router.navigate(['/login']);
             return false;
         }
+    }
+
+    getUsuario() {
+        this.service.get('usuarios/login?email=' + this.user.email).subscribe(response => {
+            this.userAux = response['usuario'];
+            if (this.userAux.role.id !== this.user.role.id || this.userAux.estado === 'INACTIVO') {
+                this.router.navigate(['/login']);
+                return false;
+            }
+        });
     }
 }

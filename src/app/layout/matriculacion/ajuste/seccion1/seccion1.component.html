@@ -26,21 +26,22 @@
                     </button>
                 </th>
             </tr>
-            <tr *ngFor="let periodo of periodosLectivos" [ngClass]="{'bg-primary text-white': periodo.estado=='ACTUAL'}">
+            <tr *ngFor="let periodo of periodosLectivos"
+                [ngClass]="{'bg-primary text-white': periodo.estado=='ACTUAL'}">
                 <td>
-<!--                    <input type="text" [(ngModel)]="periodo.codigo" class="form-control">-->
+                    <!--                    <input type="text" [(ngModel)]="periodo.codigo" class="form-control">-->
                     {{periodo.codigo}}
                 </td>
                 <td>
-<!--                    <input type="text" [(ngModel)]="periodo.nombre" class="form-control">-->
+                    <!--                    <input type="text" [(ngModel)]="periodo.nombre" class="form-control">-->
                     {{periodo.nombre}}
                 </td>
                 <td>
-<!--                    <input type="text" [(ngModel)]="periodo.fecha_inicio_periodo" class="form-control">-->
+                    <!--                    <input type="text" [(ngModel)]="periodo.fecha_inicio_periodo" class="form-control">-->
                     {{periodo.fecha_inicio_periodo}}
                 </td>
                 <td>
-<!--                    <input type="text" [(ngModel)]="periodo.fecha_fin_periodo" class="form-control">-->
+                    <!--                    <input type="text" [(ngModel)]="periodo.fecha_fin_periodo" class="form-control">-->
                     {{periodo.fecha_fin_periodo}}
                 </td>
                 <td>
@@ -51,7 +52,7 @@
                     <button *ngIf="periodo.estado!='ACTUAL'"
                             (click)="activatePeriodoLectivo(periodo)"
                             class="btn btn-primary ml-1 btn-sm" title="Abrir Periodo Lectivo">
-                        <span class="{{messages['buttonActivatePeriodo']['icon']}}"></span>
+                        <span class="{{messages['buttonActivatePeriodo']['icon']}}"> Abrir</span>
                     </button>
                     <button class="btn btn-warning ml-1 btn-sm text-white"
                             (click)="openPeriodoLectivo(contentPeriodoLectivo,periodo)"
@@ -62,7 +63,7 @@
                     <button class="btn btn-danger ml-1 btn-sm"
                             (click)="closePeriodoLectivo(periodo)"
                             *ngIf="periodo.estado=='ACTUAL'" title="Cerrar Periodo Lectivo">
-                        <span class="{{messages['buttonClosePeriodo']['icon']}}"></span>
+                        <span class="{{messages['buttonClosePeriodo']['icon']}}"> Cerrar</span>
                     </button>
                     <button class="btn btn-danger ml-1 btn-sm"
                             (click)="closePeriodoLectivo(periodo)"
