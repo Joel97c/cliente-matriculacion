@@ -9,12 +9,13 @@ export class AuthGuard implements CanActivate {
     userAux: User;
 
     constructor(private router: Router, private service: ServiceService) {
-        this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.userAux = new User();
     }
 
     canActivate(route: ActivatedRouteSnapshot) {
+        this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.getUsuario();
+        console.log(route['_routerState']['url']);
         if (localStorage.getItem('isLoggedin') === 'true') {
             switch (route['_routerState']['url']) {
                 case '/dashboard-matricula':
@@ -71,12 +72,20 @@ export class AuthGuard implements CanActivate {
     }
 
     getUsuario() {
-        this.service.get('usuarios/login?email=' + this.user.email).subscribe(response => {
-            this.userAux = response['usuario'];
-            if (this.userAux.role.id !== this.user.role.id || this.userAux.estado === 'INACTIVO') {
-                this.router.navigate(['/login']);
-                return false;
-            }
-        });
+        if (this.user != null) {
+            this.service.get('usuarios/login?email=' + this.user.email).subscribe(response => {
+                this.userAux = response['usuario'];
+                console.log(this.userAux);
+                console.log('-----------------');
+                console.log(this.user);
+                if (this.userAux.role.id !== this.user.role.id || this.userAux.estado === 'INACTIVO') {
+                    this.router.navigate(['/login']);
+                    return false;
+                }
+            });
+        } else {
+            this.router.navigate(['/login']);
+            return false;
+        }
     }
 }

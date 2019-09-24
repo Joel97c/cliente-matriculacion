@@ -8,7 +8,6 @@ const routes: Routes = [
         path: '',
         component: LayoutComponent,
         children: [
-            {path: '', redirectTo: 'dashboard', pathMatch: 'prefix'},
             {
                 path: 'dashboard-matricula',
                 loadChildren: () =>
@@ -38,6 +37,11 @@ const routes: Routes = [
             {
                 path: 'ajustes',
                 loadChildren: () => import('./matriculacion/ajuste/ajuste.module').then(m => m.AjusteModule),
+                canActivate: [AuthGuard]
+            },
+            {
+                path: 'usuarios',
+                loadChildren: () => import('./matriculacion/usuario/usuario.module').then(m => m.UsuarioModule),
                 canActivate: [AuthGuard]
             },
         ]

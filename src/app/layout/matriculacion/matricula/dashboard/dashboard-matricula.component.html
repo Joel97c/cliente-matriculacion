@@ -1,0 +1,524 @@
+<!--Encabezado-->
+<div class="row">
+    <div class="col-lg-2">
+        <h5 class="text-muted">MATRÍCULAS</h5>
+    </div>
+    <!--    <div class="col-lg-2">-->
+    <!--        <button type="button" [className]="classContadorMatriculados" (click)="getMatriculadosCount()">-->
+    <!--            <i class="fa fa-refresh"></i>-->
+    <!--        </button>-->
+    <!--    </div>-->
+</div>
+<hr>
+<!--Titulo Institutos-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1> INSTITUTOS: <span class="">{{total_matriculados_institutos}}</span></h1>
+
+    </div>
+</div>
+<hr>
+<!--Resumen Institutos-->
+<div>
+    <div class="row">
+        <div class="col-xl-4" *ngFor="let matricula of total_matriculados_institutos_count">
+            <div class="card">
+                <div style="height: 150px;">
+                    <div class="card-header bg-white h-100 text-center">
+                        <img src="{{'assets/images/logo_instituto_'+matricula.instituto_id +'.png'}}" alt=""
+                             class="img-thumbnail">
+                        <h6 class="text-muted">{{matricula.instituto}}</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <button [className]="classContadorMatriculados">
+                                Matriculados: {{matricula.total_matriculados}}
+                            </button>
+                            <button [className]="classContadorAnulados">
+                                Retirados: {{matricula.total_anulados}}
+                            </button>
+                            <button [className]="classContadorDesertores">
+                                Desertores: {{matricula.total_desertores}}
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+</div>
+
+<!--Titulo Carreras-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1>CARRERAS:</h1>
+    </div>
+</div>
+<hr>
+<!--Resumen Carreras-->
+<div class="row">
+    <div class="col-xl-4" *ngFor="let matricula of total_matriculados_carreras_count">
+        <div class="card">
+            <div style="height: 250px;">
+                <div class="card-header bg-white h-100 text-center"
+                     [ngClass]="{'bg-warning':matricula.malla=='MALLA ANTIGUA'}">
+                    <img src="{{'assets/images/logo_carrera_'+matricula.carrera_id +'.jpg'}}" alt=""
+                         class="img-thumbnail">
+                    <h6 class="text-muted">{{matricula.malla}}</h6>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <button [className]="classContadorMatriculados">
+                                Matriculados: {{matricula.total_matriculados}}
+                            </button>
+                            <button [className]="classContadorAnulados">
+                                Retirados: {{matricula.total_anulados}}
+                            </button>
+                            <button [className]="classContadorDesertores">
+                                Desertores: {{matricula.total_desertores}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!--Primero Semestre-->
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h1>PRIMERO</h1>
+                    </div>
+                </div>
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_1}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_1}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_1}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_1}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_1}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_1}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_1}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_1}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_1}}
+                        </button>
+                    </div>
+                </div>
+                <!--Segundo Semestre-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12  text-center">
+                        <h2>SEGUNDO</h2>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_2}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_2}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_2}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_2}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_2}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_2}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_2}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_2}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_2}}
+                        </button>
+                    </div>
+                </div>
+                <!--Tercero Semestre-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12  text-center">
+                        <h3>TERCERO</h3>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-12 ">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_3}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_3}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_3}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_3}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_3}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_3}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_3}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_3}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_3}}
+                        </button>
+                    </div>
+                </div>
+                <!--Cuarto Semestre-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <h4>CUARTO</h4>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-12 ">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_4}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_4}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_4}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_4}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_4}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_4}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_4}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_4}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_4}}
+                        </button>
+                    </div>
+                </div>
+                <!--Quinto Semestre-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12  text-center">
+                        <h5>QUINTO</h5>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-12 ">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_5}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_5}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_5}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_5}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_5}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_5}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_5}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_5}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_5}}
+                        </button>
+                    </div>
+                </div>
+                <!--Sexto Semestre-->
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12  text-center">
+                        <h6>SEXTO</h6>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-lg-12 ">
+                        <button [className]="classContadorMatriculados">
+                            Matriculados: {{matricula.matriculados_6}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>MATUTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_matutina_a_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_matutina_b_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_matutina_c_6}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>VESPERTINA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_vespertina_a_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_vespertina_b_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_vespertina_c_6}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12 ">
+                        <b>NOCTURNA:</b>
+                        <button [className]="classContadorParalelos">
+                            A: {{matricula.matriculados_nocturna_a_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            B: {{matricula.matriculados_nocturna_b_6}}
+                        </button>
+                        <button [className]="classContadorParalelos">
+                            C: {{matricula.matriculados_nocturna_c_6}}
+                        </button>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <button [className]="classContadorAprobados">
+                            Aprobados: {{matricula.aprobados_6}}
+                        </button>
+                        <button [className]="classContadorEnProceso">
+                            En Proceso: {{matricula.en_proceso_6}}
+                        </button>
+                        <button [className]="classContadorAnulados">
+                            Retirados: {{matricula.anulados_6}}
+                        </button>
+                        <button [className]="classContadorDesertores">
+                            Desertores: {{matricula.desertores_6}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <hr>
+    </div>
+</div>

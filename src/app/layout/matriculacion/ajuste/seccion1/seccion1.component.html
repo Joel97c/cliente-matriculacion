@@ -49,7 +49,7 @@
                        [ngClass]="{'text-white':periodo.estado=='ACTUAL'}">{{periodo.estado}}</b>
                 </td>
                 <td>
-                    <button *ngIf="periodo.estado!='ACTUAL'"
+                    <button *ngIf="periodo.estado=='ACTIVO'"
                             (click)="activatePeriodoLectivo(periodo)"
                             class="btn btn-primary ml-1 btn-sm" title="Abrir Periodo Lectivo">
                         <span class="{{messages['buttonActivatePeriodo']['icon']}}"> Abrir</span>
@@ -148,15 +148,13 @@
                     <select name="codigo" id="codigo" [(ngModel)]="periodoLectivoSeleccionado.codigo"
                             class="form-control">
                         <option value="">SELECCIONE...</option>
-                        <option *ngIf="periodoLectivoSeleccionado.codigo!=''"
+                        <option *ngIf="periodoLectivoSeleccionado.fecha_inicio_periodo!=null"
                                 value="{{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0,4)+'-1'}}">
                             {{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4) + '-1'}}
                         </option>
-                        <option *ngIf="periodoLectivoSeleccionado.codigo!=''"
+                        <option *ngIf="periodoLectivoSeleccionado.fecha_inicio_periodo!=null"
                                 value="{{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0,4)+'-2'}}">
                             {{periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4) + '-2'}}
-                        <option value="1" *ngIf="periodoLectivoSeleccionado.codigo==''">1</option>
-                        <option value="2" *ngIf="periodoLectivoSeleccionado.codigo==''">2</option>
                     </select>
                 </div>
             </div>

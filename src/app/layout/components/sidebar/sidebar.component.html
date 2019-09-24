@@ -37,6 +37,11 @@
             <i class="fa fa-fw fa-wrench"></i>&nbsp;
             <span>{{ 'Settings' | translate }}</span>
         </a>
+        <a [routerLink]="['/usuarios']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='4'">
+            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <span>{{ 'Users' | translate }}</span>
+        </a>
 
 
 

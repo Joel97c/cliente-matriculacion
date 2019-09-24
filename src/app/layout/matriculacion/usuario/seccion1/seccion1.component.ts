@@ -1,23 +1,23 @@
 import {Component, OnInit} from '@angular/core';
 import {ServiceService} from '../../service.service';
-import {catalogos} from '../../../../../environments/catalogos';
 import {NgxSpinnerService} from 'ngx-spinner';
-import {PeriodoLectivo} from '../../modelos/periodo-lectivo.model';
 import swal from 'sweetalert2';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {User} from '../../modelos/user.model';
 import {Rol} from '../../modelos/rol.model';
 import {Carrera} from '../../modelos/carrera.model';
+import {catalogos} from '../../../../../environments/catalogos';
 
 @Component({
-    selector: 'app-seccion2',
-    templateUrl: './seccion2.component.html',
-    styleUrls: ['./seccion2.component.scss']
+    selector: 'app-seccion1',
+    templateUrl: './seccion1.component.html',
+    styleUrls: ['./seccion1.component.scss']
 })
-export class Seccion2Component implements OnInit {
+export class Seccion1Component implements OnInit {
     constructor(private spinner: NgxSpinnerService, private service: ServiceService, private modalService: NgbModal) {
     }
 
+    flagSeleccionaTodasCarreras: boolean;
     buscador: string;
     carrera: Carrera;
     carreras: Array<Carrera>;
@@ -238,21 +238,37 @@ export class Seccion2Component implements OnInit {
     }
 
     seleccionarCarrera(carrera: Carrera) {
-        carrera.seleccionada = !carrera.seleccionada;
         let indiceCarrera = -1;
         let i = 0;
-        this.usuarioSeleccionado.carreras.forEach(value => {
-            if (value.id === carrera.id) {
-                indiceCarrera = i;
+        if (carrera == null) {
+            this.usuarioSeleccionado.carreras.splice(0, this.usuarioSeleccionado.carreras.length);
+            if (!this.flagSeleccionaTodasCarreras) {
+                this.carreras.forEach(value => {
+                    this.usuarioSeleccionado.carreras.push(value);
+                    value.seleccionada = true;
+                    i++;
+                });
+            } else {
+                this.carreras.forEach(value => {
+                    value.seleccionada = false;
+                    i++;
+                });
             }
-            i++;
-        });
-        if (indiceCarrera === -1) {
-            this.usuarioSeleccionado.carreras.push(carrera);
         } else {
-            this.usuarioSeleccionado.carreras.splice(indiceCarrera, 1);
-        }
+            carrera.seleccionada = !carrera.seleccionada;
 
+            this.usuarioSeleccionado.carreras.forEach(value => {
+                if (value.id === carrera.id) {
+                    indiceCarrera = i;
+                }
+                i++;
+            });
+            if (indiceCarrera === -1) {
+                this.usuarioSeleccionado.carreras.push(carrera);
+            } else {
+                this.usuarioSeleccionado.carreras.splice(indiceCarrera, 1);
+            }
+        }
         console.log(this.usuarioSeleccionado.carreras);
     }
 

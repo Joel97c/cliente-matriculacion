@@ -140,7 +140,6 @@
                            class="text-uppercase form-control" placeholder="Pérez Juan" required>
                 </div>
             </div>
-
             <!--Correo-->
             <div class="form-group row">
                 <div class="col-lg-12">
@@ -181,10 +180,14 @@
                     <label>
                         Carreras:
                     </label>
+                    <br>
+                    <input id="carreras" name="carreras" type="checkbox" class="text-uppercase"
+                           [(ngModel)]="flagSeleccionaTodasCarreras" (click)="seleccionarCarrera(null)">
+                    <label for="carreras" class="btn"> TODAS</label>
                     <div *ngFor="let carrera of carreras">
                         <input id="{{carrera.id}}" name="{{carrera.id}}" type="checkbox" class="text-uppercase"
                                (click)="seleccionarCarrera(carrera)" [(ngModel)]="carrera.seleccionada">
-                        <label for="{{carrera.id}}"> {{carrera.descripcion}}</label>
+                        <label for="{{carrera.id}}" class="btn"> {{carrera.descripcion}}</label>
                     </div>
                 </div>
             </div>
