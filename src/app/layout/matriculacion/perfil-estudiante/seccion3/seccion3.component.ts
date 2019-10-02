@@ -135,7 +135,7 @@ export class Seccion3Component implements OnInit {
   }
 
   validarPracticas() {
-    this.informacionEstudiante.horas_practicas = '';
+    this.informacionEstudiante.horas_practicas = 0;
     if (this.informacionEstudiante.ha_realizado_practicas === '1') {
       this.informacionEstudiante.tipo_institucion_practicas = '0';
       this.informacionEstudiante.sector_economico_practica = '0';

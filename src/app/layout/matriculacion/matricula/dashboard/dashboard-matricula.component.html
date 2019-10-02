@@ -11,7 +11,7 @@
             Periodo Lectivo:
             </span>
                 <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
-                        class="form-control" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
+                        class="form-control" *ngIf="user.role.rol=='4' || user.role.rol=='3' || user.role.rol=='1'"
                         (change)="cambiarPeriodoLectivoActual()">
                     <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                             *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>

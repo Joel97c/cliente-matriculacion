@@ -262,8 +262,8 @@
                           [required]="informacionEstudiante.ocupacion=='2'"
                           [disabled]="informacionEstudiante.ocupacion!= '2'"
                           [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.area_trabajo_empresa==null
-                        ||informacionEstudiante.area_trabajo_empresa==''
-                         ,'backgroundTextFieldSuccess':informacionEstudiante.area_trabajo_empresa!=''}"
+                        ||informacionEstudiante.area_trabajo_empresa=='0'
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.area_trabajo_empresa!='0'}"
                           (change)="updateEstudiante()">
                     <option value="0" selected>SELECCIONE...</option>
                     <option value="{{destinoIngreso.codigo}}" *ngFor="let destinoIngreso of destinosIngreso">
@@ -333,8 +333,8 @@
                        id="ingresoFamiliar" name="ingresoFamiliar" placeholder="Total de ingresos familiares"
                        required
                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.ingreso_familiar==null
-                        ||informacionEstudiante.ingreso_familiar==''
-                         ,'backgroundTextFieldSuccess':informacionEstudiante.ingreso_familiar!=''}"
+                        ||informacionEstudiante.ingreso_familiar==0
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.ingreso_familiar!=0}"
                        (focusout)="updateEstudiante()">
               </td>
             </tr>
@@ -347,8 +347,8 @@
                        class="form-control" required id="numeroMiembrosHogar" name="numeroMiembrosHogar"
                        placeholder="Total de ingresos familiares"
                        [ngClass]="{'backgroundTextFieldWarning':informacionEstudiante.numero_miembros_hogar==null
-                        ||informacionEstudiante.numero_miembros_hogar==''
-                         ,'backgroundTextFieldSuccess':informacionEstudiante.numero_miembros_hogar!=''}"
+                        ||informacionEstudiante.numero_miembros_hogar==0
+                         ,'backgroundTextFieldSuccess':informacionEstudiante.numero_miembros_hogar!=0}"
                        (focusout)="updateEstudiante()">
               </td>
             </tr>

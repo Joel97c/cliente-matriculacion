@@ -20,11 +20,11 @@ export class InformacionEstudiante {
   ha_realizado_vinculacion: string;
   ha_repetido_asignatura: string;
   habla_idioma_ancestral: string;
-  horas_practicas: string;
-  horas_vinculacion: string;
+  horas_practicas: number;
+  horas_vinculacion: number;
   id?: number;
   idioma_ancestral: string;
-  ingreso_familiar: string;
+  ingreso_familiar: number;
   matricula: Matricula;
   monto_ayuda_economica: number;
   monto_beca: number;
@@ -33,7 +33,7 @@ export class InformacionEstudiante {
   nivel_formacion_padre: string;
   nombre_empresa_labora: string;
   numero_carnet_conadis: string;
-  numero_miembros_hogar: string;
+  numero_miembros_hogar: number;
   ocupacion: string;
   pension_diferenciada: string;
   porcentaje_discapacidad: number;
