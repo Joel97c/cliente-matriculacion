@@ -34,7 +34,7 @@ export class MatriculaComponent implements OnInit {
     p: PeriodoLectivo;
     txtPeridoActualHistorico: string;
     buscadorEstudianteGeneral: string;
-    public periodosLectivos: Array<PeriodoLectivo>;
+    periodosLectivos: Array<PeriodoLectivo>;
     archivoTemp: any;
     notificacion: Notificacion;
     doc: any;
@@ -80,7 +80,8 @@ export class MatriculaComponent implements OnInit {
     rutaActual: string;
     user: User;
 
-    constructor(private spinner: NgxSpinnerService, private service: ServiceService, private router: Router, private modalService: NgbModal) {
+    constructor(private spinner: NgxSpinnerService, private service: ServiceService, private router: Router,
+                private modalService: NgbModal) {
     }
 
     ngOnInit() {

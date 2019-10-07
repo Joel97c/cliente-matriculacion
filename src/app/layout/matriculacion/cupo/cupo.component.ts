@@ -27,6 +27,9 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    txtPeridoActualHistorico: string;
+    periodoLectivoSeleccionado: PeriodoLectivo;
+    periodoLectivos: Array<PeriodoLectivo>;
     notificacion: Notificacion;
     erroresCargaCupos: Array<any>;
     urlExportCuposPeriodoAcademico: string;
@@ -62,7 +65,7 @@ export class CupoComponent implements OnInit {
     periodoAcademico: string;
     periodoLectivo: string;
     periodoLectivoActual: PeriodoLectivo;
-    periodoLectivos: Array<PeriodoLectivo>;
+    periodosLectivos: Array<PeriodoLectivo>;
     matriculados: Array<any>;
     matriculas: Array<Matricula>;
     carreras: Array<Carrera>;
@@ -71,11 +74,14 @@ export class CupoComponent implements OnInit {
     user: User;
     carrerasTemp: any;
 
-    constructor(private spinner: NgxSpinnerService, private service: ServiceService, private router: Router, private modalService: NgbModal) {
+    constructor(private spinner: NgxSpinnerService, private service: ServiceService, private router: Router,
+                private modalService: NgbModal) {
 
     }
 
     ngOnInit() {
+        this.periodoLectivoSeleccionado = new PeriodoLectivo();
+        this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.buscador = '';
         this.notificacion = new Notificacion();
@@ -99,6 +105,9 @@ export class CupoComponent implements OnInit {
         this.periodoAcademico = '';
         this.periodoLectivo = '';
         this.messages = catalogos.messages;
+        this.getPeriodoLectivoActual();
+        this.getPeriodoLectivos();
+        this.getPeriodosLectivos();
         this.getCarreras();
         this.getPeriodoAcademicos();
         this.getPeriodoLectivoActual();
@@ -246,6 +255,7 @@ export class CupoComponent implements OnInit {
             + '&apellido2=' + this.buscador
             + '&nombre1=' + this.buscador
             + '&nombre2=' + this.buscador
+            + '&periodo_lectivo_id=' + this.periodoLectivoActual.id
             + '&carrera_id=' + this.carrera.id;
         this.spinner.show();
         this.service.get('matriculas/cupo' + parametros).subscribe(
@@ -333,7 +343,12 @@ export class CupoComponent implements OnInit {
     getPeriodoLectivoActual() {
         this.service.get('periodo_lectivos/actual').subscribe(
             response => {
-                this.periodoLectivoActual = response['periodo_lectivo_actual'];
+                if (response['periodo_lectivo_actual'] == null) {
+                    this.periodoLectivoActual = new PeriodoLectivo();
+                } else {
+                    this.periodoLectivoActual = response['periodo_lectivo_actual'];
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                }
             },
             error => {
 
@@ -511,12 +526,13 @@ export class CupoComponent implements OnInit {
                         swal.fire(this.messages['updateSuccess']);
                     },
                     error => {
-                        this.spinner.hide();
                         if (error.error.errorInfo[0] === '23505') {
                             swal.fire(this.messages['error23505']);
                         } else {
                             swal.fire(this.messages['error500']);
                         }
+                        this.getDetalleMatricula(this.matriculaSeleccionada);
+                        this.spinner.hide();
                     });
         } else {
             if (!(razonModificarAsignatura === undefined)) {
@@ -759,5 +775,36 @@ export class CupoComponent implements OnInit {
 
                     alert('error al enviar correo');
                 });
+    }
+
+    getPeriodosLectivos() {
+        this.spinner.show();
+        this.service.get('periodo_lectivos/historicos').subscribe(
+            response => {
+                this.periodosLectivos = response['periodos_lectivos_historicos'];
+                this.periodosLectivos.forEach(value => {
+                    if (value.estado == 'ACTUAL') {
+                        this.periodoLectivoSeleccionado = value;
+                    }
+                });
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+            });
+    }
+
+    cambiarPeriodoLectivoActual() {
+        this.periodosLectivos.forEach(value => {
+            if (value.id == this.periodoLectivoActual.id) {
+                this.periodoLectivoSeleccionado = value;
+                if (value.estado != 'ACTUAL') {
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
+                } else {
+                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                }
+                this.getCupos(1);
+            }
+        });
     }
 }

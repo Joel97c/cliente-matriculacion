@@ -49,7 +49,7 @@ export class AuthGuard implements CanActivate {
                     }
                     break;
                 case '/usuarios':
-                    if (this.user.role.rol === '4') {
+                    if (this.user.role.rol === '5') {
                         return true;
                     }
                     break;

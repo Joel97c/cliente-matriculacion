@@ -14,9 +14,11 @@ import {catalogos} from '../../../../../environments/catalogos';
     styleUrls: ['./seccion1.component.scss']
 })
 export class Seccion1Component implements OnInit {
+
     constructor(private spinner: NgxSpinnerService, private service: ServiceService, private modalService: NgbModal) {
     }
 
+    textoPrueba: string;
     flagSeleccionaTodasCarreras: boolean;
     buscador: string;
     carrera: Carrera;
@@ -35,6 +37,7 @@ export class Seccion1Component implements OnInit {
     flagPagination: boolean;
 
     ngOnInit() {
+        this.textoPrueba = 'hola mundo';
         this.carrerasSeleccionadas = new Array<Carrera>();
         this.flagPagination = true;
         this.total_pages_pagination = new Array<any>();
@@ -65,7 +68,8 @@ export class Seccion1Component implements OnInit {
             },
             error => {
                 this.spinner.hide();
-            });
+            }
+        );
     }
 
     getUsuario() {

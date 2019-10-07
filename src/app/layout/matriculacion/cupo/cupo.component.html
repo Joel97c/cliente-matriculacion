@@ -1,8 +1,14 @@
-<div class="row mt-3" *ngIf="!flagAsignaturasCupo">
-    <div class="col-lg-2 col-xs-12">
-        <h5 class="text-muted">CARGA DE CUPOS:</h5>
+<div class="row">
+    <div class="col-lg-12">
+        <h4 class="text-muted">
+            CARGA DE CUPOS:
+            <b [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL','text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}">
+                {{txtPeridoActualHistorico}} : {{periodoLectivoSeleccionado.nombre}}</b>
+        </h4>
     </div>
-    <div class="col-lg-7 col-xs-12">
+</div>
+<div class="row mt-3" *ngIf="!flagAsignaturasCupo">
+    <div class="col-lg-5 col-xs-12">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="basic-addon-carrera">Carrera:</span>
@@ -25,9 +31,26 @@
                         id="periodoAcademico" name="periodoAcademico" required
                         (change)="getCupos(1)">
                     <option value="" selected>TODOS</option>
-                    <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos" class="small">
+                    <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos"
+                            class="small">
                         {{periodoAcademico.nombre}}
                     </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <!--    Combo periodo lectivo-->
+    <div class="col-lg-4 col-xs-12">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon-periodo-historico">
+            Periodo Lectivo:
+            </span>
+                <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
+                        class="form-control" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
+                        (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
+                    <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                            *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
                 </select>
             </div>
         </div>
@@ -49,54 +72,79 @@
     </div>
     <div class="col-lg-8 col-xs-12 mt-1" *ngIf="carrera.id!=0">
         <div class="row">
-            <div class="col-lg-12">
-                <div class=" pull-right">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-info m-1 btn-sm" (click)="exportCuposCarrera()"
-                                title="Descargar todos los Cupos de la carrera" *ngIf="carrera.id!=0">
-                            <span class="fa fa-download"> Descargar cupos por carrera</span>
-                        </button>
-                        <button type="button" class="btn btn-info m-1 btn-sm" (click)="exportCuposPeriodo()"
-                                title="Descargar todos los cupos del periodo académico">
-                            <span class="fa fa-download"> Descargar cupos</span>
-
-                        </button>
-                        <!--            <button type="button" class="btn btn-primary m-1 btn-sm" (click)="validateCuposCarrera()"-->
-                        <!--                    title="Aprobar todos los cupos de la carrera"-->
-                        <!--                    *ngIf="carrera.id!=0">-->
-                        <!--              <span class="fa fa-check"> </span>-->
-                        <!--              Aprobar cupos por carrera-->
-                        <!--            </button>-->
-                        <button type="button" class="btn btn-primary m-1 btn-sm" (click)="validateCuposPeriodoAcademico()"
-                                *ngIf="false" title="Aprobar todos los cupos del periodo académico">
-                            <span class="fa fa-check"> Aprobar cupos</span>
-                        </button>
-                    </div>
-                    <!--          <div class="btn-group" role="group" aria-label="Basic example">-->
-                    <!--            <button type="button" class="btn btn-danger m-1 btn-sm" (click)="deleteCuposCarrera()"-->
-                    <!--                    title="Eliminar todos los cupos de la carrera">-->
-                    <!--              <span class="fa fa-trash"> </span>-->
-                    <!--              Eliminar cupos por carrera-->
-                    <!--            </button>-->
-                    <button type="button" class="btn btn-danger m-1 btn-sm" (click)="deleteCuposPeriodoAcademico()"
-                            title="Eliminar todos los cupos del periodo académico" *ngIf="false">
-                        <span class="fa fa-trash"> Eliminar cupos</span>
-
-                    </button>
-                    <label for="file-upload" class="btn btn-success fa fa-upload  m-1 btn-sm" title="Subir archivo de cupos"
-                           *ngIf="false">
-                        Seleccionar archivo
-                    </label>
-                    <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp" name="fileExcel"
-                           (change)="uploadCupos($event)"
-                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    <a class="fa fa-download btn btn-success m-1 btn-sm" href="assets/formats/archivo_carga_cupos.xlsx"
-                       target="_blank"
-                       title="Formato para carga de cupos">
-                        Descargar formato cupos
-                    </a>
-                </div>
-                <!--        </div>-->
+            <div class="col-lg-12 pull-right">
+                <table class="table table-sm">
+                    <tbody>
+                    <tr>
+                        <td *ngIf="carrera.id!=0">
+                            <button type="button" class="btn btn-info m-1 btn-sm form-control-sm"
+                                    (click)="exportCuposCarrera()"
+                                    title="Descargar todos los Cupos de la carrera">
+                                <span class="fa fa-download"> Cupos por carrera</span>
+                            </button>
+                        </td>
+                        <td *ngIf="carrera.id!=0">
+                            <button type="button" class="btn btn-danger m-1 btn-sm form-control-sm"
+                                    (click)="deleteCuposCarrera()"
+                                    title="Eliminar todos los cupos de la carrera"
+                                    *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                                <span class="fa fa-trash"> Cupos por carrera</span>
+                            </button>
+                        </td>
+                        <td *ngIf="carrera.id!=0 && periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            <button type="button" class="btn btn-warning m-1 btn-sm form-control-sm"
+                                    (click)="validateCuposPeriodoAcademico()"
+                                    title="Aprobar todos los cupos del periodo académico">
+                                <span class="fa fa-check"> Aprobar cupos por periodo</span>
+                            </button>
+                        </td>
+                        <td *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            <label for="file-upload" class="btn btn-success fa fa-upload  m-1 btn-sm form-control-sm"
+                                   title="Subir archivo de cupos"
+                            >
+                                Subir cupos
+                            </label>
+                            <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                                   name="fileExcel"
+                                   (change)="uploadCupos($event)"
+                                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="button" class="btn btn-info m-1 btn-sm form-control-sm"
+                                    (click)="exportCuposPeriodo()"
+                                    title="Descargar todos los cupos del periodo académico">
+                                <span class="fa fa-download"> Cupos por periodo</span>
+                            </button>
+                        </td>
+                        <td *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            <button type="button" class="btn btn-danger m-1 btn-sm form-control-sm"
+                                    (click)="deleteCuposPeriodoAcademico()"
+                                    title="Eliminar todos los cupos del periodo académico"
+                            >
+                                <span class="fa fa-trash"> Cupos por periodo</span>
+                            </button>
+                        </td>
+                        <td *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            <button type="button" class="btn btn-warning m-1 btn-sm form-control-sm"
+                                    (click)="validateCuposCarrera()"
+                                    title="Aprobar todos los cupos de la carrera"
+                            >
+                                <span class="fa fa-check"> Aprobar cupos por carrera</span>
+                            </button>
+                        </td>
+                        <td>
+                            <a class="fa fa-download btn btn-success m-1 btn-sm form-control-sm"
+                               href="assets/formats/archivo_carga_cupos.xlsx"
+                               target="_blank"
+                               title="Formato para carga de cupos">
+                                Formato cupos
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -141,7 +189,8 @@
                             [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')"
                             (change)="updateMatricula(cupo)">
-                        <option value={{periodo.id}} *ngFor="let periodo of peridoAcademicos">{{periodo.nombre}}</option>
+                        <option value={{periodo.id}}
+                                *ngFor="let periodo of peridoAcademicos">{{periodo.nombre}}</option>
                     </select>
                 </td>
                 <td>
@@ -149,7 +198,8 @@
                             class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')"
                             (change)="updateMatricula(cupo)">
-                        <option value={{jornada.codigo}} *ngFor="let jornada of jornadas">{{jornada.descripcion}}</option>
+                        <option value={{jornada.codigo}}
+                                *ngFor="let jornada of jornadas">{{jornada.descripcion}}</option>
                     </select>
                 </td>
                 <td>
@@ -162,13 +212,15 @@
                             *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
                         <span class="{{messages['buttonCheck']['icon']}}"></span>
                     </button>
-                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white" (click)="getDetalleMatricula(cupo)"
+                    <button type="button" class="btn btn-warning ml-1 btn-sm text-white"
+                            (click)="getDetalleMatricula(cupo)"
                             title="Asignaturas" *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
                 <span class="{{messages['buttonUpdate']['icon']}}">
 
                 </span>
                     </button>
-                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteCupo(cupo)" title="Eliminar"
+                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteCupo(cupo)"
+                            title="Eliminar"
                             *ngIf="cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO'">
                         <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>
@@ -205,9 +257,11 @@
                        (click)="firstPagina()">First</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="javascript:void(0)" tabindex="-1" (click)="paginacion(false)">Previous</a>
+                    <a class="page-link" href="javascript:void(0)" tabindex="-1"
+                       (click)="paginacion(false)">Previous</a>
                 </li>
-                <li class="page-item " [ngClass]="{'active':page === actual_page}" *ngFor="let page of total_pages_pagination"
+                <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                    *ngFor="let page of total_pages_pagination"
                     (click)="getCupos(page)">
                     <a class="page-link" href="javascript:void(0)">{{page}}</a>
                 </li>
@@ -215,7 +269,8 @@
                     <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link bg-dark text-white" href="javascript:void(0)" (click)="lastPagina()">Last</a>
+                    <a class="page-link bg-dark text-white" href="javascript:void(0)"
+                       (click)="lastPagina()">Last</a>
                 </li>
             </ul>
         </nav>
@@ -252,7 +307,8 @@
             <tr *ngFor="let detalle of detalleMatricula">
                 <td>
                     <select [(ngModel)]="detalle.asignatura.id" class="form-control"
-                            id="detalleAsignatura" name="detalleAsignatura" required (change)="updateDetalleMatricula(detalle)">
+                            id="detalleAsignatura" name="detalleAsignatura" required
+                            (change)="updateDetalleMatricula(detalle)">
                         <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
                             {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
                         </option>
@@ -260,7 +316,8 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.numero_matricula" class="form-control"
-                            id="numero_matricula" name="numero_matricula" required (change)="updateDetalleMatricula(detalle)">
+                            id="numero_matricula" name="numero_matricula" required
+                            (change)="updateDetalleMatricula(detalle)">
                         <option value="{{numeroMatricula.codigo}}" *ngFor="let numeroMatricula of numerosMatricula">
                             {{numeroMatricula.descripcion}}
                         </option>
@@ -276,7 +333,8 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
-                            id="tipo_matricula" name="tipo_matricula" required (change)="updateDetalleMatricula(detalle)">
+                            id="tipo_matricula" name="tipo_matricula" required
+                            (change)="updateDetalleMatricula(detalle)">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
                         </option>
@@ -286,7 +344,8 @@
                     {{detalle.estado}}
                 </td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleCupo(detalle)" title="Eliminar"
+                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleCupo(detalle)"
+                            title="Eliminar"
                             *ngIf="detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO'">
                         <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>

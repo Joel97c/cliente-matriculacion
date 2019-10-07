@@ -6,12 +6,12 @@ import {Token} from './modelos/token.model';
 @Injectable({
   providedIn: 'root'
 })
+
 export class ServiceService {
   headers: HttpHeaders;
   token: Token;
 
-  constructor(private _http: HttpClient) {
-  }
+  constructor(private _http: HttpClient) {}
 
   get(url: string) {
     this.headers = new HttpHeaders().set('Content-Type', 'application/json');
