@@ -25,8 +25,8 @@ export class LoginComponent implements OnInit {
     ) {
         this.translate.addLangs(['es']);
         this.translate.setDefaultLang('es');
-        // const browserLang = this.translate.getBrowserLang();
-        // this.translate.use(browserLang.match(/en|es/) ? browserLang : 'es');
+        const browserLang = this.translate.getBrowserLang();
+        this.translate.use(browserLang.match(/en|es/) ? browserLang : 'es');
         this.translate.use('es');
     }
 
@@ -70,6 +70,12 @@ export class LoginComponent implements OnInit {
                                 this.router.navigate(['dashboard-matricula']);
                             }
                             if (response2['usuario']['role']['rol'] === '4') {
+                                this.router.navigate(['dashboard-matricula']);
+                            }
+                            if (response2['usuario']['role']['rol'] === '5') {
+                                this.router.navigate(['usuarios']);
+                            }
+                            if (response2['usuario']['role']['rol'] === '6') {
                                 this.router.navigate(['dashboard-matricula']);
                             }
                         } else if (response2['usuario']['estado'] === 'INACTIVO'){

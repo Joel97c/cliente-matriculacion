@@ -1,11 +1,5 @@
 <nav class="navbar navbar-expand-lg fixed-top">
-    <a class="navbar-brand" href="#">{{'Registration' |translate}}</a>
-    <a class="navbar-brand">
-<!--    <span class="fa fa-calendar">-->
-<!--      {{periodoLectivoActual.nombre}}-->
-<!--    </span>-->
-
-    </a>
+    <a class="navbar-brand">{{user.role.descripcion}}</a>
     <button type="button" class="navbar-toggler" type="button" (click)="toggleSidebar()">
         <!-- <span class="navbar-toggler-icon"></span> -->
         <i class="fa fa-bars text-muted" aria-hidden="true"></i>

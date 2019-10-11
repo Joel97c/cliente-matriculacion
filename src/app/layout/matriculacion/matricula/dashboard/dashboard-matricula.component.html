@@ -1,17 +1,18 @@
 <!--Encabezado-->
 <div class="row">
-    <div class="col-lg-2 col-xs-12">
+    <div class="col-lg-3 col-xs-12">
         <h1 class="text-muted">MATRÍCULAS:</h1>
     </div>
     <!--    Combo periodo lectivo-->
-    <div class="col-lg-4 col-xs-12">
+    <div class="col-lg-5 col-xs-12">
         <div class="input-group mb-3">
             <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon-periodo-historico">
             Periodo Lectivo:
             </span>
                 <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
-                        class="form-control" *ngIf="user.role.rol=='4' || user.role.rol=='3' || user.role.rol=='1'"
+                        class="form-control"
+                        *ngIf="user.role.rol=='6'||user.role.rol=='4' || user.role.rol=='3' || user.role.rol=='1'"
                         (change)="cambiarPeriodoLectivoActual()">
                     <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                             *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
@@ -19,11 +20,6 @@
             </div>
         </div>
     </div>
-    <!--    <div class="col-lg-2">-->
-    <!--        <button type="button" [className]="classContadorMatriculados" (click)="getMatriculadosCount()">-->
-    <!--            <i class="fa fa-refresh"></i>-->
-    <!--        </button>-->
-    <!--    </div>-->
 </div>
 <hr>
 <!--Titulo Institutos-->
@@ -198,16 +194,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_1}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_1}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_1}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_1}}
                                 </th>
                             </tr>
@@ -302,16 +298,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_2}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_2}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_2}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_2}}
                                 </th>
                             </tr>
@@ -406,16 +402,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_3}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_3}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_3}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_3}}
                                 </th>
                             </tr>
@@ -510,16 +506,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_4}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_4}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_4}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_4}}
                                 </th>
                             </tr>
@@ -614,16 +610,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_5}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_5}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_5}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_5}}
                                 </th>
                             </tr>
@@ -718,16 +714,16 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Aprobados: {{matricula.aprobados_6}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     En Proceso: {{matricula.en_proceso_6}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Retirados: {{matricula.anulados_6}}
                                 </th>
-                                <th class="bg-light">
+                                <th class="bg-light small">
                                     Desertores: {{matricula.desertores_6}}
                                 </th>
                             </tr>

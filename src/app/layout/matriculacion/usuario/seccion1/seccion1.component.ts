@@ -35,8 +35,10 @@ export class Seccion1Component implements OnInit {
     total_pages_pagination: Array<any>;
     total_pages_temp: number;
     flagPagination: boolean;
+    user: User;
 
     ngOnInit() {
+        this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.textoPrueba = 'hola mundo';
         this.carrerasSeleccionadas = new Array<Carrera>();
         this.flagPagination = true;
@@ -136,6 +138,7 @@ export class Seccion1Component implements OnInit {
             response => {
                 this.getUsuarios(this.actual_page);
                 this.spinner.hide();
+                swal.fire(this.messages['createSuccess']);
             },
             error => {
                 this.spinner.hide();
@@ -153,6 +156,7 @@ export class Seccion1Component implements OnInit {
             response => {
                 this.getUsuarios(this.actual_page);
                 this.spinner.hide();
+                swal.fire(this.messages['updateSuccess']);
             },
             error => {
                 this.spinner.hide();
@@ -214,6 +218,7 @@ export class Seccion1Component implements OnInit {
     }
 
     openUsuario(content, usuario) {
+        this.flagSeleccionaTodasCarreras = false;
         if (usuario != null) {
             this.llenarCarreras(usuario);
             this.usuarioSeleccionado = usuario;
@@ -221,7 +226,6 @@ export class Seccion1Component implements OnInit {
             this.carreras.forEach(carrera => {
                 carrera.seleccionada = false;
             });
-            this.usuarioSeleccionado = new User();
         }
         this.modalService.open(content)
             .result
@@ -290,7 +294,8 @@ export class Seccion1Component implements OnInit {
     }
 
     filter(event) {
-        if (event.which === 13 || this.buscador.length === 0) {
+        console.log(event.which);
+        if (event.which === 1 || event.which === 13 || this.buscador.length === 0) {
             if (this.buscador.length === 0) {
                 this.flagPagination = true;
                 this.getUsuarios(1);

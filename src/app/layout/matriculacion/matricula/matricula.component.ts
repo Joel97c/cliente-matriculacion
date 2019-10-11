@@ -31,7 +31,7 @@ import {User} from '../modelos/user.model';
 
 export class MatriculaComponent implements OnInit {
     estudiantesHistoricos: Array<Estudiante>;
-    p: PeriodoLectivo;
+    periodoLectivoSeleccionado: PeriodoLectivo;
     txtPeridoActualHistorico: string;
     buscadorEstudianteGeneral: string;
     periodosLectivos: Array<PeriodoLectivo>;
@@ -86,7 +86,7 @@ export class MatriculaComponent implements OnInit {
 
     ngOnInit() {
         this.estudiantesHistoricos = new Array<Estudiante>();
-        this.p = new PeriodoLectivo();
+        this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.buscador = '';
@@ -95,7 +95,7 @@ export class MatriculaComponent implements OnInit {
         this.total_detalle_matriculas_for_malla = new Array<any>();
         this.total_pages_pagination = new Array<any>();
         this.total_pages_temp = 10;
-        this.records_per_page = 7;
+        this.records_per_page = 5;
         this.actual_page = 1;
         this.total_pages = 1;
         this.paralelos = catalogos.paralelos;
@@ -317,7 +317,7 @@ export class MatriculaComponent implements OnInit {
 
     filterEstudianteGeneral(event) {
         if (this.periodoLectivoActual.id !== 0) {
-            if (event.which === 13 && this.buscadorEstudianteGeneral.length > 0) {
+            if ((event.which === 1 || event.which === 13) && this.buscadorEstudianteGeneral.length > 0) {
                 this.flagPagination = false;
                 this.getAprobadoGeneral();
             }
@@ -338,7 +338,7 @@ export class MatriculaComponent implements OnInit {
             + '&nombre1=' + this.buscador
             + '&nombre2=' + this.buscador
             + '&carrera_id=' + this.carrera.id
-            + '&periodo_lectivo_id=' + this.p.id;
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.spinner.show();
         this.service.get('matriculas/aprobado' + parametros).subscribe(
             response => {
@@ -360,7 +360,7 @@ export class MatriculaComponent implements OnInit {
             + '&apellido2=' + this.buscadorEstudianteGeneral
             + '&nombre1=' + this.buscadorEstudianteGeneral
             + '&nombre2=' + this.buscadorEstudianteGeneral
-            + '&periodo_lectivo_id=' + this.p.id;
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.spinner.show();
         this.service.get('estudiantes/historicos' + parametros).subscribe(
             response => {
@@ -378,13 +378,13 @@ export class MatriculaComponent implements OnInit {
         if (this.carrera.id != 0) {
             this.spinner.show();
             this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
-                + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.p.id;
+                + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
             this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
-                + '&periodo_lectivo_id=' + this.p.id;
+                + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
             this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id
-                + '&periodo_lectivo_id=' + this.p.id;
+                + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
             this.actual_page = page;
-            const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.p.id +
+            const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id +
                 '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page
                 + '&page=' + page;
             this.service.get('matriculas/aprobados' + parametros).subscribe(
@@ -426,7 +426,7 @@ export class MatriculaComponent implements OnInit {
         if (this.carrera.id != 0) {
             const parametros =
                 '?carrera_id=' + this.carrera.id
-                + '&periodo_lectivo_id=' + this.p.id
+                + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id
                 + '&periodo_academico_id=' + this.periodoAcademico;
             this.service.get('detalle_matriculas/count' + parametros)
                 .subscribe(
@@ -837,7 +837,7 @@ export class MatriculaComponent implements OnInit {
         this.buscadorEstudianteGeneral = '';
         this.periodosLectivos.forEach(value => {
             if (value.id == this.periodoLectivoActual.id) {
-                this.p = value;
+                this.periodoLectivoSeleccionado = value;
                 if (value.estado != 'ACTUAL') {
                     this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
                 } else {
@@ -855,7 +855,7 @@ export class MatriculaComponent implements OnInit {
                 this.periodosLectivos = response['periodos_lectivos_historicos'];
                 this.periodosLectivos.forEach(value => {
                     if (value.estado == 'ACTUAL') {
-                        this.p = value;
+                        this.periodoLectivoSeleccionado = value;
                     }
                 });
                 this.spinner.hide();

@@ -21,8 +21,8 @@ const routes: Routes = [
             },
             {
                 path: 'perfil-estudiante',
-                loadChildren: () => import('./matriculacion/perfil-estudiante/perfil-estudiante.module').then(m => m.PerfilEstudianteModule),
-                canActivate: [AuthGuard]
+                loadChildren: () => import('./matriculacion/perfil-estudiante/perfil-estudiante.module')
+                    .then(m => m.PerfilEstudianteModule), canActivate: [AuthGuard]
             },
             {
                 path: 'matricula',

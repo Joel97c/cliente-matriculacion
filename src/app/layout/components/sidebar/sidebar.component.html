@@ -1,7 +1,7 @@
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive, collapsed: collapsed}">
     <div class="list-group">
         <a routerLink="/dashboard-matricula" [routerLinkActive]="['router-link-active']" class="list-group-item"
-           *ngIf="user.role.rol=='3' || user.role.rol=='4'">
+           *ngIf="user.role.rol=='3' || user.role.rol=='4' || user.role.rol=='6'">
             <i class="fa fa-fw fa-dashboard"></i>&nbsp;
             <span>{{ 'Dashboard' | translate }}</span>
         </a>
@@ -19,12 +19,12 @@
         </a>
         <a [routerLink]="['/matricula']" [routerLinkActive]="['router-link-active']" class="list-group-item"
            *ngIf="user.role.rol=='3' || user.role.rol=='4'">
-            <i class="fa fa-fw fa-certificate"></i>&nbsp;
+            <i class="fa fa-fw fa-users"></i>&nbsp;
             <span>{{ 'Registration' | translate }}</span>
         </a>
         <a [routerLink]="['/cupos']" [routerLinkActive]="['router-link-active']" class="list-group-item"
            *ngIf="user.role.rol=='1' || user.role.rol=='4'">
-            <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
+            <i class="fa fa-fw fa-users"></i>&nbsp;
             <span>{{ 'Quotas' | translate }}</span>
         </a>
         <a [routerLink]="['/estudiantes']" [routerLinkActive]="['router-link-active']" class="list-group-item"
@@ -42,7 +42,6 @@
             <i class="fa fa-fw fa-users"></i>&nbsp;
             <span>{{ 'Users' | translate }}</span>
         </a>
-
 
 
         <!--    <div class="nested-menu">-->

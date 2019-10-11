@@ -4,12 +4,13 @@
         <div class="row">
             <div class="col-lg-4 col-xs-12">
                 <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text fa fa-search" id="basic-addon-buscar"></span>
-                    </div>
                     <input type="text" class="form-control text-uppercase" [(ngModel)]="buscador"
                            (keyup)="filter($event)"
                            placeholder="Identificación, apellidos o nombres">
+                    <div class="input-group-prepend">
+                        <span class="btn input-group-text fa fa-search" id="basic-addon-buscar"
+                              (click)="filter($event)"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -55,13 +56,13 @@
                 </td>
                 <td class="text-center">
                     <select name="rol" id="rol" [(ngModel)]="usuario.role.id" class="form-control-sm"
-                            (change)="updateUsuario(usuario)">
+                            (change)="updateUsuario(usuario)" *ngIf="usuario.id != user.id">
                         <option value="{{rol.id}}" *ngFor="let rol of roles">{{rol.descripcion}}</option>
                     </select>
                 </td>
                 <td class="text-center">
-                    <select name="estado" id="estado" [(ngModel)]="usuario.estado"
-                            [ngClass]="{'bg-danger text-white': usuario.estado=='INACTIVO'}"
+                    <select name="estado" id="estado" [(ngModel)]="usuario.estado" *ngIf="usuario.id != user.id"
+                            [ngClass]=" {'bg-danger text-white': usuario.estado=='INACTIVO'}"
                             class="form-control-sm"
                             (change)="updateUsuario(usuario)">
                         <option value="ACTIVO">ACTIVO</option>
@@ -70,7 +71,7 @@
                 </td>
                 <td>
                     <button class="btn btn-warning ml-1 btn-sm text-white" (click)="openUsuario(contentUsuario,usuario)"
-                            title="Actualizar">
+                            title="Actualizar" *ngIf="usuario.id != user.id">
                         <span class="{{messages['buttonUpdate']['icon']}}"></span>
                     </button>
                 </td>

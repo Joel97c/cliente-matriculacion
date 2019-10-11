@@ -66,7 +66,7 @@
                         <span class="{{messages['buttonClosePeriodo']['icon']}}"> Cerrar</span>
                     </button>
                     <button class="btn btn-danger ml-1 btn-sm"
-                            (click)="closePeriodoLectivo(periodo)"
+                            (click)="deletePeriodoLectivo(periodo)"
                             *ngIf="periodo.estado=='ACTIVO'" title="Eliminar Periodo Lectivo">
                         <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>

@@ -1,118 +1,107 @@
 <div class="row">
     <div class="col-lg-12">
-        <h4 class="text-muted">
-            MATRICULACIÓN:
-            <b [ngClass]="{'text-danger':p.estado!='ACTUAL','text-success':p.estado=='ACTUAL'}">
-                {{txtPeridoActualHistorico}} : {{p.nombre}}</b>
-        </h4>
+        <table class="table table-responsive table-sm">
+            <tr>
+                <td>
+                    <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeridoActualHistorico}} :</strong>
+                    </span>
+                </td>
+                <td>
+                    <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                            (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
+                        <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                                *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <select [(ngModel)]="carrera.id" class="form-control"
+                            id="carrera" name="carrera" required
+                            (change)="getAprobados(1);getDetalleMatriculasForMalla()">
+                        <option value="" selected>SELECCIONE UNA CARRERA</option>
+                        <option value="0" selected>TODAS</option>
+                        <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small"
+                                [ngClass]="{'bg-warning':carrera.descripcion=='MALLA ANTIGUA','text-white':carrera.descripcion=='MALLA ANTIGUA'}">
+                            {{ carrera.descripcion }}
+                        </option>
+                    </select>
+                </td>
+                <td>
+                    <select [(ngModel)]="periodoAcademico" class="form-control"
+                            id="periodoAcademico" name="periodoAcademico" required
+                            (change)="getAprobados(1)">
+                        <option value="-1" selected>SELECCIONE NIVEL</option>
+                        <option value="" selected>TODOS</option>
+                        <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos"
+                                class="small">
+                            {{periodoAcademico.nombre}}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr *ngIf="carrera.id==0">
+                <td colspan="2">
+                    <div class="input-group mb-3">
+                        <input type="text" id="buscadorEstudiante" class="form-control text-uppercase"
+                               [(ngModel)]="buscadorEstudianteGeneral"
+                               (keyup)="filterEstudianteGeneral($event)"
+                               placeholder="Identificación, apellido o nombre">
+                        <div class="input-group-prepend">
+                <span class="btn input-group-text fa fa-search" id="basic-addon-buscadorEstudiante"
+                      (click)="filterEstudianteGeneral($event)"></span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
-<div class="row mt-3" *ngIf="!flagAsignaturasCupo">
-    <!--    Combo Carreras-->
-    <div class="col-lg-5 col-xs-12">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon-carrera">
-              CARRERA:
-            </span>
-            </div>
-            <select [(ngModel)]="carrera.id" class="form-control"
-                    id="carrera" name="carrera" required (change)="getAprobados(1);getDetalleMatriculasForMalla()">
-                <option value="0" class="small">TODAS</option>
-                <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small">
-                    {{ carrera.descripcion}}
-                </option>
-            </select>
-        </div>
-    </div>
-    <!--    Buscador todas las carreras-->
-    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id==0">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text fa fa-search" id="basic-addon-buscadorEstudiante"></span>
-            </div>
-            <input type="text" id="buscadorEstudiante" class="form-control text-uppercase"
-                   [(ngModel)]="buscadorEstudianteGeneral"
-                   (keyup)="filterEstudianteGeneral($event)"
-                   placeholder="Identificación, apellidos o nombres">
-        </div>
-    </div>
-    <!--    Combo periodo academico-->
-    <div class="col-lg-3 col-xs-12" *ngIf="carrera.id!=0">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon-periodo">
-            Periodo Académico:
-            </span>
-                <select [(ngModel)]="periodoAcademico" class="form-control"
-                        id="periodoAcademico" name="periodoAcademico" required
-                        (change)="getAprobados(1)">
-                    <option value="" selected>TODOS</option>
-                    <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos"
-                            class="small">
-                        {{periodoAcademico.nombre}}
-                    </option>
-                </select>
-            </div>
-        </div>
-    </div>
-    <!--    Combo periodo lectivo-->
-    <div class="col-lg-4 col-xs-12">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon-periodo-historico">
-            Periodo Lectivo:
-            </span>
-                <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
-                        class="form-control" *ngIf="user.role.rol==4 || user.role.rol==3 || user.role.rol==1"
-                        (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
-                    <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
-                            *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
-                </select>
-            </div>
-        </div>
-    </div>
-</div>
-<hr>
 <!--Buscador-->
 <div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
-    <div class="col-lg-4 col-xs-12">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text fa fa-search" id="basic-addon-buscar"></span>
-            </div>
-            <input type="text" class="form-control text-uppercase" [(ngModel)]="buscador" (keyup)="filter($event)"
-                   placeholder="Identificación, apellidos o nombres">
-        </div>
-    </div>
-    <div class="col-lg-8 col-xs-12 mt-1" *ngIf="carrera.id!=0 && p.estado=='ACTUAL'" >
-        <div class="row">
-            <div class="col-lg-12">
-                <div class=" pull-right">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-info m-1 btn-sm" (click)="exportCuposCarrera()"
-                                title="Descargar todos los Cupos de la carrera" *ngIf="carrera.id!=0">
-                            <span class="fa fa-download"> Descargar matriculados por Carrera</span>
-                        </button>
-                        <button type="button" class="btn btn-info m-1 btn-sm" (click)="exportCuposPeriodo()"
-                                title="Descargar todos los cupos del periodo académico">
-                            <span class="fa fa-download"> Descargar matriculados por Periodo</span>
-                        </button>
-                        <button type="button" class="btn btn-info m-1 btn-sm" (click)="exportMatrizSniese()"
-                                title="Descargar matriz SNIESE">
-                            <span class="fa fa-download"> Descargar Matriz SNIESE</span>
-                        </button>
-                    </div>
-                    <label for="file-upload" class="btn btn-success fa fa-upload  m-1 btn-sm"
-                           title="Subir archivo de cupos"
-                           *ngIf="true">
+    <div class="col-lg-12 col-xs-12">
+        <table class="table table-sm table-responsive">
+            <tr *ngIf="carrera.id!=0">
+                <td>
+                    <button type="button" class="btn btn-light btn-sm" (click)="exportCuposCarrera()"
+                            title="Descargar matriculados de la carrera">
+                        <span class="fa fa-download"> Matriculados por Carrera</span>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-light btn-sm" (click)="exportCuposPeriodo()"
+                            title="Descargar matriculados del periodo académico">
+                        <span class="fa fa-download"> Matriculados por Periodo</span>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-light btn-sm" (click)="exportMatrizSniese()"
+                            title="Descargar matriz SNIESE">
+                        <span class="fa fa-download"> Matriz SNIESE</span>
+                    </button>
+                </td>
+                <td>
+                    <label for="file-upload" class="btn btn-light fa fa-upload btn-sm"
+                           title="Subir archivo de cupos" *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
                         Cargar Paralelos
                     </label>
                     <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
                            name="fileExcel"
                            (change)="uploadParalelos($event)"
                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
+    <div class="col-lg-4 col-xs-12 mt-1">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control text-uppercase" id="buscador" name="buscador" [(ngModel)]="buscador"
+                   (keyup)="filter($event)"
+                   placeholder="Identificación, Apellido o Nombre">
+            <div class="input-group-prepend">
+                <span class="btn input-group-text fa fa-search" id="basic-addon-buscar" (click)="filter($event)"></span>
             </div>
         </div>
     </div>
@@ -152,7 +141,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO')||p.estado!='ACTUAL'"
+                            [disabled]="!(cupo.estado=='MATRICULADO')||periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="tipoMatricula" name="tipoMatricula" required
                             (change)="updateMatricula(cupo)">
                         <option value="{{tipoMatricula.id}}"
@@ -163,7 +152,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO') || p.estado!='ACTUAL'"
+                            [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="periodoAcademicoMatricula" name="periodoAcademicoMatricula" required
                             (change)="updateMatricula(cupo)">
                         <option value="{{periodoAcademico.id}}"
@@ -174,7 +163,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.jornada" class="text-uppercase form-control-sm"
-                            [disabled]="!(cupo.estado=='MATRICULADO') || p.estado!='ACTUAL'"
+                            [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="jornadaMatricula" name="jornadaMatricula" required (change)="updateMatricula(cupo)">
                         <option value="{{jornada.codigo}}"
                                 *ngFor="let jornada of jornadas">
@@ -189,7 +178,7 @@
                     <button type="button" class="btn ml-1 btn-sm" (click)="matricular(cupo)" title="Matricular"
                             [ngClass]="{'btn-success':cupo.estado=='MATRICULADO','btn-primary':cupo.estado=='APROBADO'}"
                             [disabled]="cupo.estado=='MATRICULADO'"
-                            *ngIf="cupo.estado=='APROBADO' && p.estado=='ACTUAL'">
+                            *ngIf="cupo.estado=='APROBADO' && periodoLectivoSeleccionado.estado=='ACTUAL'">
                         <span class="{{messages['buttonCheck']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-info ml-1 btn-sm" (click)="getCertificadoMatricula(cupo)"
@@ -205,11 +194,12 @@
                     </button>
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteMatricula(cupo)"
                             title="Anular Matrícula"
-                            *ngIf="cupo.estado=='MATRICULADO' && p.estado=='ACTUAL'">
+                            *ngIf="cupo.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL'">
                         <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
-                            title="Desertar Estudiante" *ngIf="p.estado=='ACTUAL' && cupo.estado=='MATRICULADO'">
+                            title="Desertar Estudiante"
+                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'">
                         <span class="{{messages['buttonDesert']['icon']}}"></span>
                     </button>
                 </td>
@@ -288,7 +278,8 @@
             <th width="5%">
                 <button type="button" class="btn btn-success ml-1 btn-sm"
                         (click)="openDetalleMatricula(contentDetalleMatricula)"
-                        *ngIf="matriculaSeleccionada.estado=='MATRICULADO' && p.estado=='ACTUAL'" title="Añadir">
+                        *ngIf="matriculaSeleccionada.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL'"
+                        title="Añadir">
                 <span class="{{messages['buttonAdd']['icon']}}">
                   {{messages['buttonAdd']['text']}}
                 </span>
@@ -299,7 +290,7 @@
             <tr *ngFor="let detalle of detalleMatricula">
                 <td>
                     <select [(ngModel)]="detalle.asignatura.id" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
+                            [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="detalleAsignatura" name="detalleAsignatura" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
@@ -309,7 +300,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.numero_matricula" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
+                            [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="numero_matricula" name="numero_matricula" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{numerMatricula.codigo}}" *ngFor="let numerMatricula of numerosMatricula">
@@ -319,7 +310,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.jornada" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
+                            [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="jornada" name="jornada" required (change)="updateDetalleMatricula(detalle)">
                         <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
@@ -328,7 +319,7 @@
                 </td>
                 <td>
                     <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
-                            [disabled]="detalle.estado!='MATRICULADO' || p.estado!='ACTUAL'"
+                            [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="tipo_matricula" name="tipo_matricula" required
                             (change)="updateDetalleMatricula(detalle)">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
@@ -342,7 +333,7 @@
                 <td class="text-center">
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleMatricula(detalle)"
                             title="Anular Matricular"
-                            *ngIf="detalle.estado=='MATRICULADO' && p.estado=='ACTUAL'">
+                            *ngIf="detalle.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL'">
                         <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
                 </td>

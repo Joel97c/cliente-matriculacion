@@ -18,8 +18,11 @@ export class AuthGuard implements CanActivate {
         console.log(route['_routerState']['url']);
         if (localStorage.getItem('isLoggedin') === 'true') {
             switch (route['_routerState']['url']) {
+                case '/':
+                    return true;
+                    break;
                 case '/dashboard-matricula':
-                    if (this.user.role.rol === '3' || this.user.role.rol === '4') {
+                    if (this.user.role.rol === '3' || this.user.role.rol === '4' || this.user.role.rol === '6') {
                         return true;
                     }
                     break;
@@ -75,9 +78,6 @@ export class AuthGuard implements CanActivate {
         if (this.user != null) {
             this.service.get('usuarios/login?email=' + this.user.email).subscribe(response => {
                 this.userAux = response['usuario'];
-                console.log(this.userAux);
-                console.log('-----------------');
-                console.log(this.user);
                 if (this.userAux.role.id !== this.user.role.id || this.userAux.estado === 'INACTIVO') {
                     this.router.navigate(['/login']);
                     return false;

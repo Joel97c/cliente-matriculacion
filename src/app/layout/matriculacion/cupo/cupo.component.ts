@@ -89,7 +89,7 @@ export class CupoComponent implements OnInit {
         this.flagPagination = true;
         this.total_pages_pagination = new Array<any>();
         this.total_pages_temp = 10;
-        this.records_per_page = 6;
+        this.records_per_page = 5;
         this.actual_page = 1;
         this.total_pages = 1;
         this.paralelos = catalogos.paralelos;
@@ -234,7 +234,7 @@ export class CupoComponent implements OnInit {
     }
 
     filter(event) {
-        if (event.which === 13 || this.buscador.length === 0) {
+        if (event.which === 1 || event.which === 13 || this.buscador.length === 0) {
             if (this.buscador.length === 0) {
                 this.flagPagination = true;
                 this.getCupos(1);
@@ -276,8 +276,10 @@ export class CupoComponent implements OnInit {
         this.spinner.show();
         this.getDetalleMatriculasForMalla();
         this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
-            + '&periodo_academico_id=' + this.periodoAcademico;
-        this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id;
+            + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+        this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+
         this.actual_page = page;
         const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id +
             '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page + '&page=' + page;
@@ -806,5 +808,37 @@ export class CupoComponent implements OnInit {
                 this.getCupos(1);
             }
         });
+    }
+
+    async desertMatricula(matricula: Matricula) {
+        const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
+        if (razonAnularMatricula) {
+            swal.fire(this.messages['deleteRegistrationQuestion'])
+                .then((result) => {
+                    if (result.value) {
+                        this.spinner.show();
+                        this.service.delete('matriculas/desert?id=' + matricula.id).subscribe(
+                            response => {
+                                if (this.buscador.trim() === '') {
+                                    this.getDetalleMatriculasForMalla();
+                                    this.getCupos(this.actual_page);
+                                } else {
+                                    this.getCupo();
+                                }
+                                this.spinner.hide();
+                                swal.fire(this.messages['deleteSuccess']);
+                                this.sendEmailNotificacion('Anulación de Matrícula', razonAnularMatricula);
+                            },
+                            error => {
+                                this.spinner.hide();
+                                swal.fire(this.messages['error500']);
+                            });
+                    }
+                });
+        } else {
+            if (!(razonAnularMatricula === undefined)) {
+                swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+            }
+        }
     }
 }

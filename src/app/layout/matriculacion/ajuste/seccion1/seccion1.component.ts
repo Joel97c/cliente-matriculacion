@@ -88,12 +88,12 @@ export class Seccion1Component implements OnInit {
 
     createPeriodoLectivo() {
         this.spinner.show();
-        this.periodoLectivoSeleccionado.codigo = this.periodoLectivoSeleccionado.fecha_inicio_periodo.toString().substring(0, 4)
-            + '-' + this.periodoLectivoSeleccionado.codigo;
+        this.periodoLectivoSeleccionado.codigo = this.periodoLectivoSeleccionado.codigo;
         this.validateFechas();
         this.service.post('periodo_lectivos', {'periodo_lectivo': this.periodoLectivoSeleccionado}).subscribe(
             response => {
                 this.getPeriodosLectivos(this.actual_page);
+                swal.fire(this.messages['createSuccess']);
                 this.spinner.hide();
             },
             error => {
@@ -111,6 +111,7 @@ export class Seccion1Component implements OnInit {
         this.validateFechas();
         this.service.update('periodo_lectivos', {'periodo_lectivo': this.periodoLectivoSeleccionado}).subscribe(
             response => {
+                swal.fire(this.messages['updateSuccess']);
                 this.spinner.hide();
             },
             error => {
@@ -128,6 +129,24 @@ export class Seccion1Component implements OnInit {
         this.service.update('periodo_lectivos/cerrar', {'periodo_lectivo': periodoLectivo}).subscribe(
             response => {
                 this.getPeriodosLectivos(this.actual_page);
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+                if (error.error.errorInfo[0] === '23505') {
+                    swal.fire(this.messages['error23505']);
+                } else {
+                    swal.fire(this.messages['error500']);
+                }
+            });
+    }
+
+    deletePeriodoLectivo(periodoLectivo: PeriodoLectivo) {
+        this.spinner.show();
+        this.service.delete('periodo_lectivos?id=' + periodoLectivo.id).subscribe(
+            response => {
+                this.getPeriodosLectivos(this.actual_page);
+                swal.fire(this.messages['deleteSuccess']);
                 this.spinner.hide();
             },
             error => {
