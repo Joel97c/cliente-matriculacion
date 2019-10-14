@@ -27,6 +27,7 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    fechaActual: Date;
     txtPeridoActualHistorico: string;
     periodoLectivoSeleccionado: PeriodoLectivo;
     periodoLectivos: Array<PeriodoLectivo>;
@@ -80,6 +81,7 @@ export class CupoComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.fechaActual = new Date();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
@@ -121,7 +123,7 @@ export class CupoComponent implements OnInit {
         this.service.post('detalle_matriculas', {'detalle_matricula': this.detalleMatriculaNuevo}).subscribe(
             response => {
                 this.getDetalleMatricula(this.matriculaSeleccionada);
-                this.sendEmailNotificacion('Nueva Asignatura', razonNuevaAsignatura);
+                this.sendEmailNotificacion('detalle_cupos', 'Nueva Asignatura', razonNuevaAsignatura);
                 this.spinner.hide();
                 swal.fire(this.messages['createSuccess']);
                 this.detalleMatriculaNuevo = new DetalleMatricula();
@@ -170,6 +172,7 @@ export class CupoComponent implements OnInit {
                                 this.getDetalleMatricula(this.matriculaSeleccionada);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
+                                this.sendEmailNotificacion('detalle_cupos', 'Eliminar Asignatura', razonAnularAsignatura);
                             },
                             error => {
                                 this.spinner.hide();
@@ -196,6 +199,7 @@ export class CupoComponent implements OnInit {
                                 this.getCupos(this.actual_page);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
+                                this.sendEmailNotificacion('cupos', 'Eliminar Cupo', razonAnularMatricula);
                             },
                             error => {
                                 this.spinner.hide();
@@ -433,7 +437,7 @@ export class CupoComponent implements OnInit {
         this.getCupos(this.actual_page);
     }
 
-    async updateMatricula(matricula: Matricula) {
+    async updateMatricula(matricula: Matricula, campo: string) {
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
         console.log(razonModificarMatricula);
         if (razonModificarMatricula) {
@@ -443,11 +447,10 @@ export class CupoComponent implements OnInit {
                     response => {
                         if (this.buscador === '') {
                             this.getCupos(this.actual_page);
-                            this.sendEmailNotificacion('Modificación de Matrícula', razonModificarMatricula);
+                            this.sendEmailNotificacion('cupos', 'Modificación de Matrícula: ' + campo, razonModificarMatricula);
                         } else {
                             this.getCupo();
                         }
-
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -479,7 +482,8 @@ export class CupoComponent implements OnInit {
                             '<li>' + ' Cupos Modificados: ' + response['total_cupos_modificados'] + '</li>');
                         this.archivoTemp = '';
                         this.exportErroresCargaCupos(response['errores']);
-                        this.sendEmailNotificacionCargaCupos();
+                        this.sendEmailNotificacionCargaCupos('Cupos Nuevos: ' + response['total_cupos_nuevos'] +
+                            ' - Cupos Modificados: ' + response['total_cupos_modificados']);
                     },
                     error => {
                         this.spinner.hide();
@@ -515,7 +519,7 @@ export class CupoComponent implements OnInit {
         }
     }
 
-    async updateDetalleMatricula(detalleMatricula: DetalleMatricula) {
+    async updateDetalleMatricula(detalleMatricula: DetalleMatricula, campo: string) {
         const {value: razonModificarAsignatura} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarAsignatura) {
             this.spinner.show();
@@ -523,7 +527,7 @@ export class CupoComponent implements OnInit {
                 .subscribe(
                     response => {
                         this.getDetalleMatricula(this.matriculaSeleccionada);
-                        this.sendEmailNotificacion('Modificación Asignatura', razonModificarAsignatura);
+                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Asignatura: ' + campo, razonModificarAsignatura);
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -588,7 +592,8 @@ export class CupoComponent implements OnInit {
                 .then((result) => {
                     if (result.value) {
                         this.spinner.show();
-                        this.service.get('matriculas/validate_cupos_periodo_academico?carrera_id=' + this.carrera.id + '&periodo_academico_id='
+                        this.service.get('matriculas/validate_cupos_periodo_academico?carrera_id='
+                            + this.carrera.id + '&periodo_academico_id='
                             + this.periodoAcademico)
                             .subscribe(
                                 response => {
@@ -685,12 +690,12 @@ export class CupoComponent implements OnInit {
         }
     }
 
-    sendEmailNotificacionCargaCupos() {
+    sendEmailNotificacionCargaCupos(body: string) {
         this.notificacion.carrera_id = this.carrera.id;
         this.notificacion.user_id = this.user.id;
         this.notificacion.asunto = 'CARGA DE CUPOS';
-        this.notificacion.body = 'Cupos subidos al sistema - Periodo Académico: ' + this.periodoAcademico;
-        this.service.post('emails', this.notificacion)
+        this.notificacion.body = 'Periodo Academico: ' + this.periodoAcademico + ' - ' + body;
+        this.service.post('emails/upload_cupos', this.notificacion)
             .subscribe(
                 response => {
                     this.spinner.hide();
@@ -763,18 +768,16 @@ export class CupoComponent implements OnInit {
         this.spinner.hide();
     }
 
-    sendEmailNotificacion(asunto: string, mensaje: string) {
-        this.notificacion.carrera_id = 1;
+    sendEmailNotificacion(url: string, asunto: string, mensaje: string) {
         this.notificacion.user_id = this.user.id;
         this.notificacion.asunto = asunto;
         this.notificacion.body = mensaje;
-        this.service.post('emails', this.notificacion)
+        this.service.post('emails/' + url, this.notificacion)
             .subscribe(
                 response => {
 
                 },
                 error => {
-
                     alert('error al enviar correo');
                 });
     }
@@ -785,7 +788,7 @@ export class CupoComponent implements OnInit {
             response => {
                 this.periodosLectivos = response['periodos_lectivos_historicos'];
                 this.periodosLectivos.forEach(value => {
-                    if (value.estado == 'ACTUAL') {
+                    if (value.estado === 'ACTUAL') {
                         this.periodoLectivoSeleccionado = value;
                     }
                 });
@@ -798,9 +801,9 @@ export class CupoComponent implements OnInit {
 
     cambiarPeriodoLectivoActual() {
         this.periodosLectivos.forEach(value => {
-            if (value.id == this.periodoLectivoActual.id) {
+            if (value.id === this.periodoLectivoActual.id) {
                 this.periodoLectivoSeleccionado = value;
-                if (value.estado != 'ACTUAL') {
+                if (value.estado !== 'ACTUAL') {
                     this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
                 } else {
                     this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
@@ -827,7 +830,7 @@ export class CupoComponent implements OnInit {
                                 }
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('Anulación de Matrícula', razonAnularMatricula);
+                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante', razonAnularMatricula);
                             },
                             error => {
                                 this.spinner.hide();
@@ -839,6 +842,13 @@ export class CupoComponent implements OnInit {
             if (!(razonAnularMatricula === undefined)) {
                 swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
             }
+        }
+    }
+
+    validateFechaCupos() {
+        if (this.fechaActual.getTime() >= this.periodoLectivoSeleccionado.fecha_inicio_cupo.getTime()
+            && this.fechaActual.getTime() <= this.periodoLectivoSeleccionado.fecha_fin_cupo.getTime()) {
+
         }
     }
 }

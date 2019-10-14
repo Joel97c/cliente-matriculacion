@@ -291,15 +291,15 @@ export class FormularioComponent implements OnInit {
             this.errors.push('(7) Formato Incorrecto: Teléfono celular');
             flag = false;
         }
-        if (this.informacionEstudiante.direccion.length < 12) {
+        if (this.informacionEstudiante.direccion != null && this.informacionEstudiante.direccion.length < 12) {
             this.errors.push('Formato Incorrecto: Dirección Incompleta');
             flag = false;
         }
-        if (this.informacionEstudiante.codigo_postal.length !== 6) {
+        if (this.informacionEstudiante.codigo_postal != null && this.informacionEstudiante.codigo_postal.length !== 6) {
             this.errors.push('Formato Incorrecto: Código Postal');
             flag = false;
         }
-        if (this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
+        if (this.informacionEstudiante.contacto_emergencia_telefono != null && this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
             && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9) {
             this.errors.push('Formato Incorrecto: Teléfono celular/convencional');
             flag = false;
@@ -326,13 +326,14 @@ export class FormularioComponent implements OnInit {
                 flag = false;
             }
         }
-        if (this.ubicacionNacimiento.canton_id == '0') {
-            this.errors.push('Falta: País Nacionalidad');
-            this.errors.push('Falta: Provincia Nacimiento');
-            this.errors.push('Falta: Cantón Nacimiento');
-            flag = false;
+        if (this.informacionEstudiante.categoria_migratoria == '6') {
+            if (this.ubicacionNacimiento.canton_id == '0') {
+                this.errors.push('Falta: País Nacionalidad');
+                this.errors.push('Falta: Provincia Nacimiento');
+                this.errors.push('Falta: Cantón Nacimiento');
+                flag = false;
+            }
         }
-
         if (this.ubicacionNacimiento.canton_id == '0') {
             if (this.informacionEstudiante.categoria_migratoria == '0') {
                 this.errors.push('Falta: Categoria Migratoria');
@@ -469,7 +470,7 @@ export class FormularioComponent implements OnInit {
             this.errors.push('Formato Incorrecta: Ingresos Familiares (62)');
             flag = false;
         }
-        if (this.informacionEstudiante.numero_miembros_hogar <= 1) {
+        if (this.informacionEstudiante.numero_miembros_hogar <= 0) {
             this.errors.push('Formato Incorrecta: Número Miembros del Hogar (63)');
             flag = false;
         }

@@ -139,6 +139,18 @@
                 </div>
             </div>
 
+            <!--Fecha Fin Anulacion-->
+            <div class="form-group row">
+                <div class="col-lg-12">
+                    <label for="fechaFinAnulacion">
+                        <b class="text-danger">*</b> Fecha Fin Anulación Matrícula:
+                    </label>
+                    <input id="fechaFinAnulacion" name="fechaFinAnulacion" type="date"
+                           [(ngModel)]="periodoLectivoSeleccionado.fecha_fin_anulacion"
+                           class="text-uppercase form-control" required="">
+                </div>
+            </div>
+
             <!--Ciclo-->
             <div class="form-group row">
                 <div class="col-lg-12">
@@ -222,7 +234,7 @@
             <div class="form-group row">
                 <div class="col-lg-12">
                     <label for="fechaInicioExtraOrdinaria">
-                        <b class="text-danger">*</b> Fecha Inicio Ordinaria:
+                        <b class="text-danger">*</b> Fecha Inicio ExtraOrdinaria:
                     </label>
                     <input id="fechaInicioExtraOrdinaria" name="fechaInicioExtraOrdinaria" type="date"
                            [(ngModel)]="periodoLectivoSeleccionado.fecha_inicio_extraordinaria"

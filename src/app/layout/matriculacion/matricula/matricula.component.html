@@ -1,11 +1,11 @@
-<div class="row">
+<div class=" row">
     <div class="col-lg-12">
         <table class="table table-responsive table-sm">
             <tr>
                 <td>
                     <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
                     'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
-                        <strong>{{txtPeridoActualHistorico}} :</strong>
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
                     </span>
                 </td>
                 <td>
@@ -33,7 +33,7 @@
                             (change)="getAprobados(1)">
                         <option value="-1" selected>SELECCIONE NIVEL</option>
                         <option value="" selected>TODOS</option>
-                        <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of peridoAcademicos"
+                        <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of periodoAcademicos"
                                 class="small">
                             {{periodoAcademico.nombre}}
                         </option>
@@ -156,7 +156,7 @@
                             id="periodoAcademicoMatricula" name="periodoAcademicoMatricula" required
                             (change)="updateMatricula(cupo)">
                         <option value="{{periodoAcademico.id}}"
-                                *ngFor="let periodoAcademico of peridoAcademicos">
+                                *ngFor="let periodoAcademico of periodoAcademicos">
                             {{periodoAcademico.nombre}}
                         </option>
                     </select>
@@ -194,12 +194,17 @@
                     </button>
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteMatricula(cupo)"
                             title="Anular Matrícula"
-                            *ngIf="cupo.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL'">
+                            *ngIf="cupo.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL'"
+                            [disabled]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')>=(fechaActual|date:'yyyy-MM-dd'))"
+                            [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')>=
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Anular Matrícula'">
                         <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
-                            title="Desertar Estudiante"
-                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'">
+                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'"
+                            [disabled]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<(fechaActual|date:'yyyy-MM-dd'))"
+                            [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Desertar Estudiante'">
                         <span class="{{messages['buttonDesert']['icon']}}"></span>
                     </button>
                 </td>

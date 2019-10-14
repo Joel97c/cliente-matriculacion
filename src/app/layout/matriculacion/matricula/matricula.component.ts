@@ -30,9 +30,10 @@ import {User} from '../modelos/user.model';
 })
 
 export class MatriculaComponent implements OnInit {
+    fechaActual: Date;
     estudiantesHistoricos: Array<Estudiante>;
     periodoLectivoSeleccionado: PeriodoLectivo;
-    txtPeridoActualHistorico: string;
+    txtPeriodoActualHistorico: string;
     buscadorEstudianteGeneral: string;
     periodosLectivos: Array<PeriodoLectivo>;
     archivoTemp: any;
@@ -76,7 +77,7 @@ export class MatriculaComponent implements OnInit {
     matriculados: Array<any>;
     matriculas: Array<Matricula>;
     carreras: Array<Carrera>;
-    peridoAcademicos: Array<PeriodoAcademico>;
+    periodoAcademicos: Array<PeriodoAcademico>;
     rutaActual: string;
     user: User;
 
@@ -85,9 +86,10 @@ export class MatriculaComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.fechaActual = new Date();
         this.estudiantesHistoricos = new Array<Estudiante>();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
-        this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
+        this.txtPeriodoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.buscador = '';
         this.notificacion = new Notificacion();
@@ -450,7 +452,7 @@ export class MatriculaComponent implements OnInit {
 
         this.service.get('catalogos/periodo_academicos').subscribe(
             response => {
-                this.peridoAcademicos = response['periodo_academicos'];
+                this.periodoAcademicos = response['periodo_academicos'];
             },
             error => {
                 this.spinner.hide();
@@ -465,7 +467,9 @@ export class MatriculaComponent implements OnInit {
                     this.periodoLectivoActual = new PeriodoLectivo();
                 } else {
                     this.periodoLectivoActual = response['periodo_lectivo_actual'];
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                    this.periodoLectivoSeleccionado = response['periodo_lectivo_actual'];
+                    this.periodoLectivoSeleccionado.fecha_fin_cupo = new Date(this.periodoLectivoActual.fecha_fin_cupo + 'T00:00:00');
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
                 }
             },
             error => {
@@ -839,9 +843,9 @@ export class MatriculaComponent implements OnInit {
             if (value.id == this.periodoLectivoActual.id) {
                 this.periodoLectivoSeleccionado = value;
                 if (value.estado != 'ACTUAL') {
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
                 } else {
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
                 }
                 this.getAprobados(1);
             }
@@ -853,11 +857,6 @@ export class MatriculaComponent implements OnInit {
         this.service.get('periodo_lectivos/historicos').subscribe(
             response => {
                 this.periodosLectivos = response['periodos_lectivos_historicos'];
-                this.periodosLectivos.forEach(value => {
-                    if (value.estado == 'ACTUAL') {
-                        this.periodoLectivoSeleccionado = value;
-                    }
-                });
                 this.spinner.hide();
             },
             error => {

@@ -410,6 +410,15 @@ export const catalogos = {
                 'showConfirmButton': true,
                 'backdrop': 'rgba(255, 0, 0,0.4)'
             },
+            error001: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'Oops! Tú cupo no ha sido creado, consulta con el coordinador de carrera',
+                'text': 'Vuelve a intentar más tarde',
+                'timer': 10000,
+                'showConfirmButton': true,
+                'backdrop': 'rgba(255, 0, 0,0.4)'
+            },
             error23505: {
                 'position': 'center',
                 'type': 'error',

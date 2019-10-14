@@ -49,11 +49,26 @@
             <tr>
                 <td *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
                     <label for="file-upload" class="btn btn-light fa fa-upload btn-sm form-control-sm"
-                           title="Subir archivo de cupos">
+                           title="Subir archivo de cupos"
+                           [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo '
+                            +'('+periodoLectivoSeleccionado.fecha_inicio_cupo+' - '+periodoLectivoSeleccionado.fecha_fin_cupo+')'
+                            :'Desertar Estudiante'"
+                           [ngClass]="{'disabled':true}">
                         Subir cupos
                     </label>
                     <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
                            name="fileExcel"
+                           (change)="uploadCupos($event)"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <input id="file-upload2" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                           name="fileExcel"
+                           [disabled]="
+                           !(
+                           (periodoLectivoSeleccionado.fecha_inicio_cupo|date:'yyyy-MM-dd')<=(fechaActual|date:'yyyy-MM-dd')
+                           &&
+                           (fechaActual|date:'yyyy-MM-dd')<=(periodoLectivoSeleccionado.fecha_fin_cupo|date:'yyyy-MM-dd')
+                           )"
                            (change)="uploadCupos($event)"
                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                 </td>
@@ -156,7 +171,7 @@
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')"
                             id="tipoMatricula" name="tipoMatricula" required
-                            (change)="updateMatricula(cupo)">
+                            (change)="updateMatricula(cupo,'Tipo Matricula')">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
                         </option>
@@ -166,7 +181,7 @@
                     <select name="periodoAcademicoPrincipal" id="periodoAcademicoPrincipal"
                             [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')"
-                            (change)="updateMatricula(cupo)">
+                            (change)="updateMatricula(cupo,'Periodo Academico')">
                         <option value={{periodo.id}}
                                 *ngFor="let periodo of peridoAcademicos">{{periodo.nombre}}</option>
                     </select>
@@ -175,7 +190,7 @@
                     <select name="jornadaPrincipal" id="jornadaPrincipal" [(ngModel)]="cupo.jornada"
                             class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')"
-                            (change)="updateMatricula(cupo)">
+                            (change)="updateMatricula(cupo,'Jornada Principal')">
                         <option value={{jornada.codigo}}
                                 *ngFor="let jornada of jornadas">{{jornada.descripcion}}</option>
                     </select>
@@ -291,7 +306,7 @@
                     <select [(ngModel)]="detalle.asignatura.id" class="form-control"
                             id="detalleAsignatura" name="detalleAsignatura" required
                             [disabled]="!(detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')"
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Asignatura')">
                         <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
                             {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
                         </option>
@@ -301,7 +316,7 @@
                     <select [(ngModel)]="detalle.numero_matricula" class="form-control"
                             id="numero_matricula" name="numero_matricula" required
                             [disabled]="!(detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')"
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Numero Matricula')">
                         <option value="{{numeroMatricula.codigo}}" *ngFor="let numeroMatricula of numerosMatricula">
                             {{numeroMatricula.descripcion}}
                         </option>
@@ -320,7 +335,7 @@
                     <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
                             id="tipo_matricula" name="tipo_matricula" required
                             [disabled]="!(detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')"
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Tipo Matricula')">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
                         </option>
