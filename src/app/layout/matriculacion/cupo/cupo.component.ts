@@ -801,9 +801,9 @@ export class CupoComponent implements OnInit {
 
     cambiarPeriodoLectivoActual() {
         this.periodosLectivos.forEach(value => {
-            if (value.id === this.periodoLectivoActual.id) {
+            if (value.id == this.periodoLectivoActual.id) {
                 this.periodoLectivoSeleccionado = value;
-                if (value.estado !== 'ACTUAL') {
+                if (value.estado != 'ACTUAL') {
                     this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
                 } else {
                     this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';

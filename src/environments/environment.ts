@@ -6,10 +6,10 @@ import {Token} from '../app/layout/matriculacion/modelos/token.model';
 
 export const environment = {
     production: false,
-    API_URL: 'http://127.0.0.1:8000/api/',
-    API_URL_PUBLIC: 'http://127.0.0.1:8000/'
-    // API_URL: 'http://172.16.11.110:8000/api/',
-    // API_URL_PUBLIC: 'http://172.16.11.110:8000/'
+    // API_URL: 'http://127.0.0.1:8000/api/',
+    // API_URL_PUBLIC: 'http://127.0.0.1:8000/'
+    API_URL: 'http://172.16.24.10:8000/api/',
+    API_URL_PUBLIC: 'http://172.16.24.10:8000/'
     // API_URL: 'http://134.209.209.73/matriculacion-prueba/server/api/',
     // API_URL_PUBLIC: 'http://134.209.209.73/matriculacion-prueba/server/'
 };
