@@ -259,14 +259,15 @@ export class MatriculaComponent implements OnInit {
     }
 
     getAsignaturasCarrera() {
-        this.service.get('matriculas/asignaturas?carrera_id=' + this.carrera.id).subscribe(
-            response => {
-                this.asignaturas = response['asignaturas'];
-            },
-            error => {
-                this.spinner.hide();
-                swal.fire(this.messages['error500']);
-            });
+        this.service.get('matriculas/asignaturas?carrera_id=' + this.carrera.id + '&matricula_id=' + this.matriculaSeleccionada.id)
+            .subscribe(
+                response => {
+                    this.asignaturas = response['asignaturas'];
+                },
+                error => {
+                    this.spinner.hide();
+                    swal.fire(this.messages['error500']);
+                });
     }
 
     getBarcodeData(text: string, size = 900) {
