@@ -1,1 +1,743 @@
-cupos dash board
+<!--Encabezado-->
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <table class="table table-responsive table-sm">
+            <tr>
+                <td>
+                    <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+                </td>
+                <td>
+                    <select name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                            (change)="cambiarPeriodoLectivoActual();">
+                        <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                                *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <button (click)="getMatriculadosCount(periodoLectivoActual)" class="btn btn-success"
+                            title="Actualizar"><span class="{{messages['buttonRefresh']['icon']}}"></span></button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<hr>
+<!--Titulo Institutos-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1> TOTAL ESTUDIANTES: <span class="">{{total_matriculados_institutos}}</span></h1>
+    </div>
+</div>
+<hr>
+<!--Resumen Institutos-->
+<div>
+    <div class="row">
+        <div class="col-xl-4" *ngFor="let matricula of total_matriculados_institutos_count">
+            <div class="card">
+                <div style="height: 150px;">
+                    <div class="card-header bg-white h-100 text-center">
+                        <img src="{{'assets/images/logo_instituto_'+matricula.instituto_id +'.png'}}" alt=""
+                             class="img-thumbnail">
+                        <h6 class="text-muted">{{matricula.instituto}}</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="bg-light">
+                                        Matriculados: {{matricula.total_matriculados}}
+                                    </th>
+                                    <th class="bg-light">
+                                        Retirados: {{matricula.total_anulados}}
+                                    </th>
+                                    <th class="bg-light">
+                                        Desertores: {{matricula.total_desertores}}
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-dark">
+        </div>
+    </div>
+</div>
+
+<!--Titulo Carreras-->
+<div class="row">
+    <div class="col-lg-12">
+        <h1>CARRERAS:</h1>
+    </div>
+</div>
+
+<!--Resumen Carreras-->
+<div class="row">
+    <div class="col-xl-4" *ngFor="let matricula of total_matriculados_carreras_count">
+        <div class="card">
+            <div style="height: 250px;" (click)="changeFlagCarrera(matricula.malla_id)">
+                <div class="card-header bg-white h-100 text-center"
+                     [ngClass]="{'bg-warning':matricula.malla=='MALLA ANTIGUA'}">
+                    <img src="{{'assets/images/logo_carrera_'+matricula.carrera_id +'.jpg'}}" alt=""
+                         class="img-thumbnail">
+                    <h6 class="text-muted">{{matricula.malla}}</h6>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th class="bg-light">
+                                        Matriculados: {{matricula.total_matriculados}}
+                                    </th>
+                                    <th class="bg-light">
+                                        Retirados: {{matricula.total_anulados}}
+                                    </th>
+                                    <th class="bg-light">
+                                        Desertores: {{matricula.total_desertores}}
+                                    </th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="flagsCarrera[matricula.malla_id]" class="card-body">
+                <!--Primero Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>
+                                    PRIMERO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_1}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_1}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_1}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_1}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_1}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_1}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_1}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_1}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--Segundo Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    SEGUNDO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_2}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_2}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_2}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_2}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_2}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_2}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_2}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_2}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--Tercero Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    TERCERO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_3}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_3}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_3}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_3}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_3}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_3}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_3}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_3}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_3}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--Cuarto Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    CUARTO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_4}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_4}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_4}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_4}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_4}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_4}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_4}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_4}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_4}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--Quinto Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    QUINTO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_5}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_5}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_5}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_5}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_5}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_5}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_5}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_5}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_5}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!--Sexto Semestre-->
+                <hr class="bg-dark">
+                <div class="row  text-center">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>
+                                    SEXTO
+                                </th>
+                                <th>
+                                    Matriculados: {{matricula.matriculados_6}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row mt-2 text-center">
+                    <div class="col-lg-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td></td>
+                                <th>
+                                    A
+                                </th>
+                                <th>
+                                    B
+                                </th>
+                                <th>
+                                    C
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <b>MATUTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_a_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_b_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_matutina_c_6}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b> VESPERTINA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_a_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_b_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_vespertina_c_6}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>NOCTURNA</b>
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_a_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_b_6}}
+                                </td>
+                                <td>
+                                    {{matricula.matriculados_nocturna_c_6}}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row  text-center mt-2">
+                    <div class="col-lg-12">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="bg-light small">
+                                    Aprobados: {{matricula.aprobados_6}}
+                                </th>
+                                <th class="bg-light small">
+                                    En Proceso: {{matricula.en_proceso_6}}
+                                </th>
+                                <th class="bg-light small">
+                                    Retirados: {{matricula.anulados_6}}
+                                </th>
+                                <th class="bg-light small">
+                                    Desertores: {{matricula.desertores_6}}
+                                </th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="bg-dark">
+        <hr class="bg-dark">
+    </div>
+</div>

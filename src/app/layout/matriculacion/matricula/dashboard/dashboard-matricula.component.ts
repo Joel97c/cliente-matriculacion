@@ -4,6 +4,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {User} from '../../../matriculacion/modelos/user.model';
 import {Chart} from 'chart.js';
 import {PeriodoLectivo} from '../../modelos/periodo-lectivo.model';
+import {catalogos} from '../../../../../environments/catalogos';
 
 @Component({
     selector: 'app-dashboard-matricula',
@@ -11,8 +12,10 @@ import {PeriodoLectivo} from '../../modelos/periodo-lectivo.model';
     styleUrls: ['./dashboard-matricula.component.scss']
 })
 export class DashboardMatriculaComponent implements OnInit {
+    flagsCarrera: Array<boolean>;
+    messages: any;
     periodoLectivoSeleccionado: PeriodoLectivo;
-    txtPeridoActualHistorico: string;
+    txtPeriodoActualHistorico: string;
     periodosLectivos: Array<PeriodoLectivo>;
     periodoLectivoActual: PeriodoLectivo;
     total_matriculados_carreras_count: Array<any>;
@@ -20,7 +23,6 @@ export class DashboardMatriculaComponent implements OnInit {
     total_matriculados_institutos: number;
     user: User;
     chart = [];
-    etiquetaCanvas: Array<any>;
     flagGraficos: boolean;
     classContadorMatriculados: string;
     classContadorAprobados: string;
@@ -28,16 +30,16 @@ export class DashboardMatriculaComponent implements OnInit {
     classContadorDesertores: string;
     classContadorAnulados: string;
     classContadorParalelos: string;
-    @ViewChildren('graficosCarreras') graficosCarreras: QueryList<any>;
-    @ViewChildren('graficosInstitutos') graficosInstitutos: QueryList<any>;
 
     constructor(private spinner: NgxSpinnerService, private service: ServiceService) {
     }
 
     ngOnInit() {
-         this.total_matriculados_institutos = 0;
+        this.flagsCarrera = new Array<boolean>();
+        this.messages = catalogos.messages;
+        this.total_matriculados_institutos = 0;
 
-         // this.classContadorMatriculados = 'text-success';
+        // this.classContadorMatriculados = 'text-success';
         // this.classContadorAprobados = 'text-warning text-white';
         // this.classContadorEnProceso = 'text-danger';
         // this.classContadorDesertores = 'btn btn-danger btn-sm ml-2';
@@ -103,9 +105,9 @@ export class DashboardMatriculaComponent implements OnInit {
             if (value.id == this.periodoLectivoActual.id) {
                 this.periodoLectivoSeleccionado = value;
                 if (value.estado != 'ACTUAL') {
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO HISTÓRICO';
                 } else {
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
                 }
                 this.getMatriculadosCount(this.periodoLectivoSeleccionado);
             }
@@ -120,7 +122,7 @@ export class DashboardMatriculaComponent implements OnInit {
                 this.periodosLectivos.forEach(value => {
                     if (value.estado == 'ACTUAL') {
                         this.periodoLectivoSeleccionado = value;
-                        this.getMatriculadosCount(this.periodoLectivoActual);
+                        this.getMatriculadosCount(this.periodoLectivoSeleccionado);
                     }
                 });
                 this.spinner.hide();
@@ -137,12 +139,16 @@ export class DashboardMatriculaComponent implements OnInit {
                     this.periodoLectivoActual = new PeriodoLectivo();
                 } else {
                     this.periodoLectivoActual = response['periodo_lectivo_actual'];
-                    this.txtPeridoActualHistorico = 'PERIODO LECTIVO ACTUAL';
+                    this.txtPeriodoActualHistorico = 'PERIODO LECTIVO ACTUAL';
                 }
             },
             error => {
                 this.spinner.hide();
 
             });
+    }
+
+    changeFlagCarrera(indice: number) {
+        this.flagsCarrera[indice] = !this.flagsCarrera[indice];
     }
 }

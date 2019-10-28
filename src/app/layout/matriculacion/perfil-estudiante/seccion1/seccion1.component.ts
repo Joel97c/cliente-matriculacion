@@ -112,17 +112,19 @@ export class Seccion1Component implements OnInit {
     }
 
     getEstudiante() {
-        // this.spinner.show();
         this.estadoDatos = 'Guardando...';
         this.service.get('estudiantes/' + this.user.id).subscribe(
             response => {
                 this.estudiante = response['estudiante'];
                 this.informacionEstudiante = response['informacion_estudiante'];
                 this.estadoDatos = '';
-                this.codigoProvincial = this.informacionEstudiante.telefono_fijo.substring(0, 2);
-                this.informacionEstudiante.telefono_fijo =
-                    this.informacionEstudiante.telefono_fijo.substring(2, this.informacionEstudiante.telefono_fijo.length);
-                // this.spinner.hide();
+                if (this.informacionEstudiante.telefono_fijo != null && this.informacionEstudiante.telefono_fijo != '') {
+                    this.codigoProvincial = this.informacionEstudiante.telefono_fijo.substring(0, 2);
+                    this.informacionEstudiante.telefono_fijo =
+                        this.informacionEstudiante.telefono_fijo.substring(2, this.informacionEstudiante.telefono_fijo.length);
+                } else {
+                    this.codigoProvincial = '02';
+                }
             },
             error => {
                 this.estadoDatos = '';
@@ -182,7 +184,9 @@ export class Seccion1Component implements OnInit {
     validateCampos(): boolean {
         let flag = true;
         this.errors = new Array<string>();
-        if (this.informacionEstudiante.telefono_fijo != null && this.informacionEstudiante.telefono_fijo != '' && this.informacionEstudiante.telefono_fijo.length !== 7) {
+        if (this.informacionEstudiante.telefono_fijo != null
+            && this.informacionEstudiante.telefono_fijo != ''
+            && this.informacionEstudiante.telefono_fijo.trim().length !== 7) {
             this.errors.push('Formato Incorrecto: Teléfono convencional');
             flag = false;
         }

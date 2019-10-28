@@ -1,31 +1,35 @@
 <!--Encabezado-->
 <div class="row">
-    <div class="col-lg-3 col-xs-12">
-        <h1 class="text-muted">MATRÍCULAS:</h1>
-    </div>
-    <!--    Combo periodo lectivo-->
-    <div class="col-lg-5 col-xs-12">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon-periodo-historico">
-            Periodo Lectivo:
-            </span>
-                <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id"
-                        class="form-control"
-                        *ngIf="user.role.rol=='6'||user.role.rol=='4' || user.role.rol=='3' || user.role.rol=='1'"
-                        (change)="cambiarPeriodoLectivoActual()">
-                    <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
-                            *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
-                </select>
-            </div>
-        </div>
+    <div class="col-lg-12 col-xs-12">
+        <table class="table table-responsive table-sm">
+            <tr>
+                <td>
+                    <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!='ACTUAL',
+                    'text-success':periodoLectivoSeleccionado.estado=='ACTUAL'}" class="form-control">
+                        <strong>{{txtPeriodoActualHistorico}} :</strong>
+                    </span>
+                </td>
+                <td>
+                    <select name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                            (change)="cambiarPeriodoLectivoActual();">
+                        <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
+                                *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
+                    </select>
+                </td>
+                <td>
+                    <button (click)="getMatriculadosCount(periodoLectivoActual)" class="btn btn-success"
+                            title="Actualizar"><span class="{{messages['buttonRefresh']['icon']}}"></span></button>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 <hr>
 <!--Titulo Institutos-->
 <div class="row">
     <div class="col-lg-12">
-        <h1> INSTITUTOS: <span class="">{{total_matriculados_institutos}}</span></h1>
+        <h1> TOTAL ESTUDIANTES: <span class="">{{total_matriculados_institutos}}</span></h1>
     </div>
 </div>
 <hr>
@@ -79,7 +83,7 @@
 <div class="row">
     <div class="col-xl-4" *ngFor="let matricula of total_matriculados_carreras_count">
         <div class="card">
-            <div style="height: 250px;">
+            <div style="height: 250px;" (click)="changeFlagCarrera(matricula.malla_id)">
                 <div class="card-header bg-white h-100 text-center"
                      [ngClass]="{'bg-warning':matricula.malla=='MALLA ANTIGUA'}">
                     <img src="{{'assets/images/logo_carrera_'+matricula.carrera_id +'.jpg'}}" alt=""
@@ -106,7 +110,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+            <div *ngIf="flagsCarrera[matricula.malla_id]" class="card-body">
                 <!--Primero Semestre-->
                 <hr class="bg-dark">
                 <div class="row  text-center">

@@ -9,14 +9,15 @@
                     </span>
                 </td>
                 <td>
-                    <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
                             (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
                         <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                                 *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
                     </select>
                 </td>
                 <td>
-                    <select [(ngModel)]="carrera.id" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" [(ngModel)]="carrera.id" class="form-control"
                             id="carrera" name="carrera" required
                             (change)="getAprobados(1);getDetalleMatriculasForMalla()">
                         <option value="" selected>SELECCIONE UNA CARRERA</option>
@@ -28,7 +29,7 @@
                     </select>
                 </td>
                 <td>
-                    <select [(ngModel)]="periodoAcademico" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" [(ngModel)]="periodoAcademico" class="form-control"
                             id="periodoAcademico" name="periodoAcademico" required
                             (change)="getAprobados(1)">
                         <option value="-1" selected>SELECCIONE NIVEL</option>
@@ -112,9 +113,9 @@
         <table class="table table-hover table-sm table-responsive">
             <thead class="table-default">
             <th width="10%" *ngIf="carrera.id==0">Carrera</th>
-            <th width="10%">Cédula</th>
-            <th width="25%" *ngIf="carrera.id==0">Estudiante</th>
-            <th width="30%" *ngIf="carrera.id!=0">Estudiante</th>
+            <th width="10%">Identificación</th>
+            <th width="25%" *ngIf="carrera.id==0">Apellidos y Nombres</th>
+            <th width="30%" *ngIf="carrera.id!=0">Apellidos y Nombres</th>
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
@@ -268,11 +269,13 @@
 <!--Detalle matricula-->
 <div class="row" *ngIf="flagAsignaturasCupo">
     <div class="col-lg-12">
-        <h1>{{matriculaSeleccionada.estudiante.apellido1 + ' ' + matriculaSeleccionada.estudiante.apellido2 + ' '
+        <h1>
+            <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagAsignaturasCupo()">
+                <span class="fa fa-arrow-left text-white"> Regresar</span>
+            </button>
+            {{matriculaSeleccionada.estudiante.apellido1 + ' ' + matriculaSeleccionada.estudiante.apellido2 + ' '
         + matriculaSeleccionada.estudiante.nombre1 + ' ' + matriculaSeleccionada.estudiante.nombre2}}</h1>
-        <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagAsignaturasCupo()">
-            <span class="fa fa-arrow-left text-white"> Regresar</span>
-        </button>
+
         <table class="table table-hover table-responsive">
             <thead class="table-default text-center">
             <th width="35%">Asignatura</th>

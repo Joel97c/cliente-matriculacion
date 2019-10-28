@@ -41,6 +41,8 @@ export class LoginComponent implements OnInit {
             this.spinner.show();
             const clientId = 1;
             const clientSecret = 'gCKtEi6W8KpXgWCv4sDSlkM6IErcQQLTuvW5j5yg';
+            // const clientSecret = '7BLBkj11fgvi0aWY9O17zKH4cvk1oLiAQBC8zCx4';
+
             const grantType = 'password';
 
             this.userName = this.userName.toLocaleLowerCase();

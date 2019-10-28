@@ -86,6 +86,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.buscadorEstudianteGeneral = '';
         this.fechaActual = new Date();
         this.estudiantesHistoricos = new Array<Estudiante>();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
@@ -319,6 +320,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     filterEstudianteGeneral(event) {
+        console.log(this.periodoLectivoActual.id);
         if (this.periodoLectivoActual.id !== 0) {
             if ((event.which === 1 || event.which === 13) && this.buscadorEstudianteGeneral.length > 0) {
                 this.flagPagination = false;

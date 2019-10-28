@@ -79,6 +79,9 @@ export class AuthGuard implements CanActivate {
             this.service.get('usuarios/login?email=' + this.user.email).subscribe(response => {
                 this.userAux = response['usuario'];
                 if (this.userAux.role.id !== this.user.role.id || this.userAux.estado === 'INACTIVO') {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    localStorage.removeItem('isLoggedin');
                     this.router.navigate(['/login']);
                     return false;
                 }

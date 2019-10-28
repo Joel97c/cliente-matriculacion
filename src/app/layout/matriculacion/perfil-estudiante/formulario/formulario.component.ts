@@ -276,150 +276,167 @@ export class FormularioComponent implements OnInit {
     validateFormulario(): boolean {
         let flag = true;
         if (this.matricula.estudiante.sexo == null || !(this.matricula.estudiante.sexo === '1' || this.matricula.estudiante.sexo === '2')) {
-            this.errors.push('Falta (3): Sexo');
+            this.errors.push('3. Sexo');
             flag = false;
         }
-        if (this.matricula.estudiante.genero == null || !(this.matricula.estudiante.genero === '1' || this.matricula.estudiante.genero === '2')) {
-            this.errors.push('Falta (4): Género');
-            flag = false;
-        }
-        if (this.informacionEstudiante.telefono_fijo == null || this.informacionEstudiante.telefono_fijo.length !== 9) {
-            this.errors.push('(8) Formato Incorrecto: Teléfono convencional');
+        if (this.matricula.estudiante.genero == null || !(this.matricula.estudiante.genero === '1'
+            || this.matricula.estudiante.genero === '2')) {
+            this.errors.push('4. Género');
             flag = false;
         }
         if (this.informacionEstudiante.telefono_celular == null || this.informacionEstudiante.telefono_celular.length !== 10) {
-            this.errors.push('(7) Formato Incorrecto: Teléfono celular');
+            this.errors.push('7. Teléfono celular (formato incorrecto)');
+            flag = false;
+        }
+        if (this.informacionEstudiante.telefono_fijo == null || this.informacionEstudiante.telefono_fijo.length !== 9) {
+            this.errors.push('8. Teléfono convencional (formato incorrecto)');
             flag = false;
         }
         if (this.informacionEstudiante.direccion != null && this.informacionEstudiante.direccion.length < 12) {
-            this.errors.push('Formato Incorrecto: Dirección Incompleta');
+            this.errors.push('9. Dirección Incompleta');
             flag = false;
         }
         if (this.informacionEstudiante.codigo_postal != null && this.informacionEstudiante.codigo_postal.length !== 6) {
-            this.errors.push('Formato Incorrecto: Código Postal');
-            flag = false;
-        }
-        if (this.informacionEstudiante.contacto_emergencia_telefono != null && this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
-            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9) {
-            this.errors.push('Formato Incorrecto: Teléfono celular/convencional');
+            this.errors.push('10. Código Postal');
             flag = false;
         }
 
-        if (this.matricula.estudiante.etnia == null || this.matricula.estudiante.etnia === '0') {
-            this.errors.push('(34) Falta: Etnia');
+        if (this.informacionEstudiante.contacto_emergencia_nombres != null
+            && this.informacionEstudiante.contacto_emergencia_nombres.length !== 10
+            && this.informacionEstudiante.contacto_emergencia_nombres.length !== 9) {
+            this.errors.push('11. Nombres (contacto emergencia)');
             flag = false;
         }
+        if (this.informacionEstudiante.contacto_emergencia_parentesco != null
+            && this.informacionEstudiante.contacto_emergencia_parentesco.length !== 10
+            && this.informacionEstudiante.contacto_emergencia_parentesco.length !== 9) {
+            this.errors.push('12. Parentesco (contacto emergencia)');
+            flag = false;
+        }
+        if (this.informacionEstudiante.contacto_emergencia_telefono != null
+            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
+            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9) {
+            this.errors.push('13. Teléfono celular/convencional (formato incorrecto)');
+            flag = false;
+        }
+        if (this.matricula.estudiante.etnia == null || this.matricula.estudiante.etnia === '0') {
+            this.errors.push('14. Etnia');
+            flag = false;
+        }
+        console.log('this.informacionEstudiante.codigo_postal');
+        console.log(this.matricula.estudiante.pueblo_nacionalidad);
 
         if (this.matricula.estudiante.etnia == '1') {
             if (this.matricula.estudiante.pueblo_nacionalidad === '0') {
-                this.errors.push('Falta (35): Pueblo Nacionalidad');
+                this.errors.push('15. Pueblo Nacionalidad');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.habla_idioma_ancestral === '0') {
-            this.errors.push('Falta: Habla idioma ancestral');
+            this.errors.push('16. Habla idioma ancestral');
             flag = false;
         }
         if (this.informacionEstudiante.habla_idioma_ancestral === '1') {
             if (this.informacionEstudiante.idioma_ancestral == null || this.informacionEstudiante.idioma_ancestral.length === 0) {
-                this.errors.push('Falta: Especificar idioma acentral');
+                this.errors.push('16. Falta: Especificar idioma acentral');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.categoria_migratoria == '6') {
             if (this.ubicacionNacimiento.canton_id == '0') {
-                this.errors.push('Falta: País Nacionalidad');
-                this.errors.push('Falta: Provincia Nacimiento');
-                this.errors.push('Falta: Cantón Nacimiento');
+                this.errors.push('19. País Nacionalidad');
+                this.errors.push('20. Provincia Nacimiento');
+                this.errors.push('21. Cantón Nacimiento');
                 flag = false;
             }
         }
         if (this.ubicacionNacimiento.canton_id == '0') {
             if (this.informacionEstudiante.categoria_migratoria == '0') {
-                this.errors.push('Falta: Categoria Migratoria');
+                this.errors.push('22. Categoria Migratoria');
                 flag = false;
             }
         }
         if (this.ubicacionResidencia.canton_id == '0') {
-            this.errors.push('Falta: País Residencia');
-            this.errors.push('Falta: Provincia Residencia');
-            this.errors.push('Falta: Cantón Residencia');
+            this.errors.push('23. País Residencia');
+            this.errors.push('24. Provincia Residencia');
+            this.errors.push('25. Cantón Residencia');
             flag = false;
         }
         if (this.matricula.estudiante.tipo_sangre === '0') {
-            this.errors.push('Falta: Tipo Sangre');
+            this.errors.push('18. Tipo Sangre');
             flag = false;
         }
         if (this.informacionEstudiante.estado_civil === '0') {
-            this.errors.push('Falta: Estado Civil');
+            this.errors.push('26. Estado Civil');
             flag = false;
         }
         if (this.informacionEstudiante.tiene_discapacidad === '0') {
-            this.errors.push('Falta: Discapacidad');
+            this.errors.push('27. Discapacidad');
             flag = false;
         }
         if (this.informacionEstudiante.tiene_discapacidad === '1') {
             if (this.informacionEstudiante.numero_carnet_conadis == null || this.informacionEstudiante.numero_carnet_conadis.length === 0) {
-                this.errors.push('Falta: Número Carnet Conadis');
+                this.errors.push('28. Número Carnet Conadis');
                 flag = false;
             }
             if (this.informacionEstudiante.porcentaje_discapacidad == null || this.informacionEstudiante.porcentaje_discapacidad <= 0) {
-                this.errors.push('Falta: Porcentaje Discapacidad');
+                this.errors.push('29. Porcentaje Discapacidad');
                 flag = false;
             }
             if (this.informacionEstudiante.tipo_discapacidad == null || this.informacionEstudiante.tipo_discapacidad == '0') {
-                this.errors.push('Falta: Tipo Discapacidad');
+                this.errors.push('30. Tipo Discapacidad');
                 flag = false;
             }
         }
         if (this.matricula.estudiante.tipo_colegio === '0') {
-            this.errors.push('Falta: Tipo Colegio');
+            this.errors.push('31. Tipo Colegio');
             flag = false;
         }
         if (this.matricula.estudiante.tipo_bachillerato === '0') {
-            this.errors.push('Falta: Tipo Bachillerato');
+            this.errors.push('32. Tipo Bachillerato');
             flag = false;
         }
 
         if (this.matricula.estudiante.anio_graduacion == null || this.matricula.estudiante.anio_graduacion.length !== 4) {
-            this.errors.push('Formato Incorrecto: Año de Graduación');
+            this.errors.push('33. Año de Graduación (formato incorrecto)');
             flag = false;
         }
         if (this.informacionEstudiante.posee_titulo_superior === '0') {
-            this.errors.push('Falta: Posee Título Superior');
+            this.errors.push('34. Posee Título Superior');
             flag = false;
         }
 
         if (this.informacionEstudiante.posee_titulo_superior === '1') {
-            if (this.informacionEstudiante.titulo_superior_obtenido == null || this.informacionEstudiante.titulo_superior_obtenido.length < 10) {
-                this.errors.push('Falta: Título Superior Obtenido');
+            if (this.informacionEstudiante.titulo_superior_obtenido == null
+                || this.informacionEstudiante.titulo_superior_obtenido.length < 10) {
+                this.errors.push('34. Título Superior Obtenido');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.ha_realizado_practicas === '0') {
-            this.errors.push('Falta: Ha Realizado Prácticas');
+            this.errors.push('49. Ha Realizado Prácticas');
             flag = false;
         }
         if (this.informacionEstudiante.ha_realizado_practicas === '1') {
             if (this.informacionEstudiante.horas_practicas <= 0) {
-                this.errors.push('Falta: Horas Prácticas');
+                this.errors.push('50. Horas Prácticas');
                 flag = false;
             }
             if (this.informacionEstudiante.tipo_institucion_practicas === '0') {
-                this.errors.push('Falta: Tipo Institución Prácticas');
+                this.errors.push('51. Tipo Institución Prácticas');
                 flag = false;
             }
             if (this.informacionEstudiante.sector_economico_practica === '0') {
-                this.errors.push('Falta: Sector Económico Prácticas');
+                this.errors.push('52. Sector Económico Prácticas');
                 flag = false;
             }
             if (this.informacionEstudiante.sector_economico_practica === '22') {
-                this.errors.push('Selcción Incorrecta: Sector Económico Prácticas N/A');
+                this.errors.push('53. Sector Económico Prácticas no permitido (N/A)');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.ha_realizado_vinculacion === '0') {
-            this.errors.push('Falta: Ha Realizado Vinculación');
+            this.errors.push('53. Ha Realizado Vinculación');
             flag = false;
         }
         if (this.informacionEstudiante.ha_realizado_vinculacion === '1') {
@@ -428,50 +445,50 @@ export class FormularioComponent implements OnInit {
             //     flag = false;
             // }
             if (this.informacionEstudiante.alcance_vinculacion === '0') {
-                this.errors.push('Falta: Tipo Alcance Vinculación');
+                this.errors.push('54. Tipo Alcance Vinculación');
                 flag = false;
             }
             if (this.informacionEstudiante.alcance_vinculacion === '22') {
-                this.errors.push('Selcción Incorrecta: Tipo Alcance Vinculación N/A');
+                this.errors.push('54 . Tipo Alcance Vinculación no permitido (N/A)');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.ocupacion === '0') {
-            this.errors.push('Falta: Se Encuentra Dedicado');
+            this.errors.push('55. Se Encuentra Dedicado');
             flag = false;
         }
         if (this.informacionEstudiante.ocupacion === '2') {
             if (this.informacionEstudiante.nombre_empresa_labora == null || this.informacionEstudiante.nombre_empresa_labora.length === 0) {
-                this.errors.push('Falta: Nombre Empresa Labora');
+                this.errors.push('56. Nombre Empresa Labora');
                 flag = false;
             }
             if (this.informacionEstudiante.area_trabajo_empresa === '0') {
-                this.errors.push('Falta: Area Empresa Labora');
+                this.errors.push('57. Area Empresa Labora');
                 flag = false;
             }
             if (this.informacionEstudiante.destino_ingreso === '0') {
-                this.errors.push('Falta: Para Que Emplea sus ingresos (58)');
+                this.errors.push('58. Para Que Emplea sus ingresos');
                 flag = false;
             }
         }
         if (this.informacionEstudiante.recibe_bono_desarrollo === '0') {
-            this.errors.push('Falta: Bono de Desarrollo');
+            this.errors.push('59. Bono de Desarrollo');
             flag = false;
         }
         if (this.informacionEstudiante.nivel_formacion_padre === '0') {
-            this.errors.push('Falta: Nivel Formación Padre (60)');
+            this.errors.push('60. Nivel Formación Padre');
             flag = false;
         }
         if (this.informacionEstudiante.nivel_formacion_madre === '0') {
-            this.errors.push('Falta: Nivel Formación Madre (61)');
+            this.errors.push('61. Nivel Formación Madre');
             flag = false;
         }
-        if (this.informacionEstudiante.ingreso_familiar <= 100) {
-            this.errors.push('Formato Incorrecta: Ingresos Familiares (62)');
+        if (this.informacionEstudiante.ingreso_familiar <= 1) {
+            this.errors.push('62. Ingresos Familiares');
             flag = false;
         }
         if (this.informacionEstudiante.numero_miembros_hogar <= 0) {
-            this.errors.push('Formato Incorrecta: Número Miembros del Hogar (63)');
+            this.errors.push('63. Número Miembros del Hogar');
             flag = false;
         }
         return flag;

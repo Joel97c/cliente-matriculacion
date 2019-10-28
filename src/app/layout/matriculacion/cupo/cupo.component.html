@@ -9,14 +9,15 @@
                     </span>
                 </td>
                 <td>
-                    <select name="periodoLectivoActual" [(ngModel)]="periodoLectivoActual.id" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" name="periodoLectivoActual"
+                            [(ngModel)]="periodoLectivoActual.id" class="form-control"
                             (change)="cambiarPeriodoLectivoActual();getDetalleMatriculasForMalla()">
                         <option [ngClass]="{'bg-success text-white':periodo.estado=='ACTUAL'}" value="{{periodo.id}}"
                                 *ngFor="let periodo of periodosLectivos">{{periodo.nombre}}</option>
                     </select>
                 </td>
                 <td>
-                    <select [(ngModel)]="carrera.id" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" [(ngModel)]="carrera.id" class="form-control"
                             id="carrera" name="carrera" required (change)="getCupos(1);getDetalleMatriculasForMalla()">
                         <option value="0" selected>SELECCIONE UNA CARRERA</option>
                         <option value="{{carrera.id}}" *ngFor="let carrera of carreras" class="small"
@@ -26,7 +27,7 @@
                     </select>
                 </td>
                 <td>
-                    <select [(ngModel)]="periodoAcademico" class="form-control"
+                    <select [disabled]="flagAsignaturasCupo" [(ngModel)]="periodoAcademico" class="form-control"
                             id="periodoAcademico" name="periodoAcademico" required
                             (change)="getCupos(1)">
                         <option value="-1" selected>SELECCIONE NIVEL</option>
@@ -49,7 +50,7 @@
             <tr>
                 <td *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
                     <label for="file-upload" class="btn btn-light fa fa-upload btn-sm form-control-sm"
-                           title="Subir archivo de cupos" [ngClass]="{'disabled':true}">
+                           title="Subir archivo de cupos" [ngClass]="{'disabled':false}">
                         <!--                           [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<-->
                         <!--                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo '-->
                         <!--                            +'('+periodoLectivoSeleccionado.fecha_inicio_cupo+' - '+periodoLectivoSeleccionado.fecha_fin_cupo+')'-->
@@ -60,9 +61,6 @@
                     <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
                            name="fileExcel"
                            (change)="uploadCupos($event)"
-                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
-                    <input id="file-upload2" type="file" style='display: none;' [(ngModel)]="archivoTemp"
-                           name="fileExcel" (change)="uploadCupos($event)"
                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                     <!--                           [disabled]="-->
                     <!--                           !(-->
@@ -148,8 +146,8 @@
     <div class="col-lg-12">
         <table class="table table-responsive table-hover">
             <thead class="table-default text-center">
-            <th width="10%">Cédula</th>
-            <th width="33%">Estudiante</th>
+            <th width="10%">Indetificación</th>
+            <th width="33%">Apellidos y Nombres</th>
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
@@ -218,8 +216,9 @@
                         <span class="{{messages['buttonDelete']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
-                            title="Desertar Estudiante"
-                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'">
+                            [disabled]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<(fechaActual|date:'yyyy-MM-dd'))"
+                            [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Desertar Estudiante'">
                         <span class="{{messages['buttonDesert']['icon']}}"></span>
                     </button>
                 </td>
@@ -278,11 +277,14 @@
 <!--Detalle matricula-->
 <div class="row mt-3" *ngIf="flagAsignaturasCupo">
     <div class="col-lg-12">
-        <h1>{{matriculaSeleccionada.estudiante.apellido1 + ' ' + matriculaSeleccionada.estudiante.apellido2 + ' '
-        + matriculaSeleccionada.estudiante.nombre1 + ' ' + matriculaSeleccionada.estudiante.nombre2}}</h1>
-        <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagAsignaturasCupo()">
-            <span class="fa fa-arrow-left text-white"> Regresar</span>
-        </button>
+        <h1>
+            <button type="button" class="btn btn-warning btn-lg mb-1" (click)="cambiarEstadoFlagAsignaturasCupo()">
+                <span class="fa fa-arrow-left text-white"> Regresar</span>
+            </button>
+            {{matriculaSeleccionada.estudiante.apellido1 + ' ' + matriculaSeleccionada.estudiante.apellido2 + ' '
+        + matriculaSeleccionada.estudiante.nombre1 + ' ' + matriculaSeleccionada.estudiante.nombre2}}
+        </h1>
+
         <table class="table table-hover table-sm table-responsive">
             <thead class="table-default text-center">
             <th width="35%">Asignatura</th>
@@ -346,6 +348,11 @@
                     {{detalle.estado}}
                 </td>
                 <td class="text-center">
+                    <button type="button" class="btn btn-primary ml-1 btn-sm" (click)="validateDetalleCupo(detalle)"
+                            title="Aprobar"
+                            *ngIf="(detalle.estado=='EN_PROCESO')&&periodoLectivoSeleccionado.estado=='ACTUAL'">
+                        <span class="{{messages['buttonCheck']['icon']}}"></span>
+                    </button>
                     <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="deleteDetalleCupo(detalle)"
                             title="Eliminar"
                             *ngIf="(detalle.estado=='EN_PROCESO' || detalle.estado=='APROBADO')&&periodoLectivoSeleccionado.estado=='ACTUAL'">

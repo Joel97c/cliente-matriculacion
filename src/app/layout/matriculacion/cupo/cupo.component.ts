@@ -177,6 +177,7 @@ export class CupoComponent implements OnInit {
                             error => {
                                 this.spinner.hide();
                                 swal.fire(this.messages['error500']);
+                                this.getDetalleMatricula(this.matriculaSeleccionada);
                             });
                     }
                 });
@@ -204,6 +205,7 @@ export class CupoComponent implements OnInit {
                             error => {
                                 this.spinner.hide();
                                 swal.fire(this.messages['error500']);
+                                this.getCupos(this.actual_page);
                             });
                     }
                 });
@@ -457,6 +459,7 @@ export class CupoComponent implements OnInit {
                     error => {
                         this.spinner.hide();
                         swal.fire(this.messages['error500']);
+                        this.getCupos(this.actual_page);
                     });
         } else {
             if (!(razonModificarMatricula === undefined)) {
@@ -532,13 +535,15 @@ export class CupoComponent implements OnInit {
                         swal.fire(this.messages['updateSuccess']);
                     },
                     error => {
+                        this.spinner.hide();
                         if (error.error.errorInfo[0] === '23505') {
                             swal.fire(this.messages['error23505']);
                         } else {
                             swal.fire(this.messages['error500']);
                         }
                         this.getDetalleMatricula(this.matriculaSeleccionada);
-                        this.spinner.hide();
+
+
                     });
         } else {
             if (!(razonModificarAsignatura === undefined)) {
@@ -555,6 +560,24 @@ export class CupoComponent implements OnInit {
                 this.service.get('matriculas/validate_cupo?matricula_id=' + cupo.id + '&estado=APROBADO').subscribe(
                     response => {
                         this.getCupos(this.actual_page);
+                        this.spinner.hide();
+                        swal.fire(this.messages['validateQuotaSuccess']);
+                    },
+                    error => {
+                        this.spinner.hide();
+                        swal.fire(this.messages['validateQuotaError']);
+                    });
+            }
+        });
+    }
+
+    validateDetalleCupo(detalleCupo: DetalleMatricula) {
+        swal.fire(this.messages['validateQuotaQuestion']).then((result) => {
+            if (result.value) {
+                this.spinner.show();
+                this.service.get('matriculas/validate_cupo_asignatura?detalle_matricula_id=' + detalleCupo.id + '&estado=APROBADO').subscribe(
+                    response => {
+                        this.getDetalleMatricula(this.matriculaSeleccionada);
                         this.spinner.hide();
                         swal.fire(this.messages['validateQuotaSuccess']);
                     },
@@ -643,6 +666,7 @@ export class CupoComponent implements OnInit {
                             error => {
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteError']);
+                                this.getCupos(this.actual_page);
                             });
                     }
                 });
@@ -677,6 +701,7 @@ export class CupoComponent implements OnInit {
                                     error => {
                                         this.spinner.hide();
                                         swal.fire(this.messages['deleteError']);
+                                        this.getCupos(this.actual_page);
                                     });
                         }
                     });
@@ -835,6 +860,7 @@ export class CupoComponent implements OnInit {
                             error => {
                                 this.spinner.hide();
                                 swal.fire(this.messages['error500']);
+                                this.getCupos(this.actual_page);
                             });
                     }
                 });
