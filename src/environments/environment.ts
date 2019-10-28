@@ -10,8 +10,8 @@ export const environment = {
     API_URL_PUBLIC: 'http://127.0.0.1:8000/'
     // API_URL: 'http://172.16.24.10:8000/api/',
     // API_URL_PUBLIC: 'http://172.16.24.10:8000/'
-    // API_URL: 'http://134.209.209.73/matriculacion-prueba/server/api/',
-    // API_URL_PUBLIC: 'http://134.209.209.73/matriculacion-prueba/server/'
+    // API_URL: 'http://134.209.209.73/matriculacion/server/api/',
+    // API_URL_PUBLIC: 'http://134.209.209.73/matriculacion/server/'
 };
 
 /*

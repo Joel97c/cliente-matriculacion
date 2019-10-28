@@ -245,6 +245,48 @@ export class FormularioComponent implements OnInit {
 
     }
 
+    imprimirPrueba() {
+        if (true) {
+            this.spinner.show();
+            html2canvas(this.encabezadoHojaVida.nativeElement).then(canvasEncabezado => {
+                const encabezadoHojaDatosImg = canvasEncabezado.toDataURL('image/png');
+                html2canvas(this.cuerpoHojaVida1.nativeElement).then(canvasCuerpo1 => {
+                    const cuerpoHojaDatosImg1 = canvasCuerpo1.toDataURL('image/png');
+                    html2canvas(this.pieHojaVida1.nativeElement).then(canvasPie1 => {
+                        const pieHojaDatosImg1 = canvasPie1.toDataURL('image/png');
+                        html2canvas(this.cuerpoHojaVida2.nativeElement).then(canvasCuerpo2 => {
+                            const cuerpoHojaDatosImg2 = canvasCuerpo2.toDataURL('image/png');
+                            html2canvas(this.pieHojaVida2.nativeElement).then(canvasPie2 => {
+                                const pieHojaDatosImg2 = canvasPie2.toDataURL('image/png');
+                                const doc = new jsPDF();
+                                doc.addImage(encabezadoHojaDatosImg, 'PNG', 10, 10, 190, 25);
+                                doc.addImage(cuerpoHojaDatosImg1, 'PNG', 20, 40, 165, 230);
+                                doc.addImage(pieHojaDatosImg1, 'PNG', 10, 280, 180, 5);
+                                doc.addPage();
+                                doc.addImage(encabezadoHojaDatosImg, 'PNG', 10, 10, 190, 30);
+                                doc.addImage(cuerpoHojaDatosImg2, 'PNG', 20, 40, 165, 230);
+                                doc.addImage(pieHojaDatosImg2, 'PNG', 10, 280, 180, 10);
+                                const nombresEstudiante = this.matricula.estudiante.apellido1 + ' ' + this.matricula.estudiante.apellido2
+                                    + ' ' + this.matricula.estudiante.nombre1 + ' ' + this.matricula.estudiante.nombre2;
+                                doc.save('FORMULARIO-MATRICULA-' + nombresEstudiante + '-' + this.matricula.estudiante.identificacion + '.pdf');
+                                // doc.autoPrint();
+                                window.open(doc.output('bloburl'));
+                                this.spinner.hide();
+                            });
+                        });
+                    });
+                });
+            });
+        } else {
+            let listaErrores = '';
+            for (let i = 0; i < this.errors.length; i++) {
+                listaErrores += '<li>' + this.errors[i] + '</li>';
+            }
+            swal.fire('Verificar los siguientes campos:', listaErrores, 'error');
+        }
+
+    }
+
     calculateEdad(fechaNacimiento) {
         if (fechaNacimiento != null && fechaNacimiento !== '') {
             const fecha_nacimiento = new Date(fechaNacimiento + ' GMT-0500');
@@ -301,21 +343,17 @@ export class FormularioComponent implements OnInit {
             flag = false;
         }
 
-        if (this.informacionEstudiante.contacto_emergencia_nombres != null
-            && this.informacionEstudiante.contacto_emergencia_nombres.length !== 10
-            && this.informacionEstudiante.contacto_emergencia_nombres.length !== 9) {
+        if (this.informacionEstudiante.contacto_emergencia_nombres == null ||
+            this.informacionEstudiante.contacto_emergencia_nombres.length == 0) {
             this.errors.push('11. Nombres (contacto emergencia)');
             flag = false;
         }
-        if (this.informacionEstudiante.contacto_emergencia_parentesco != null
-            && this.informacionEstudiante.contacto_emergencia_parentesco.length !== 10
-            && this.informacionEstudiante.contacto_emergencia_parentesco.length !== 9) {
+        if (this.informacionEstudiante.contacto_emergencia_parentesco == null
+            || this.informacionEstudiante.contacto_emergencia_parentesco.length == 0) {
             this.errors.push('12. Parentesco (contacto emergencia)');
             flag = false;
         }
-        if (this.informacionEstudiante.contacto_emergencia_telefono != null
-            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
-            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9) {
+        if (this.informacionEstudiante.contacto_emergencia_telefono == null) {
             this.errors.push('13. Teléfono celular/convencional (formato incorrecto)');
             flag = false;
         }
