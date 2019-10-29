@@ -2,7 +2,6 @@ import {Matricula} from './matricula.model';
 import {Ubicacion} from './ubicacion.model';
 
 export class InformacionEstudiante {
-
     alcance_vinculacion: string;
     area_trabajo_empresa: string;
     canton_residencia: Ubicacion;
@@ -82,6 +81,9 @@ export class InformacionEstudiante {
         this.titulo_superior_obtenido = '';
         this.codigo_postal = '';
         this.contacto_emergencia_telefono = '';
+        this.idioma_ancestral = '';
+        this.numero_carnet_conadis = '';
+
     }
 
 }
