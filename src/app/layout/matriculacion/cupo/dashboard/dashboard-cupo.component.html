@@ -25,11 +25,17 @@
         </table>
     </div>
 </div>
-<hr>
 <!--Titulo Institutos-->
 <div class="row">
     <div class="col-lg-12">
-        <h1> TOTAL ESTUDIANTES: <span class="">{{total_matriculados_institutos}}</span></h1>
+        <h1><span class="">TOTAL ESTUDIANTES MATRICULADOS:</span> <span
+            class="">{{total_matriculados_institutos}}</span></h1>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-lg-12">
+        <h4> INSTITUTOS: </h4>
     </div>
 </div>
 <hr>
@@ -75,34 +81,46 @@
 <!--Titulo Carreras-->
 <div class="row">
     <div class="col-lg-12">
-        <h1>CARRERAS:</h1>
+        <h4>CARRERAS:</h4>
     </div>
 </div>
 
 <!--Resumen Carreras-->
 <div class="row">
     <div class="col-xl-4" *ngFor="let matricula of total_matriculados_carreras_count">
+        <button *ngIf="flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Menos
+        </button>
         <div class="card">
-            <div style="height: 250px;" (click)="changeFlagCarrera(matricula.malla_id)">
+            <div style="height: 250px;">
                 <div class="card-header bg-white h-100 text-center"
                      [ngClass]="{'bg-warning':matricula.malla=='MALLA ANTIGUA'}">
                     <img src="{{'assets/images/logo_carrera_'+matricula.carrera_id +'.jpg'}}" alt=""
-                         class="img-thumbnail">
-                    <h6 class="text-muted">{{matricula.malla}}</h6>
+                         class="btn img-thumbnail" title="Descargar Cupos"
+                         (click)="exportCuposCarrera(matricula.carrera_id)">
+                    <h6 class="btn text-muted" title="Descargar Cupos"
+                        (click)="exportCuposCarrera(matricula.carrera_id)">{{matricula.malla}}</h6>
                     <div class="row">
                         <div class="col-lg-12">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th class="bg-light">
-                                        Matriculados: {{matricula.total_matriculados}}
-                                    </th>
-                                    <th class="bg-light">
-                                        Retirados: {{matricula.total_anulados}}
-                                    </th>
-                                    <th class="bg-light">
-                                        Desertores: {{matricula.total_desertores}}
-                                    </th>
+                                    <td class="btn bg-light btn-sm"
+                                        (click)="exportCuposMalla(matricula.malla_id,'MATRICULADO')"
+                                        title="Descargar Matriculados">
+                                        <small>Matriculados: {{matricula.total_matriculados}}</small>
+                                    </td>
+                                    <td class="btn bg-light btn-sm"
+                                        (click)="exportCuposMalla(matricula.malla_id,'ANULADO')"
+                                        title="Descargar Retirados">
+                                        <small>Retirados: {{matricula.total_anulados}}</small>
+                                    </td>
+                                    <td class="btn bg-light btn-sm"
+                                        (click)="exportCuposMalla(matricula.malla_id,'DESERTOR')"
+                                        title="Descargar Desertores">
+                                        <small>Desertores: {{matricula.total_desertores}}</small>
+                                    </td>
                                 </tr>
                                 </thead>
                             </table>
@@ -118,10 +136,14 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','1')"
+                                    title="Descargar Matriculados">
                                     PRIMERO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','1')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_1}}
                                 </th>
                             </tr>
@@ -198,16 +220,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','1')"
+                                    title="Descargar Aprobados">
                                     Aprobados: {{matricula.aprobados_1}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'EN_PROCESO','1')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_1}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'ANULADO','1')"
+                                    title="Descargar Anulados">
                                     Retirados: {{matricula.anulados_1}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'DESERTOR','1')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_1}}
                                 </th>
                             </tr>
@@ -222,10 +252,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','2')"
+                                    title="Descargar Matriculados">
                                     SEGUNDO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','2')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_2}}
                                 </th>
                             </tr>
@@ -302,16 +336,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','2')"
+                                    title="Descargar Aprobados">>
                                     Aprobados: {{matricula.aprobados_2}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','2')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_2}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','2')"
+                                    title="Descargar Retirados">
                                     Retirados: {{matricula.anulados_2}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','2')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_2}}
                                 </th>
                             </tr>
@@ -326,10 +368,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','3')"
+                                    title="Descargar Matriculados">
                                     TERCERO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','3')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_3}}
                                 </th>
                             </tr>
@@ -406,16 +452,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','3')"
+                                    title="Descargar Aprobados">
                                     Aprobados: {{matricula.aprobados_3}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','3')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_3}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','3')"
+                                    title="Descargar Retirados">
                                     Retirados: {{matricula.anulados_3}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','3')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_3}}
                                 </th>
                             </tr>
@@ -430,10 +484,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','4')"
+                                    title="Descargar Matriculados">
                                     CUARTO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','4')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_4}}
                                 </th>
                             </tr>
@@ -510,16 +568,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','4')"
+                                    title="Descargar Aprobados">
                                     Aprobados: {{matricula.aprobados_4}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','4')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_4}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','4')"
+                                    title="Descargar Retirados">
                                     Retirados: {{matricula.anulados_4}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','4')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_4}}
                                 </th>
                             </tr>
@@ -534,10 +600,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','5')"
+                                    title="Descargar Matriculados">
                                     QUINTO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','5')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_5}}
                                 </th>
                             </tr>
@@ -614,16 +684,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','5')"
+                                    title="Descargar Aprobados">
                                     Aprobados: {{matricula.aprobados_5}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','5')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_5}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','5')"
+                                    title="Descargar Retirados">
                                     Retirados: {{matricula.anulados_5}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','5')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_5}}
                                 </th>
                             </tr>
@@ -638,10 +716,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','6')"
+                                    title="Descargar Matriculados">
                                     SEXTO
                                 </th>
-                                <th>
+                                <th class="btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'MATRICULADO','6')"
+                                    title="Descargar Matriculados">
                                     Matriculados: {{matricula.matriculados_6}}
                                 </th>
                             </tr>
@@ -718,16 +800,24 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','6')"
+                                    title="Descargar Aprobados">
                                     Aprobados: {{matricula.aprobados_6}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','6')"
+                                    title="Descargar En Proceso">
                                     En Proceso: {{matricula.en_proceso_6}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','6')"
+                                    title="Descargar Retirados">
                                     Retirados: {{matricula.anulados_6}}
                                 </th>
-                                <th class="bg-light small">
+                                <th class="bg-light small btn"
+                                    (click)="exportCuposMallaPeriodoAcademico(matricula.malla_id,'APROBADO','6')"
+                                    title="Descargar Desertores">
                                     Desertores: {{matricula.desertores_6}}
                                 </th>
                             </tr>
@@ -738,6 +828,14 @@
             </div>
         </div>
         <hr class="bg-dark">
+        <button *ngIf="flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Menos
+        </button>
+        <button *ngIf="!flagsCarrera[matricula.malla_id]" class="btn btn-primary btn-lg"
+                (click)="changeFlagCarrera(matricula.malla_id)">Ver
+            Más
+        </button>
         <hr class="bg-dark">
     </div>
 </div>

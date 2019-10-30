@@ -122,6 +122,12 @@
                         Formato cupos
                     </a>
                 </td>
+                <td>
+                    <button type="button" class="btn btn-light btn-sm" (click)="exportMatrizSniese()"
+                            title="Descargar matriz SNIESE">
+                        <span class="fa fa-download"> Matriz SNIESE</span>
+                    </button>
+                </td>
             </tr>
             </tbody>
         </table>
@@ -141,6 +147,33 @@
     </div>
 </div>
 
+<div class="row ml-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
+    <div class="col-lg-2">
+        <h6>
+            MATRICULADOS: {{total_detalle_matriculas_matriculados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            APROBADOS: {{total_detalle_matriculas_aprobados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            EN PROCESO: {{total_detalle_matriculas_en_proceso}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            ANULADOS: {{total_detalle_matriculas_anulados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            DESERTORES: {{total_detalle_matriculas_desertores}}
+        </h6>
+    </div>
+</div>
 <!--Tabla cupos-->
 <div class="row mt-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
     <div class="col-lg-12">
@@ -159,11 +192,17 @@
             <tbody>
             <tr *ngFor="let cupo of cupos">
                 <td>
+                    <span class="btn btn-link"
+                          (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
                     {{cupo.estudiante.identificacion}}
+                        </span>
                 </td>
                 <td>
+                    <span class="btn btn-link"
+                          (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
                     {{cupo.estudiante.apellido1 + ' ' + cupo.estudiante.apellido2 + ' ' + cupo.estudiante.nombre1 + ' ' +
-                cupo.estudiante.nombre2}}
+                    cupo.estudiante.nombre2}}
+                        </span>
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
@@ -230,22 +269,6 @@
 
 <!--Cupos totales y paginacion-->
 <div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
-    <div class="col-lg-2">
-        <h6>
-            MATRICULADOS: {{total_detalle_matriculas_matriculados}}
-        </h6>
-        <h6>
-            APROBADOS: {{total_detalle_matriculas_aprobados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            EN PROCESO: {{total_detalle_matriculas_en_proceso}}
-        </h6>
-        <h6>
-            ANULADOS: {{total_detalle_matriculas_anulados}}
-        </h6>
-    </div>
     <div class="col-lg-6">
         <nav>
             <ul class="pagination">
@@ -273,7 +296,6 @@
         </nav>
     </div>
 </div>
-
 <!--Detalle matricula-->
 <div class="row mt-3" *ngIf="flagAsignaturasCupo">
     <div class="col-lg-12">
@@ -451,6 +473,120 @@
                             {{paralelo.descripcion}}
                         </option>
                     </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 class="text-muted">
+                <b class="text-danger">{{messages['requiredFields']['icon']}} </b>
+                {{messages['requiredFields']['text']}}
+            </h6>
+            <button type="button" class="btn btn-success" (click)="c('save')" [disabled]="formCtrl.form.invalid">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconOk']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['ok']}}
+            </button>
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
+
+<!--Informacion Estudiante-->
+<ng-template #contentInformacionEstudiante let-c="close" let-d="dismiss">
+    <form name="informacionEstudiante" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Información Estudiante</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Asignatura-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="tipoIdentificacionEditar">
+                        <b class="text-danger">*</b> Tipo Documento:
+                    </label>
+                    <select [(ngModel)]="estudianteSeleccionado.tipo_identificacion" class="form-control text-uppercase"
+                            id="tipoIdentificacionEditar" name="tipoIdentificacionEditar" required>
+                        <option value="0" selected>SELECCIONE...</option>
+                        <option value="1" selected>CÉDULA</option>
+                        <option value="2" selected>PASAPORTE</option>
+                    </select>
+                </div>
+                <div class="col-lg-6">
+                    <label for="identificacionEditar">
+                        <b class="text-danger">*</b> Número de Documento:
+                    </label>
+                    <input id="identificacionEditar" name="identificacionEditar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.identificacion">
+                </div>
+            </div>
+
+            <!--Numero Documento-->
+            <div class="form-group row">
+
+            </div>
+
+            <!--Apellidos-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="apellido1Editar">
+                        <b class="text-danger">*</b> Primer Apellido:
+                    </label>
+                    <input id="apellido1Editar" name="apellido1Editar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.apellido1">
+                </div>
+                <div class="col-lg-6">
+                    <label for="apellido2Editar">
+                        <b class="text-danger">*</b> Segundo Apellido:
+                    </label>
+                    <input id="apellido2Editar" name="apellido2Editar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.apellido2">
+                </div>
+            </div>
+
+            <!--Nombres-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="nombre1Editar">
+                        <b class="text-danger">*</b> Primer nombre:
+                    </label>
+                    <input id="nombre1Editar" name="nombre1Editar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.nombre1">
+                </div>
+                <div class="col-lg-6">
+                    <label for="nombre2Editar">
+                        <b class="text-danger">*</b> Segundo Apellido:
+                    </label>
+                    <input id="nombre2Editar" name="nombre2Editar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.nombre2">
+                </div>
+            </div>
+
+            <!--Nombres-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <label for="correoInstitucionalEditar">
+                        <b class="text-danger">*</b> Correo Institucional:
+                    </label>
+                    <input id="correoInstitucionalEditar" name="correoInstitucionalEditar" type="text"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.correo_institucional">
+                </div>
+                <div class="col-lg-6">
+                    <label for="fechaNacimientoEditar">
+                        <b class="text-danger">*</b> Fecha Nacimiento:
+                    </label>
+                    <input id="fechaNacimientoEditar" name="fechaNacimientoEditar" type="date"
+                           class="form-control"
+                           [(ngModel)]="estudianteSeleccionado.fecha_nacimiento">
                 </div>
             </div>
         </div>

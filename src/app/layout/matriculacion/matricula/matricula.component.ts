@@ -157,7 +157,9 @@ export class MatriculaComponent implements OnInit {
     crearNumerosPaginacion() {
         if (this.total_pages > 10) {
             for (let i = 0; i < 10; i++) {
-                this.total_pages_pagination[i] = i + this.total_pages_temp - 9;
+                if (this.total_pages_temp >= 10) {
+                    this.total_pages_pagination[i] = i + this.total_pages_temp - 9;
+                }
             }
         } else {
             this.total_pages_pagination = new Array<any>();
@@ -308,7 +310,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     filter(event) {
-        if (event.which === 13 || this.buscador.length === 0) {
+        if (event.which === 1 || event.which === 13 || this.buscador.length === 0) {
             if (this.buscador.length === 0) {
                 this.flagPagination = true;
                 this.getAprobados(1);

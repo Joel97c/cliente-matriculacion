@@ -5,6 +5,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import {User} from '../../../matriculacion/modelos/user.model';
 import {PeriodoLectivo} from '../../modelos/periodo-lectivo.model';
 import {catalogos} from '../../../../../environments/catalogos';
+import {environment} from '../../../../../environments/environment';
 
 @Component({
     selector: 'app-dashboard-cupo',
@@ -12,6 +13,7 @@ import {catalogos} from '../../../../../environments/catalogos';
     styleUrls: ['./dashboard-cupo.component.scss']
 })
 export class DashboardCupoComponent implements OnInit {
+    urlExportCupos: string;
     flagsCarrera: Array<boolean>;
     messages: any;
     periodoLectivoSeleccionado: PeriodoLectivo;
@@ -150,5 +152,26 @@ export class DashboardCupoComponent implements OnInit {
 
     changeFlagCarrera(indice: number) {
         this.flagsCarrera[indice] = !this.flagsCarrera[indice];
+    }
+
+    exportCuposMalla(mallaId, estado) {
+        this.urlExportCupos = environment.API_URL + 'exports/cupos_malla?malla_id=' + mallaId
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id
+            + '&estado=' + estado;
+        window.open(this.urlExportCupos);
+    }
+
+    exportCuposMallaPeriodoAcademico(mallaId, estado, periodoAcademicoId) {
+        this.urlExportCupos = environment.API_URL + 'exports/cupos_malla_periodo_academico?malla_id=' + mallaId
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id
+            + '&estado=' + estado
+            + '&periodo_academico_id=' + periodoAcademicoId;
+        window.open(this.urlExportCupos);
+    }
+
+    exportCuposCarrera(carreraId) {
+        this.urlExportCupos = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + carreraId
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+        window.open(this.urlExportCupos);
     }
 }

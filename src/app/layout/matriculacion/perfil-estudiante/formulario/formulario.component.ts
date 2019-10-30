@@ -102,19 +102,6 @@ export class FormularioComponent implements OnInit {
         this.getFormulario();
     }
 
-    updateEstudiante(): void {
-        this.service.update('estudiantes/update_perfil',
-            {'estudiante': this.estudiante, 'informacion_estudiante': this.informacionEstudiante})
-            .subscribe(
-                response => {
-                    this.getEstudiante();
-                },
-                error => {
-                    this.spinner.hide();
-
-                });
-    }
-
     getFormulario() {
         this.spinner.show();
         this.service.get('estudiantes/formulario/' + this.user.id).subscribe(
@@ -122,7 +109,6 @@ export class FormularioComponent implements OnInit {
                 this.spinner.hide();
                 this.flagFormulario = true;
                 this.matricula = response['matricula'];
-                console.log(response);
                 this.informacionEstudiante = response['informacion_estudiante'];
                 this.instituto = response['instituto'];
                 this.carrera = response['carrera'];
@@ -135,27 +121,6 @@ export class FormularioComponent implements OnInit {
             });
     }
 
-    getEstudiante() {
-        this.spinner.show();
-        this.service.get('estudiantes/3').subscribe(
-            response => {
-                this.estudiante = response['estudiante'];
-                this.spinner.hide();
-            },
-            error => {
-                this.spinner.hide();
-                // if (error.status === 401) {
-                //   swal({
-                //     position: this.messages['createError401']['position'],
-                //     type: this.messages['createError401']['type'],
-                //     title: this.messages['createError401']['title'],
-                //     text: this.messages['createError401']['text'],
-                //     showConfirmButton: this.messages['createError401']['showConfirmButton'],
-                //     backdrop: this.messages['createError401']['backdrop']
-                //   });
-                // }
-            });
-    }
 
     getPaisesNacionalidad() {
         this.service.get('paises_nacionalidad').subscribe(

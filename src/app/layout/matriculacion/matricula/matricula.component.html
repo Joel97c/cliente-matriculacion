@@ -31,7 +31,7 @@
                 <td>
                     <select [disabled]="flagAsignaturasCupo" [(ngModel)]="periodoAcademico" class="form-control"
                             id="periodoAcademico" name="periodoAcademico" required
-                            (change)="getAprobados(1)">
+                            (change)="getAprobados(1);getDetalleMatriculasForMalla()">
                         <option value="-1" selected>SELECCIONE NIVEL</option>
                         <option value="" selected>TODOS</option>
                         <option value="{{periodoAcademico.id}}" *ngFor="let periodoAcademico of periodoAcademicos"
@@ -45,8 +45,7 @@
                 <td colspan="2">
                     <div class="input-group mb-3">
                         <input type="text" id="buscadorEstudiante" class="form-control text-uppercase"
-                               [(ngModel)]="buscadorEstudianteGeneral"
-                               (keyup)="filterEstudianteGeneral($event)"
+                               [(ngModel)]="buscadorEstudianteGeneral" (keyup)="filterEstudianteGeneral($event)"
                                placeholder="Identificación, apellido o nombre">
                         <div class="input-group-prepend">
                 <span class="btn input-group-text fa fa-search" id="basic-addon-buscadorEstudiante"
@@ -105,6 +104,34 @@
                 <span class="btn input-group-text fa fa-search" id="basic-addon-buscar" (click)="filter($event)"></span>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="row ml-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
+    <div class="col-lg-2">
+        <h6>
+            MATRICULADOS: {{total_detalle_matriculas_matriculados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            APROBADOS: {{total_detalle_matriculas_aprobados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            EN PROCESO: {{total_detalle_matriculas_en_proceso}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            ANULADOS: {{total_detalle_matriculas_anulados}}
+        </h6>
+    </div>
+    <div class="col-lg-2">
+        <h6>
+            DESERTORES: {{total_detalle_matriculas_desertores}}
+        </h6>
     </div>
 </div>
 <!--Tabla cupos-->
@@ -217,27 +244,6 @@
 
 <!--Cupos totales y paginacion-->
 <div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
-    <div class="col-lg-2">
-        <h6>
-            MATRICULADOS: {{total_detalle_matriculas_matriculados}}
-        </h6>
-        <h6>
-            APROBADOS: {{total_detalle_matriculas_aprobados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            EN PROCESO: {{total_detalle_matriculas_en_proceso}}
-        </h6>
-        <h6>
-            ANULADOS: {{total_detalle_matriculas_anulados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            DESERTORES: {{total_detalle_matriculas_desertores}}
-        </h6>
-    </div>
     <div class="col-lg-6">
         <nav>
             <ul class="pagination">

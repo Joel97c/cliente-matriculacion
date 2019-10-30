@@ -27,6 +27,8 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    estudianteSeleccionado: Estudiante;
+    urlExportMatrizSniese: string;
     fechaActual: Date;
     txtPeridoActualHistorico: string;
     periodoLectivoSeleccionado: PeriodoLectivo;
@@ -58,6 +60,7 @@ export class CupoComponent implements OnInit {
     total_detalle_matriculas_en_proceso: number;
     total_detalle_matriculas_matriculados: number;
     total_detalle_matriculas_aprobados: number;
+    total_detalle_matriculas_desertores: number;
 
     flagPagination: boolean;
     messages: any;
@@ -81,6 +84,7 @@ export class CupoComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.estudianteSeleccionado = new Estudiante();
         this.fechaActual = new Date();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
         this.txtPeridoActualHistorico = 'NO EXISTE UN PERIODO ABIERTO';
@@ -148,9 +152,12 @@ export class CupoComponent implements OnInit {
     }
 
     crearNumerosPaginacion() {
+        console.log(this.total_pages_temp);
         if (this.total_pages > 10) {
             for (let i = 0; i < 10; i++) {
-                this.total_pages_pagination[i] = i + this.total_pages_temp - 9;
+                if (this.total_pages_temp >= 10) {
+                    this.total_pages_pagination[i] = i + this.total_pages_temp - 9;
+                }
             }
         } else {
             this.total_pages_pagination = new Array<any>();
@@ -285,7 +292,8 @@ export class CupoComponent implements OnInit {
             + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
             + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
-
+        this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.actual_page = page;
         const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id +
             '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page + '&page=' + page;
@@ -332,6 +340,7 @@ export class CupoComponent implements OnInit {
                     this.total_detalle_matriculas_en_proceso = response['en_proceso_count'];
                     this.total_detalle_matriculas_aprobados = response['aprobados_count'];
                     this.total_detalle_matriculas_matriculados = response['matriculados_count'];
+                    this.total_detalle_matriculas_desertores = response['desertores_count'];
                 },
                 error => {
                 });
@@ -876,5 +885,49 @@ export class CupoComponent implements OnInit {
             && this.fechaActual.getTime() <= this.periodoLectivoSeleccionado.fecha_fin_cupo.getTime()) {
 
         }
+    }
+
+    exportMatrizSniese() {
+        window.open(this.urlExportMatrizSniese);
+    }
+
+    getInformacionEstudiante(estudianteId: number, content) {
+        this.spinner.show();
+        this.service.get('cupos/estudiantes?id=' + estudianteId).subscribe(
+            response => {
+                this.estudianteSeleccionado = response['estudiante'];
+                this.spinner.hide();
+                const logoutScreenOptions: NgbModalOptions = {
+                    size: 'lg'
+                };
+                this.modalService.open(content, logoutScreenOptions)
+                    .result
+                    .then((resultModal => {
+                        if (resultModal === 'save') {
+                            this.updateInformacionEstudiante();
+                        }
+                    }), (resultCancel => {
+
+                    }));
+            },
+            error => {
+
+            });
+    }
+
+    updateInformacionEstudiante(): void {
+        this.spinner.show();
+        this.service.update('cupos/estudiantes',
+            {'estudiante': this.estudianteSeleccionado})
+            .subscribe(
+                response => {
+                    this.getCupos(this.actual_page);
+                    this.spinner.hide();
+                },
+                error => {
+                    this.getCupos(this.actual_page);
+                    this.spinner.hide();
+                });
+
     }
 }
