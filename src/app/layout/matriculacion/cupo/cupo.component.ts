@@ -179,7 +179,7 @@ export class CupoComponent implements OnInit {
                                 this.getDetalleMatricula(this.matriculaSeleccionada);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('detalle_cupos', 'Eliminar Asignatura', razonAnularAsignatura);
+                                //this.sendEmailNotificacion('detalle_cupos', 'Eliminar Asignatura', razonAnularAsignatura);
                             },
                             error => {
                                 this.spinner.hide();
@@ -207,7 +207,7 @@ export class CupoComponent implements OnInit {
                                 this.getCupos(this.actual_page);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('cupos', 'Eliminar Cupo', razonAnularMatricula);
+                                //this.sendEmailNotificacion('cupos', 'Eliminar Cupo', razonAnularMatricula);
                             },
                             error => {
                                 this.spinner.hide();
@@ -450,10 +450,10 @@ export class CupoComponent implements OnInit {
 
     async updateMatricula(matricula: Matricula, campo: string) {
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
-        console.log(razonModificarMatricula);
         if (razonModificarMatricula) {
             this.spinner.show();
-            this.service.update('matriculas', {'matricula': matricula})
+            matricula.jornada_operativa = matricula.jornada;
+            this.service.update('matriculas/cupo', {'matricula': matricula})
                 .subscribe(
                     response => {
                         if (this.buscador === '') {
@@ -535,7 +535,7 @@ export class CupoComponent implements OnInit {
         const {value: razonModificarAsignatura} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarAsignatura) {
             this.spinner.show();
-            this.service.update('detalle_matriculas', {'detalle_matricula': detalleMatricula})
+            this.service.update('detalle_matriculas/cupo', {'detalle_matricula': detalleMatricula})
                 .subscribe(
                     response => {
                         this.getDetalleMatricula(this.matriculaSeleccionada);

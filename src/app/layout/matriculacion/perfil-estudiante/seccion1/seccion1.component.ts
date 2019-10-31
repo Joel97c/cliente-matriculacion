@@ -184,29 +184,33 @@ export class Seccion1Component implements OnInit {
     validateCampos(): boolean {
         let flag = true;
         this.errors = new Array<string>();
-        if (this.informacionEstudiante.telefono_fijo != null
-            && this.informacionEstudiante.telefono_fijo != ''
-            && this.informacionEstudiante.telefono_fijo.trim().length !== 7) {
-            this.errors.push('Formato Incorrecto: Teléfono convencional');
-            flag = false;
-        }
-        if (this.informacionEstudiante.telefono_celular != null && this.informacionEstudiante.telefono_celular != '' && this.informacionEstudiante.telefono_celular.length !== 10) {
+        // if (this.informacionEstudiante.telefono_fijo == null
+        //     || (this.informacionEstudiante.telefono_fijo == ''
+        //         || this.informacionEstudiante.telefono_fijo.length !== 7)) {
+        //     this.errors.push('Formato Incorrecto: Teléfono convencional');
+        //     flag = false;
+        // }
+        if (this.informacionEstudiante.telefono_celular != null && this.informacionEstudiante.telefono_celular != ''
+            && this.informacionEstudiante.telefono_celular.length !== 10) {
             this.errors.push('Formato Incorrecto: Teléfono celular');
             flag = false;
         }
-        if (this.informacionEstudiante.direccion != null && this.informacionEstudiante.direccion != '' && this.informacionEstudiante.direccion.length < 12) {
+        if (this.informacionEstudiante.direccion != null && this.informacionEstudiante.direccion != ''
+            && this.informacionEstudiante.direccion.length < 12) {
             this.errors.push('Dirección Incompleta');
             flag = false;
         }
-        if (this.informacionEstudiante.codigo_postal != null && this.informacionEstudiante.codigo_postal != '' && this.informacionEstudiante.codigo_postal.length !== 6) {
+        if (this.informacionEstudiante.codigo_postal != null && this.informacionEstudiante.codigo_postal != ''
+            && this.informacionEstudiante.codigo_postal.length !== 6) {
             this.errors.push('Formato Incorrecto: Código Postal');
             flag = false;
         }
-        if (this.informacionEstudiante.contacto_emergencia_telefono != null && this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
-            && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9) {
-            this.errors.push('Formato Incorrecto: Teléfono celular/convencional');
-            flag = false;
-        }
+        // if (this.informacionEstudiante.contacto_emergencia_telefono != null
+        //     || (this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
+        //     && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9)) {
+        //     this.errors.push('Formato Incorrecto: Teléfono Contacto Emergencia (ej. 023456789)');
+        //     flag = false;
+        // }
         return flag;
     }
 }

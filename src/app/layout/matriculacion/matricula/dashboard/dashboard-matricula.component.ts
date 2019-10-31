@@ -93,6 +93,7 @@ export class DashboardMatriculaComponent implements OnInit {
                 response => {
                     this.total_matriculados_carreras_count = response['matriculados_carreras_count'];
                     this.total_matriculados_institutos_count = response['matriculados_institutos_count'];
+                    this.total_matriculados_institutos = 0;
                     this.total_matriculados_institutos_count.forEach(value => {
                         this.total_matriculados_institutos += value.total_matriculados;
                     });

@@ -182,7 +182,7 @@
                     <select [(ngModel)]="cupo.periodo_academico.id" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="periodoAcademicoMatricula" name="periodoAcademicoMatricula" required
-                            (change)="updateMatricula(cupo)">
+                            (change)="updateMatricula(cupo,'Periodo Academico')">
                         <option value="{{periodoAcademico.id}}"
                                 *ngFor="let periodoAcademico of periodoAcademicos">
                             {{periodoAcademico.nombre}}
@@ -192,7 +192,7 @@
                 <td>
                     <select [(ngModel)]="cupo.jornada" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
-                            id="jornadaMatricula" name="jornadaMatricula" required (change)="updateMatricula(cupo)">
+                            id="jornadaMatricula" name="jornadaMatricula" required (change)="updateMatricula(cupo,'Jornada')">
                         <option value="{{jornada.codigo}}"
                                 *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
@@ -306,7 +306,7 @@
                     <select [(ngModel)]="detalle.asignatura.id" class="form-control"
                             [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="detalleAsignatura" name="detalleAsignatura" required
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Asignatura')">
                         <option value="{{asignatura.id}}" *ngFor="let asignatura of asignaturas">
                             {{asignatura.periodo_academico.id + ' ' + asignatura.nombre}}
                         </option>
@@ -316,7 +316,7 @@
                     <select [(ngModel)]="detalle.numero_matricula" class="form-control"
                             [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="numero_matricula" name="numero_matricula" required
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Numero Matricula')">
                         <option value="{{numerMatricula.codigo}}" *ngFor="let numerMatricula of numerosMatricula">
                             {{numerMatricula.descripcion}}
                         </option>
@@ -325,7 +325,7 @@
                 <td>
                     <select [(ngModel)]="detalle.jornada" class="form-control"
                             [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
-                            id="jornada" name="jornada" required (change)="updateDetalleMatricula(detalle)">
+                            id="jornada" name="jornada" required (change)="updateDetalleMatricula(detalle,'Jornada')">
                         <option value="{{jornada.codigo}}" *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
                         </option>
@@ -335,7 +335,7 @@
                     <select [(ngModel)]="detalle.tipo_matricula.id" class="form-control"
                             [disabled]="detalle.estado!='MATRICULADO' || periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="tipo_matricula" name="tipo_matricula" required
-                            (change)="updateDetalleMatricula(detalle)">
+                            (change)="updateDetalleMatricula(detalle,'Tipo Matricula')">
                         <option value="{{tipoMatricula.id}}" *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
                         </option>

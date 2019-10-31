@@ -128,7 +128,7 @@ export class MatriculaComponent implements OnInit {
         this.service.post('detalle_matriculas', {'detalle_matricula': this.detalleMatriculaNuevo}).subscribe(
             response => {
                 this.getDetalleMatricula(this.matriculaSeleccionada);
-                this.sendEmailNotificacion('Nueva Asignatura', razonNuevaAsignatura);
+                this.sendEmailNotificacion('detalle_cupos', 'Nueva Asignatura: ', razonNuevaAsignatura);
                 this.detalleMatriculaNuevo = new DetalleMatricula();
                 this.spinner.hide();
                 swal.fire(this.messages['createSuccess']);
@@ -170,7 +170,7 @@ export class MatriculaComponent implements OnInit {
 
     }
 
-    async deleteDetalleMatricula(detalleMatricula: DetalleMatricula) {
+    async deleteDetalleMatricula(detalleMatricula: DetalleMatricula, campo: string) {
         const {value: razonAnularAsignatura} = await swal.fire(this.messages['deleteInputQuestion']);
         if (razonAnularAsignatura) {
             swal.fire(this.messages['deleteRegistrationQuestion'])
@@ -180,7 +180,7 @@ export class MatriculaComponent implements OnInit {
                         this.service.delete('matriculas/delete_detalle_matricula?id=' + detalleMatricula.id).subscribe(
                             response => {
                                 this.getDetalleMatricula(this.matriculaSeleccionada);
-                                this.sendEmailNotificacion('Anulación de Asignatura', razonAnularAsignatura);
+                                this.sendEmailNotificacion('detalle_cupos', 'Anulacion Asignatura: ' + campo, razonAnularAsignatura);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
                             },
@@ -197,7 +197,7 @@ export class MatriculaComponent implements OnInit {
         }
     }
 
-    async deleteMatricula(matricula: Matricula) {
+    async deleteMatricula(matricula: Matricula, campo: string) {
         const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
         if (razonAnularMatricula) {
             swal.fire(this.messages['deleteRegistrationQuestion'])
@@ -214,7 +214,7 @@ export class MatriculaComponent implements OnInit {
                                 }
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('Anulación de Matrícula', razonAnularMatricula);
+                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula: ' + campo, razonAnularMatricula);
                             },
                             error => {
                                 this.spinner.hide();
@@ -229,7 +229,7 @@ export class MatriculaComponent implements OnInit {
         }
     }
 
-    async desertMatricula(matricula: Matricula) {
+    async desertMatricula(matricula: Matricula, campo: string) {
         const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
         if (razonAnularMatricula) {
             swal.fire(this.messages['deleteRegistrationQuestion'])
@@ -246,7 +246,7 @@ export class MatriculaComponent implements OnInit {
                                 }
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('Anulación de Matrícula', razonAnularMatricula);
+                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante: ' + campo, razonAnularMatricula);
                             },
                             error => {
                                 this.spinner.hide();
@@ -563,11 +563,12 @@ export class MatriculaComponent implements OnInit {
         this.getAprobados(this.actual_page);
     }
 
-    async updateMatricula(matricula: Matricula) {
+    async updateMatricula(matricula: Matricula, campo: string) {
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarMatricula) {
             this.spinner.show();
-            this.service.update('matriculas', {'matricula': matricula})
+            matricula.jornada_operativa = matricula.jornada;
+            this.service.update('matriculas/matricula', {'matricula': matricula})
                 .subscribe(
                     response => {
                         if (this.buscador.trim() === '') {
@@ -575,7 +576,7 @@ export class MatriculaComponent implements OnInit {
                         } else {
                             this.getAprobado();
                         }
-                        this.sendEmailNotificacion('Modificación de Matrícula', razonModificarMatricula);
+                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Matrícula: ' + campo, razonModificarMatricula);
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -592,17 +593,17 @@ export class MatriculaComponent implements OnInit {
 
     }
 
-    async updateDetalleMatricula(detalleMatricula: DetalleMatricula) {
+    async updateDetalleMatricula(detalleMatricula: DetalleMatricula, campo: string) {
         const {value: razonModificarAsignatura} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarAsignatura) {
             this.spinner.show();
-            this.service.update('detalle_matriculas', {'detalle_matricula': detalleMatricula})
+            this.service.update('detalle_matriculas/matricula', {'detalle_matricula': detalleMatricula})
                 .subscribe(
                     response => {
                         this.spinner.hide();
                         this.getDetalleMatricula(this.matriculaSeleccionada);
                         swal.fire(this.messages['updateSuccess']);
-                        this.sendEmailNotificacion('Modificación Asignatura', razonModificarAsignatura);
+                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Asignatura: ' + campo, razonModificarAsignatura);
                     },
                     error => {
                         this.spinner.hide();
@@ -797,18 +798,16 @@ export class MatriculaComponent implements OnInit {
         window.open(this.urlExportMatrizSniese);
     }
 
-    sendEmailNotificacion(asunto: string, mensaje: string) {
-        this.notificacion.carrera_id = 1;
+    sendEmailNotificacion(url: string, asunto: string, mensaje: string) {
         this.notificacion.user_id = this.user.id;
         this.notificacion.asunto = asunto;
         this.notificacion.body = mensaje;
-        this.service.post('emails', this.notificacion)
+        this.service.post('emails/' + url, this.notificacion)
             .subscribe(
                 response => {
 
                 },
                 error => {
-
                     alert('error al enviar correo');
                 });
     }

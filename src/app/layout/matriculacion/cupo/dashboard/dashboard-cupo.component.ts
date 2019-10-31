@@ -32,6 +32,8 @@ export class DashboardCupoComponent implements OnInit {
     classContadorDesertores: string;
     classContadorAnulados: string;
     classContadorParalelos: string;
+    classContadorMatriculadosPeriodo: string;
+    classContadorMatriculadosPeriodoPrincipal: string;
 
     constructor(private spinner: NgxSpinnerService, private service: ServiceService) {
     }
@@ -68,7 +70,8 @@ export class DashboardCupoComponent implements OnInit {
         this.classContadorDesertores = 'btn btn-dark btn-sm ml-2';
         this.classContadorAnulados = 'btn btn-dark btn-sm ml-2';
         this.classContadorParalelos = '';
-
+        this.classContadorMatriculadosPeriodo = 'btn btn-light form-control';
+        this.classContadorMatriculadosPeriodoPrincipal = 'btn btn-secondary form-control';
         this.flagGraficos = true;
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.total_matriculados_carreras_count = new Array<any>();
@@ -91,6 +94,7 @@ export class DashboardCupoComponent implements OnInit {
                 response => {
                     this.total_matriculados_carreras_count = response['matriculados_carreras_count'];
                     this.total_matriculados_institutos_count = response['matriculados_institutos_count'];
+                    this.total_matriculados_institutos = 0;
                     this.total_matriculados_institutos_count.forEach(value => {
                         this.total_matriculados_institutos += value.total_matriculados;
                     });

@@ -318,8 +318,12 @@ export class FormularioComponent implements OnInit {
             this.errors.push('12. Parentesco (contacto emergencia)');
             flag = false;
         }
-        if (this.informacionEstudiante.contacto_emergencia_telefono == null) {
-            this.errors.push('13. Teléfono celular/convencional (formato incorrecto)');
+        if (this.informacionEstudiante.contacto_emergencia_telefono == null
+            || this.informacionEstudiante.contacto_emergencia_telefono == '' ||
+            (this.informacionEstudiante.contacto_emergencia_telefono.length !== 10
+                && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9)) {
+            //     && this.informacionEstudiante.contacto_emergencia_telefono.length !== 9)) {
+            this.errors.push('13. Teléfono contacto emergencia (formato incorrecto)');
             flag = false;
         }
         if (this.matricula.estudiante.etnia == null || this.matricula.estudiante.etnia === '0') {
