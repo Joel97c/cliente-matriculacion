@@ -141,13 +141,13 @@
             <thead class="table-default">
             <th width="10%" *ngIf="carrera.id==0">Carrera</th>
             <th width="10%">Identificación</th>
-            <th width="25%" *ngIf="carrera.id==0">Apellidos y Nombres</th>
-            <th width="30%" *ngIf="carrera.id!=0">Apellidos y Nombres</th>
+            <th width="20%" *ngIf="carrera.id==0">Apellidos y Nombres</th>
+            <th width="20%" *ngIf="carrera.id!=0">Apellidos y Nombres</th>
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
             <th width="10%">Estado</th>
-            <th width="15%" class="text-center">
+            <th width="20%" class="text-center">
                 <button *ngIf="this.carrera.id!=0" type="button" class="btn btn-success ml-1 btn-sm"
                         (click)="getAprobados(actual_page)" title="Actulizar">
                     <span class="{{messages['buttonRefresh']['icon']}}"></span>
@@ -158,14 +158,14 @@
             <tr *ngFor="let cupo of cupos"
                 [ngClass]="{'table-danger':cupo.estado=='APROBADO','table-secondary':cupo.estado=='ANULADO'}">
                 <td *ngIf="carrera.id==0">
-                    {{cupo.carrera}}
+                    <small>{{cupo.carrera}}</small>
                 </td>
                 <td>
-                    {{cupo.estudiante.identificacion}}
+                    <small>{{cupo.estudiante.identificacion}}</small>
                 </td>
                 <td>
-                    {{cupo.estudiante.apellido1 + ' ' + cupo.estudiante.apellido2 + ' ' + cupo.estudiante.nombre1 + ' ' +
-                cupo.estudiante.nombre2}}
+                    <small>{{cupo.estudiante.apellido1 + ' ' + cupo.estudiante.apellido2 + ' ' + cupo.estudiante.nombre1 + ' ' +
+                    cupo.estudiante.nombre2}}</small>
                 </td>
                 <td>
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
@@ -192,7 +192,8 @@
                 <td>
                     <select [(ngModel)]="cupo.jornada" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
-                            id="jornadaMatricula" name="jornadaMatricula" required (change)="updateMatricula(cupo,'Jornada')">
+                            id="jornadaMatricula" name="jornadaMatricula" required
+                            (change)="updateMatricula(cupo,'Jornada')">
                         <option value="{{jornada.codigo}}"
                                 *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
@@ -200,7 +201,7 @@
                     </select>
                 </td>
                 <td>
-                    {{cupo.estado}}
+                    <small>{{cupo.estado}}</small>
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn ml-1 btn-sm" (click)="matricular(cupo)" title="Matricular"

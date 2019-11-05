@@ -930,4 +930,14 @@ export class CupoComponent implements OnInit {
                 });
 
     }
+
+    openDescargas(content) {
+        this.modalService.open(content)
+            .result
+            .then((resultModal => {
+
+            }), (resultCancel => {
+
+            }));
+    }
 }

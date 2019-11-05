@@ -100,33 +100,15 @@
                         <span class="fa fa-trash"> Cupos por carrera</span>
                     </button>
                 </td>
-                <td *ngIf="carrera.id!=0">
-                    <button type="button" class="btn btn-light btn-sm form-control-sm"
-                            (click)="exportCuposCarrera()"
-                            title="Descargar todos los cupos de la carrera">
-                        <span class="fa fa-download"> Cupos por carrera</span>
-                    </button>
-                </td>
                 <td>
                     <button type="button" class="btn btn-light btn-sm form-control-sm"
-                            (click)="exportCuposPeriodo()"
-                            title="Descargar todos los cupos del periodo académico">
-                        <span class="fa fa-download"> Cupos por periodo</span>
+                            (click)="openDescargas(contentDescargas)"
+                            title="Descargas">
+                        <span class="fa fa-download"> Descargas</span>
                     </button>
                 </td>
                 <td>
-                    <a class="fa fa-download btn btn-light btn-sm form-control-sm"
-                       href="assets/formats/archivo_carga_cupos.xlsx"
-                       target="_blank"
-                       title="Formato para carga de cupos">
-                        Formato cupos
-                    </a>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-light btn-sm" (click)="exportMatrizSniese()"
-                            title="Descargar matriz SNIESE">
-                        <span class="fa fa-download"> Matriz SNIESE</span>
-                    </button>
+
                 </td>
             </tr>
             </tbody>
@@ -180,12 +162,12 @@
         <table class="table table-responsive table-hover">
             <thead class="table-default text-center">
             <th width="10%">Indetificación</th>
-            <th width="33%">Apellidos y Nombres</th>
+            <th width="25%">Apellidos y Nombres</th>
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
             <th width="10%">Estado</th>
-            <th width="12%">
+            <th width="20%">
 
             </th>
             </thead>
@@ -194,14 +176,16 @@
                 <td>
                     <span class="btn btn-link"
                           (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
-                    {{cupo.estudiante.identificacion}}
+                    <small>{{cupo.estudiante.identificacion}}</small>
                         </span>
                 </td>
                 <td>
                     <span class="btn btn-link"
                           (click)="getInformacionEstudiante(cupo.estudiante.id,contentInformacionEstudiante)">
+                        <small>
                     {{cupo.estudiante.apellido1 + ' ' + cupo.estudiante.apellido2 + ' ' + cupo.estudiante.nombre1 + ' ' +
-                    cupo.estudiante.nombre2}}
+                        cupo.estudiante.nombre2}}
+                            </small>
                         </span>
                 </td>
                 <td>
@@ -233,7 +217,7 @@
                     </select>
                 </td>
                 <td>
-                    {{cupo.estado}}
+                    <small>{{cupo.estado}}</small>
                 </td>
                 <td class="text-center">
                     <button type="button" class="btn ml-1 btn-sm" (click)="validateCupo(cupo)" title="Aprobar"
@@ -502,7 +486,7 @@
             </div>
         </div>
         <div class="modal-body">
-            <!--Asignatura-->
+            <!--Tipo Documento-->
             <div class="form-group row">
                 <div class="col-lg-6">
                     <label for="tipoIdentificacionEditar">
@@ -520,14 +504,9 @@
                         <b class="text-danger">*</b> Número de Documento:
                     </label>
                     <input id="identificacionEditar" name="identificacionEditar" type="text"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.identificacion">
                 </div>
-            </div>
-
-            <!--Numero Documento-->
-            <div class="form-group row">
-
             </div>
 
             <!--Apellidos-->
@@ -537,7 +516,7 @@
                         <b class="text-danger">*</b> Primer Apellido:
                     </label>
                     <input id="apellido1Editar" name="apellido1Editar" type="text"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.apellido1">
                 </div>
                 <div class="col-lg-6">
@@ -557,7 +536,7 @@
                         <b class="text-danger">*</b> Primer nombre:
                     </label>
                     <input id="nombre1Editar" name="nombre1Editar" type="text"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.nombre1">
                 </div>
                 <div class="col-lg-6">
@@ -565,7 +544,7 @@
                         <b class="text-danger">*</b> Segundo Apellido:
                     </label>
                     <input id="nombre2Editar" name="nombre2Editar" type="text"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.nombre2">
                 </div>
             </div>
@@ -577,7 +556,7 @@
                         <b class="text-danger">*</b> Correo Institucional:
                     </label>
                     <input id="correoInstitucionalEditar" name="correoInstitucionalEditar" type="text"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.correo_institucional">
                 </div>
                 <div class="col-lg-6">
@@ -585,7 +564,7 @@
                         <b class="text-danger">*</b> Fecha Nacimiento:
                     </label>
                     <input id="fechaNacimientoEditar" name="fechaNacimientoEditar" type="date"
-                           class="form-control"
+                           class="form-control" required
                            [(ngModel)]="estudianteSeleccionado.fecha_nacimiento">
                 </div>
             </div>
@@ -607,3 +586,80 @@
     </form>
 </ng-template>
 
+<!--Descargas-->
+<ng-template #contentDescargas let-c="close" let-d="dismiss">
+    <form name="formatoCupos" method="post" #formCtrl="ngForm">
+        <div class="modal-header">
+            <div class="row">
+                <h4 class="col-12 text-center" name="titulo">Descargas:</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <!--Formatos-->
+            <div class="form-group">
+                <label>Formatos Cupos:</label>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_cupos_nuevos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de cupos">
+                        Nuevos Estudiantes
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_cupos_antiguos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de cupos">
+                        Antiguos Estudiantes
+                    </a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cupos:</label>
+            </div>
+            <!--Cupos-->
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportCuposCarrera()"
+                            title="Descargar todos los cupos de la carrera">
+                        <span class="fa fa-download"> Cupos por carrera</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportCuposPeriodo()"
+                            title="Descargar todos los cupos del periodo académico">
+                        <span class="fa fa-download"> Cupos por periodo</span>
+                    </button>
+                </div>
+            </div>
+
+            <!--Matriz Sniese-->
+            <div class="form-group">
+                <label>Matriz Sniese:</label>
+            </div>
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg" (click)="exportMatrizSniese()"
+                            title="Descargar matriz SNIESE">
+                        <span class="fa fa-download"> Matriz SNIESE</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" (click)="c('close')">
+        <span
+            class="{{messages['saveConfirmationDialog']['iconCancel']}}"></span>&nbsp;{{messages['saveConfirmationDialog']['cancel']}}
+            </button>
+        </div>
+    </form>
+</ng-template>
