@@ -180,7 +180,9 @@ export class FormularioComponent implements OnInit {
                         html2canvas(this.cuerpoHojaVida2.nativeElement).then(canvasCuerpo2 => {
                             const cuerpoHojaDatosImg2 = canvasCuerpo2.toDataURL('image/png');
                             html2canvas(this.pieHojaVida2.nativeElement).then(canvasPie2 => {
-                                this.updateFecha();
+                                if (this.matricula.estado == 'EN_PROCESO' || this.matricula.estado == 'APROBADO') {
+                                    this.updateFecha();
+                                }
                                 const pieHojaDatosImg2 = canvasPie2.toDataURL('image/png');
                                 const doc = new jsPDF();
                                 doc.addImage(encabezadoHojaDatosImg, 'PNG', 10, 10, 190, 25);

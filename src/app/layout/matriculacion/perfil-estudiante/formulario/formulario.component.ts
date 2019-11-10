@@ -104,23 +104,28 @@ export class FormularioComponent implements OnInit {
 
     getFormulario() {
         this.spinner.show();
-        this.service.get('estudiantes/formulario/' + this.user.id).subscribe(
-            response => {
-                this.spinner.hide();
-                this.flagFormulario = true;
-                this.matricula = response['matricula'];
-                this.informacionEstudiante = response['informacion_estudiante'];
-                this.instituto = response['instituto'];
-                this.carrera = response['carrera'];
-                this.ubicacionNacimiento = response['ubicacion_nacimiento'][0];
-                this.ubicacionResidencia = response['ubicacion_residencia'][0];
-                this.calculateEdad(response['matricula']['estudiante']['fecha_nacimiento']);
+        this.service.update('matriculas/fecha_formulario', {'usuario': this.user.id}).subscribe(
+            response1 => {
+                this.service.get('estudiantes/formulario/' + this.user.id).subscribe(
+                    response2 => {
+                        this.spinner.hide();
+                        this.flagFormulario = true;
+                        this.matricula = response2['matricula'];
+                        this.informacionEstudiante = response2['informacion_estudiante'];
+                        this.instituto = response2['instituto'];
+                        this.carrera = response2['carrera'];
+                        this.ubicacionNacimiento = response2['ubicacion_nacimiento'][0];
+                        this.ubicacionResidencia = response2['ubicacion_residencia'][0];
+                        this.calculateEdad(response2['matricula']['estudiante']['fecha_nacimiento']);
+                    },
+                    error => {
+                        this.spinner.hide();
+                    });
             },
             error => {
                 this.spinner.hide();
             });
     }
-
 
     getPaisesNacionalidad() {
         this.service.get('paises_nacionalidad').subscribe(
@@ -499,5 +504,15 @@ export class FormularioComponent implements OnInit {
             flag = false;
         }
         return flag;
+    }
+
+    async updateFecha() {
+        this.service.update('matriculas/fecha_solicitud', {'usuario': this.user.id}).subscribe(
+            response => {
+
+            },
+            error => {
+
+            });
     }
 }

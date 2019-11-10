@@ -41,25 +41,25 @@ export class LoginComponent implements OnInit {
             this.spinner.show();
             const clientId = 1;
             const clientSecret = 'gCKtEi6W8KpXgWCv4sDSlkM6IErcQQLTuvW5j5yg';
-            // const clientSecret = '7BLBkj11fgvi0aWY9O17zKH4cvk1oLiAQBC8zCx4';
+            // const clientSecret = 'PDFfg3EfzbUO7mC5RHoYIMGVEiAkIa2JTPUvRo0P';
 
             const grantType = 'password';
 
-            this.userName = this.userName.toLocaleLowerCase();
-            if (this.userName.search('@') === -1) {
-                this.userName = this.userName + '@yavirac.edu.ec';
+            let userName = this.userName.toLocaleLowerCase();
+            if (userName.search('@') === -1) {
+                userName = this.userName + '@yavirac.edu.ec';
             }
             this.service.postPublic('oauth/token', {
                 'client_id': clientId,
                 'client_secret': clientSecret,
                 'grant_type': grantType,
-                'username': this.userName,
+                'username': userName,
                 'password': this.password
             }).subscribe(
                 response => {
                     localStorage.setItem('token', JSON.stringify(response['access_token']));
                     localStorage.setItem('isLoggedin', 'true');
-                    this.service.get('usuarios/login?email=' + this.userName).subscribe(response2 => {
+                    this.service.get('usuarios/login?email=' + userName).subscribe(response2 => {
                         if (response2['usuario']['estado'] === 'ACTIVO') {
                             localStorage.setItem('user', JSON.stringify(response2['usuario']));
                             if (response2['usuario']['role']['rol'] === '1') {
@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit {
                             if (response2['usuario']['role']['rol'] === '6') {
                                 this.router.navigate(['dashboard-matricula']);
                             }
-                        } else if (response2['usuario']['estado'] === 'INACTIVO'){
+                        } else if (response2['usuario']['estado'] === 'INACTIVO') {
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');
                             localStorage.removeItem('isLoggedin');
@@ -104,13 +104,14 @@ export class LoginComponent implements OnInit {
     }
 
     forgotPassword() {
-        if (this.userName != null && this.userName !== '') {
-            if (this.userName.search('@') === -1) {
-                this.userName = this.userName + '@yavirac.edu.ec';
+        let userName = this.userName;
+        if (userName != null && userName !== '') {
+            if (userName.search('@') === -1) {
+                userName = this.userName + '@yavirac.edu.ec';
             }
-            if (this.validateCorreoElectronico(this.userName)) {
+            if (this.validateCorreoElectronico(userName)) {
                 this.spinner.show();
-                this.service.postPublic('password/email', {'email': this.userName}).subscribe(
+                this.service.postPublic('password/email', {'email': userName}).subscribe(
                     response => {
                         console.log(response);
                         this.spinner.hide();

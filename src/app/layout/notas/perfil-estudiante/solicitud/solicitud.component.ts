@@ -383,7 +383,9 @@ export class SolicitudComponent implements OnInit {
                 // this.validateEstudiante(response['solicitud'][0]['estudiante'], response['solicitud']['informacion_estudiante']);
                 this.matricula = response['solicitud'][0];
                 this.detalleMatricula = response['solicitud'];
-                this.updateFecha();
+                if (this.matricula.estado == 'EN_PROCESO' || this.matricula.estado == 'APROBADO') {
+                    this.updateFecha();
+                }
                 this.generateSolicitudMatricula(response['solicitud'][0], response['solicitud']);
             },
             error => {

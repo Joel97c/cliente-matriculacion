@@ -245,7 +245,6 @@ export class SolicitudComponent implements OnInit {
     }
 
     generateSolicitudMatricula(datos: any, detalle: Array<any>) {
-        console.log(datos);
         if (this.errors === '') {
             if (datos['codigo']) {
                 const inicioY = 60;
@@ -378,17 +377,24 @@ export class SolicitudComponent implements OnInit {
     }
 
     getSolicitudMatricula() {
-        this.service.get('matriculas/solicitud_matricula?user_id=' + this.user.id).subscribe(
-            response => {
-                // this.validateEstudiante(response['solicitud'][0]['estudiante'], response['solicitud']['informacion_estudiante']);
-                this.matricula = response['solicitud'][0];
-                this.detalleMatricula = response['solicitud'];
-                this.generateSolicitudMatricula(response['solicitud'][0], response['solicitud']);
+        this.service.update('matriculas/fecha_solicitud', {'usuario': this.user.id}).subscribe(
+            response1 => {
+                this.service.get('matriculas/solicitud_matricula?user_id=' + this.user.id).subscribe(
+                    response2 => {
+                        this.matricula = response2['solicitud'][0];
+                        this.detalleMatricula = response2['solicitud'];
+
+                        this.generateSolicitudMatricula(this.matricula, this.detalleMatricula);
+                    },
+                    error => {
+                        this.spinner.hide();
+                        swal.fire(this.messages['error500']);
+                    });
             },
             error => {
-                this.spinner.hide();
-                swal.fire(this.messages['error500']);
+                console.log('errrrrooo');
             });
+
     }
 
     getAsignaturas() {

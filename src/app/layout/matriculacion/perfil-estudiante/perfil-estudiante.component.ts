@@ -18,6 +18,9 @@ import {User} from '../modelos/user.model';
 })
 export class PerfilEstudianteComponent implements OnInit {
     flagInformacionEstudiante: boolean;
+    flagSeccion1: boolean;
+    flagSeccion2: boolean;
+    flagSeccion3: boolean;
     errors: string;
     doc: any;
     messages: any;
@@ -38,25 +41,24 @@ export class PerfilEstudianteComponent implements OnInit {
         this.getEstudiante();
     }
 
-    getMatricula() {
-        this.service.get('matriculas/matricula').subscribe(
-            response => {
-                this.informacionEstudiante = response['informacion_estudiante'];
-            },
-            error => {
-                this.spinner.hide();
-
-            });
-    }
-
     getEstudiante() {
         this.spinner.show();
         this.user = JSON.parse(localStorage.getItem('user')) as User;
         this.service.get('estudiantes/' + this.user.id).subscribe(
             response => {
+                this.matricula = response['matricula'];
                 this.estudiante = response['estudiante'];
                 this.informacionEstudiante = response['informacion_estudiante'];
                 this.spinner.hide();
+                if (this.matricula.estado == 'EN_PROCESO' || this.matricula.estado == 'APROBADO') {
+                    this.flagSeccion1 = true;
+                    this.flagSeccion2 = true;
+                    this.flagSeccion3 = true;
+                } else {
+                    this.flagSeccion1 = false;
+                    this.flagSeccion2 = false;
+                    this.flagSeccion3 = false;
+                }
                 this.flagInformacionEstudiante = true;
             },
             error => {
@@ -248,163 +250,4 @@ export class PerfilEstudianteComponent implements OnInit {
             }
         }
     }
-
-    getBarcodeData(text: string, size = 900) {
-        return kjua({
-            render: 'canvas',
-            crisp: true,
-            minVersion: 1,
-            ecLevel: 'Q',
-            size: size,
-            ratio: undefined,
-            fill: '#333',
-            back: '#fff',
-            text: text,
-            rounded: 10,
-            quiet: 2,
-            mode: 'plain',
-            mSize: 5,
-            mPosX: 50,
-            mPosY: 100,
-            fontname: 'sans-serif',
-            fontcolor: '#3F51B5',
-            image: undefined
-        });
-    }
-
-    generateSolicitudMatricula(datos: any, detalle: Array<any>) {
-        if (this.errors === '') {
-            if (datos['codigo']) {
-                this.doc = new jsPDF('p', 'pt');
-                const barcodeData = this.getBarcodeData(datos['codigo']);
-                const logo = new Image();
-                logo.src = 'assets/images/logo_carrera_1.jpg';
-                this.doc.addImage(barcodeData, 'JPG', 10, 10, 100, 100);
-                this.doc.addImage(logo, 'JPG', 10, 10, 500, 100);
-                this.doc.setFontSize(20);
-                this.doc.setFontStyle('bold');
-                this.doc.text('SOLICITUD DE MATRÍCULA', 175, 100);
-                this.doc.setFontStyle('times');
-                this.doc.setFontSize(12);
-                this.doc.text(datos['fecha'], 425, 135);
-                this.doc.text('IVAN BORJA CARRERA', 70, 180);
-                this.doc.text(datos['carrera'], 70, 200);
-                this.doc.text('RECTOR.-', 70, 220);
-                const nombresEstudiante = datos['estudiante']['nombre1'] + ' ' + datos['estudiante']['nombre2'] + ' '
-                    + datos['estudiante']['apellido1'] + ' ' + datos['estudiante']['apellido2'];
-                const texto = 'Yo, ' + nombresEstudiante + ', con cédula de ciudadanía N° ' + datos['estudiante']['identificacion']
-                    + ', hago uso de mi cupo en la carrera ' + datos['carrera'] + ', en el periodo lectivo ' + datos['periodo_lectivo']['nombre']
-                    + ' con la inscripción en las siguientes asignaturas:';
-                this.doc.setFontStyle('normal');
-                const splitTitle = this.doc.splitTextToSize(texto, 450);
-                this.doc.text(70, 250, splitTitle);
-                const rows = [];
-                for (const iterator of detalle) {
-                    rows.push({
-                        codigo: iterator.asignatura_codigo,
-                        asignatura: iterator.asignatura,
-                        horas_docente: iterator.horas_docente,
-                        horas_practica: iterator.horas_practica,
-                        horas_autonoma: iterator.horas_autonoma,
-                        periodo: iterator.periodo
-                    });
-                }
-                this.doc.autoTable(this.getColumns(), rows, {
-                    startY: 350,
-                    margin: {top: 205, right: 70, left: 70, bottom: 100},
-                    bodyStyles: this.getbodyStyles(),
-                    alternateRowStyles: this.getalternateRowStyles(),
-                    headerStyles: this.getheaderStyles(),
-                    styles: {
-                        cellPadding: 1,
-                        fontSize: 8,
-                        valign: 'middle',
-                        overflow: 'linebreak',
-                        tableWidth: 'auto',
-                        lineWidth: 1,
-                    },
-                }); // generando
-                this.doc.text('Con sentimiento de distinguida consideración.', 70, 630);
-                this.doc.text('Atentamente,', 70, 700);
-                this.doc.text(nombresEstudiante, 70, 730);
-                this.doc.text('C.C. ' + datos['estudiante']['identificacion'], 70, 760);
-
-                this.doc.save('CERTIFICADO-' + nombresEstudiante + '.pdf');
-            }
-        } else {
-            swal.fire('Falta la siguiente información:', this.errors, 'error');
-        }
-    }
-
-    getCertificadoMatricula(matricula: Matricula) {
-        this.service.get('matriculas/solicitud_matricula?user_id=' + this.user.id).subscribe(
-            response => {
-                this.generateSolicitudMatricula(response['certificado'][0], response['certificado']);
-            },
-            error => {
-                this.spinner.hide();
-                swal.fire(this.messages['error500']);
-            });
-    }
-
-    getColumns() {
-        return [
-            {title: 'CÓDIGO', dataKey: 'codigo'},
-            {title: 'ASIGNATURA', dataKey: 'asignatura'},
-            {title: 'PERIODO', dataKey: 'periodo'},
-            {title: 'H. DOCENTE', dataKey: 'horas_docente'},
-            {title: 'H. PRÁCTICA', dataKey: 'horas_practica'},
-            {title: 'H. AUTÓNOMA', dataKey: 'horas_autonoma'},
-        ];
-
-    }
-
-    getheaderStyles() {
-        const headerStyle = {
-            fillColor: [255, 255, 255],
-            textColor: 0,
-            fontSize: 8
-        };
-        return headerStyle;
-    }
-
-    getbodyStyles() {
-        const bodyStyle = {
-            fillColor: [255, 255, 255],
-            textColor: 0,
-            fontSize: 8
-        };
-        return bodyStyle;
-    }
-
-    getalternateRowStyles() {
-        const alternateRowStyle = {
-            fillColor: [255, 255, 255],
-            textColor: 0,
-            fontSize: 8
-        };
-        return alternateRowStyle;
-    }
-
-    updateFecha(event) {
-        if (event.nextId === 'tab4') {
-            this.service.update('matriculas/fecha_formulario', {'usuario': this.user.id}).subscribe(
-                response => {
-
-                },
-                error => {
-
-                });
-        }
-        if (event.nextId === 'tab5') {
-            this.service.update('matriculas/fecha_solicitud', {'usuario': this.user.id}).subscribe(
-                response => {
-
-                },
-                error => {
-
-                });
-        }
-    }
-
 }

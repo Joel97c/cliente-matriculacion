@@ -177,4 +177,16 @@ export class DashboardMatriculaComponent implements OnInit {
             + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         window.open(this.urlExportCupos);
     }
+
+    probar() {
+        this.spinner.show();
+        this.service.get('prueba').subscribe(
+            response => {
+
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+            });
+    }
 }
