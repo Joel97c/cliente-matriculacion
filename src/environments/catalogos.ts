@@ -233,7 +233,14 @@ export const catalogos = {
         fullScreen: 'true',
         text: 'asdasd...'
     },
-
+    estados: {
+        periodoLectivo: {
+            actual: 'ACTUAL',
+            historico: 'HISTORICO',
+            activo: 'ACTIVO',
+            inactivo: 'INACTIVO'
+        }
+    },
     messages:
         {
             createInputQuestion: {

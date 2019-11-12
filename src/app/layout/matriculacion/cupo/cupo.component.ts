@@ -27,6 +27,7 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    estados: any;
     estudianteSeleccionado: Estudiante;
     urlExportMatrizSniese: string;
     fechaActual: Date;
@@ -84,6 +85,8 @@ export class CupoComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        this.estados = catalogos.estados;
         this.estudianteSeleccionado = new Estudiante();
         this.fechaActual = new Date();
         this.periodoLectivoSeleccionado = new PeriodoLectivo();
@@ -179,7 +182,7 @@ export class CupoComponent implements OnInit {
                                 this.getDetalleMatricula(this.matriculaSeleccionada);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                //this.sendEmailNotificacion('detalle_cupos', 'Eliminar Asignatura', razonAnularAsignatura);
+                                // this.sendEmailNotificacion('detalle_cupos', 'Eliminar Asignatura', razonAnularAsignatura);
                             },
                             error => {
                                 this.spinner.hide();
@@ -196,8 +199,8 @@ export class CupoComponent implements OnInit {
     }
 
     async deleteCupo(matricula: Matricula) {
-        const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
-        if (razonAnularMatricula) {
+        const {value: razonEliminarCupo} = await swal.fire(this.messages['deleteInputQuestion']);
+        if (razonEliminarCupo) {
             swal.fire(this.messages['deleteQuestion'])
                 .then((result) => {
                     if (result.value) {
@@ -205,9 +208,10 @@ export class CupoComponent implements OnInit {
                         this.service.delete('matriculas/cupo?id=' + matricula.id).subscribe(
                             response => {
                                 this.getCupos(this.actual_page);
+                                // this.sendEmailNotificacion('cupos', 'Eliminar Cupo', razonEliminarCupo);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                //this.sendEmailNotificacion('cupos', 'Eliminar Cupo', razonAnularMatricula);
+
                             },
                             error => {
                                 this.spinner.hide();
@@ -217,7 +221,7 @@ export class CupoComponent implements OnInit {
                     }
                 });
         } else {
-            if (!(razonAnularMatricula === undefined)) {
+            if (!(razonEliminarCupo === undefined)) {
                 swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
             }
         }
@@ -458,10 +462,10 @@ export class CupoComponent implements OnInit {
                     response => {
                         if (this.buscador === '') {
                             this.getCupos(this.actual_page);
-                            this.sendEmailNotificacion('cupos', 'Modificación de Matrícula: ' + campo, razonModificarMatricula);
                         } else {
                             this.getCupo();
                         }
+                        this.sendEmailNotificacion('cupos', 'Modificación de Matrícula: ' + campo, razonModificarMatricula);
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -539,7 +543,8 @@ export class CupoComponent implements OnInit {
                 .subscribe(
                     response => {
                         this.getDetalleMatricula(this.matriculaSeleccionada);
-                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Asignatura: ' + campo, razonModificarAsignatura);
+                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Asignatura: ' + campo,
+                            razonModificarAsignatura);
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -766,8 +771,8 @@ export class CupoComponent implements OnInit {
         const doc = new jsPDF('p', 'pt');
         const rows = [];
         let flag = false;
-        if (errores['cedulas_estudiante']) {
-            for (const iterator of errores['cedulas_estudiante']) {
+        if (errores['estudiante']) {
+            for (const iterator of errores['estudiante']) {
                 flag = true;
                 rows.push({
                     errores: iterator

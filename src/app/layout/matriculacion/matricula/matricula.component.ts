@@ -212,9 +212,10 @@ export class MatriculaComponent implements OnInit {
                                 } else {
                                     this.getAprobado();
                                 }
+                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula: ' + campo, razonAnularMatricula);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula: ' + campo, razonAnularMatricula);
+
                             },
                             error => {
                                 this.spinner.hide();
@@ -244,9 +245,10 @@ export class MatriculaComponent implements OnInit {
                                 } else {
                                     this.getAprobado();
                                 }
+                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante: ' + campo, razonAnularMatricula);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
-                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante: ' + campo, razonAnularMatricula);
+
                             },
                             error => {
                                 this.spinner.hide();
@@ -576,7 +578,8 @@ export class MatriculaComponent implements OnInit {
                         } else {
                             this.getAprobado();
                         }
-                        this.sendEmailNotificacion('detalle_cupos', 'Modificación Matrícula: ' + campo, razonModificarMatricula);
+                        this.sendEmailNotificacion('cupos', 'Modificación Matrícula: ' + campo,
+                            razonModificarMatricula);
                         this.spinner.hide();
                         swal.fire(this.messages['updateSuccess']);
                     },
@@ -600,10 +603,11 @@ export class MatriculaComponent implements OnInit {
             this.service.update('detalle_matriculas/matricula', {'detalle_matricula': detalleMatricula})
                 .subscribe(
                     response => {
-                        this.spinner.hide();
                         this.getDetalleMatricula(this.matriculaSeleccionada);
-                        swal.fire(this.messages['updateSuccess']);
                         this.sendEmailNotificacion('detalle_cupos', 'Modificación Asignatura: ' + campo, razonModificarAsignatura);
+                        this.spinner.hide();
+                        swal.fire(this.messages['updateSuccess']);
+
                     },
                     error => {
                         this.spinner.hide();
