@@ -19,7 +19,7 @@
         </a>
         <a [routerLink]="['/matricula']" [routerLinkActive]="['router-link-active']" class="list-group-item"
            *ngIf="user.role.rol=='3' || user.role.rol=='4'">
-            <i class="fa fa-fw fa-users"></i>&nbsp;
+            <i class="fa fa-fw fa-address-card"></i>&nbsp;
             <span>{{ 'Registration' | translate }}</span>
         </a>
         <a [routerLink]="['/cupos']" [routerLinkActive]="['router-link-active']" class="list-group-item"
