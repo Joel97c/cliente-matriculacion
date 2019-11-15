@@ -146,6 +146,7 @@
             <th width="15%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
+            <th width="10%">Jornada Operativa</th>
             <th width="10%">Estado</th>
             <th width="20%" class="text-center">
                 <button *ngIf="this.carrera.id!=0" type="button" class="btn btn-success ml-1 btn-sm"
@@ -171,7 +172,7 @@
                     <select [(ngModel)]="cupo.tipo_matricula.id" class="text-uppercase form-control-sm"
                             [disabled]="!(cupo.estado=='MATRICULADO')||periodoLectivoSeleccionado.estado!='ACTUAL'"
                             id="tipoMatricula" name="tipoMatricula" required
-                            (change)="updateMatricula(cupo)">
+                            (change)="updateMatricula(cupo,'Tipo Matricula')">
                         <option value="{{tipoMatricula.id}}"
                                 *ngFor="let tipoMatricula of tiposMatricula">
                             {{tipoMatricula.nombre}}
@@ -198,6 +199,15 @@
                                 *ngFor="let jornada of jornadas">
                             {{jornada.descripcion}}
                         </option>
+                    </select>
+                </td>
+                <td>
+                    <select name="jornadaOperativa" id="jornadaOperativa" [(ngModel)]="cupo.jornada_operativa"
+                            class="text-uppercase form-control-sm"
+                            [disabled]="!(cupo.estado=='MATRICULADO') || periodoLectivoSeleccionado.estado!='ACTUAL'"
+                            (change)="updateMatricula(cupo,'Jornada Operativa')">
+                        <option value={{jornada.codigo}}
+                                *ngFor="let jornada of jornadasOperativa">{{jornada.descripcion}}</option>
                     </select>
                 </td>
                 <td>
@@ -230,11 +240,20 @@
                         <span class="{{messages['buttonCancel']['icon']}}"></span>
                     </button>
                     <button type="button" class="btn btn-secondary ml-1 btn-sm" (click)="desertMatricula(cupo)"
-                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'"
-                            [disabled]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<(fechaActual|date:'yyyy-MM-dd'))"
+                            *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL' && cupo.estado=='MATRICULADO'
+                            && ((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<(fechaActual|date:'yyyy-MM-dd'))"
                             [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<
                             (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Desertar Estudiante'">
                         <span class="{{messages['buttonDesert']['icon']}}"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger ml-1 btn-sm" (click)="unregisterMatricula(cupo)"
+                            title="Desmatrícula"
+                            *ngIf="cupo.estado=='MATRICULADO' && periodoLectivoSeleccionado.estado=='ACTUAL' &&
+((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')
+                            >=(fechaActual|date:'yyyy-MM-dd'))"
+                            [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')>=
+                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo':'Anular Matrícula'">
+                        <span class="{{messages['buttonUnregister']['icon']}}"></span>
                     </button>
                 </td>
             </tr>

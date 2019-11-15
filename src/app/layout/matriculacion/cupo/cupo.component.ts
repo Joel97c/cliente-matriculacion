@@ -27,7 +27,10 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    flagCuposEstado: boolean;
+    jornadasOperativa: any;
     estados: any;
+    estadoCupos: string;
     estudianteSeleccionado: Estudiante;
     urlExportMatrizSniese: string;
     fechaActual: Date;
@@ -103,6 +106,7 @@ export class CupoComponent implements OnInit {
         this.total_pages = 1;
         this.paralelos = catalogos.paralelos;
         this.jornadas = catalogos.jornadas;
+        this.jornadasOperativa = catalogos.jornadasOperativa;
         this.numerosMatricula = catalogos.numerosMatricula;
         this.flagAsignaturasCupo = false;
         this.rutaActual = this.router.url;
@@ -148,7 +152,11 @@ export class CupoComponent implements OnInit {
     cambiarEstadoFlagAsignaturasCupo() {
         this.flagAsignaturasCupo = false;
         if (this.buscador.trim() === '') {
-            this.getCupos(1);
+            if (this.flagCuposEstado) {
+                this.getCuposPorEstado(this.actual_page, this.estadoCupos);
+            } else {
+                this.getCupos(this.actual_page);
+            }
         } else {
             this.getCupo();
         }
@@ -263,6 +271,7 @@ export class CupoComponent implements OnInit {
     }
 
     getCupo() {
+        this.flagCuposEstado = false;
         this.total_pages = 1;
         this.crearNumerosPaginacion();
         this.buscador = this.buscador.toUpperCase();
@@ -288,6 +297,7 @@ export class CupoComponent implements OnInit {
     }
 
     getCupos(page: number) {
+        this.flagCuposEstado = false;
         this.flagPagination = true;
         this.buscador = '';
         this.spinner.show();
@@ -302,6 +312,36 @@ export class CupoComponent implements OnInit {
         const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id +
             '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page + '&page=' + page;
         this.service.get('matriculas/cupos' + parametros).subscribe(
+            response => {
+                this.cupos = response['cupos']['data'];
+                this.total_pages = response['pagination']['last_page'];
+                this.total_register = response['pagination']['total'];
+                this.crearNumerosPaginacion();
+                this.spinner.hide();
+            },
+            error => {
+                this.spinner.hide();
+            });
+    }
+
+    getCuposPorEstado(page: number, estado: string) {
+        this.flagCuposEstado = true;
+        this.estadoCupos = estado;
+        this.flagPagination = true;
+        this.buscador = '';
+        this.spinner.show();
+        this.getDetalleMatriculasForMalla();
+        this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
+            + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+        this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+        this.urlExportMatrizSniese = environment.API_URL + 'exports/matriz_sniese?carrera_id=' + this.carrera.id
+            + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
+        this.actual_page = page;
+        const parametros = '?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=' + this.periodoLectivoActual.id +
+            '&periodo_academico_id=' + this.periodoAcademico + '&records_per_page=' + this.records_per_page + '&page=' + page
+            + '&estado=' + estado;
+        this.service.get('matriculas/cupos/estado' + parametros).subscribe(
             response => {
                 this.cupos = response['cupos']['data'];
                 this.total_pages = response['pagination']['last_page'];
@@ -417,13 +457,23 @@ export class CupoComponent implements OnInit {
     }
 
     firstPagina() {
-        this.getCupos(1);
+        if (this.flagCuposEstado) {
+            this.getCuposPorEstado(1, this.estadoCupos);
+        } else {
+            this.getCupos(1);
+        }
+
         this.total_pages_temp = 10;
         this.crearNumerosPaginacion();
     }
 
     lastPagina() {
-        this.getCupos(this.total_pages);
+        if (this.flagCuposEstado) {
+            this.getCuposPorEstado(this.total_pages, this.estadoCupos);
+        } else {
+            this.getCupos(this.total_pages);
+        }
+
         this.total_pages_temp = this.total_pages;
         this.crearNumerosPaginacion();
     }
@@ -449,19 +499,29 @@ export class CupoComponent implements OnInit {
                 this.crearNumerosPaginacion();
             }
         }
-        this.getCupos(this.actual_page);
+
+        if (this.flagCuposEstado) {
+            this.getCuposPorEstado(this.actual_page, this.estadoCupos);
+        } else {
+            this.getCupos(this.actual_page);
+        }
+
     }
 
     async updateMatricula(matricula: Matricula, campo: string) {
+        console.log(matricula);
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarMatricula) {
             this.spinner.show();
-            matricula.jornada_operativa = matricula.jornada;
             this.service.update('matriculas/cupo', {'matricula': matricula})
                 .subscribe(
                     response => {
                         if (this.buscador === '') {
-                            this.getCupos(this.actual_page);
+                            if (this.flagCuposEstado) {
+                                this.getCuposPorEstado(this.actual_page, this.estadoCupos);
+                            } else {
+                                this.getCupos(this.actual_page);
+                            }
                         } else {
                             this.getCupo();
                         }

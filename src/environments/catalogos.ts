@@ -45,6 +45,12 @@ export const catalogos = {
         {codigo: 5, descripcion: 'POR_DEFINIR'}
     ],
 
+    jornadasOperativa: [
+        {codigo: 1, descripcion: 'MATUTINA'},
+        {codigo: 2, descripcion: 'VESPERTINA'},
+        {codigo: 3, descripcion: 'NOCTURNA'}
+    ],
+
     categoriasMigratoria: [
         {codigo: 1, descripcion: 'RESIDENTE PERMANENTE'},
         {codigo: 2, descripcion: 'RESIDENTE TEMPORAL'},
@@ -482,6 +488,7 @@ export const catalogos = {
             buttonAdd: {'icon': 'fa fa-plus', 'text': 'Añadir'},
             buttonUpdate: {'icon': 'fa fa-edit', 'text': ''},
             buttonDelete: {'icon': 'fa fa-trash', 'text': ''},
+            buttonUnregister: {'icon': 'fa fa-reply', 'text': ''},
             buttonCancel: {'icon': 'fa fa-ban', 'text': ''},
             buttonPrint: {'icon': 'fa fa-print', 'text': 'Imprimir'},
             buttonSearch: {'icon': 'fa fa-search', 'text': ''},

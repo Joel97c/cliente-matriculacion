@@ -30,6 +30,8 @@ import {User} from '../modelos/user.model';
 })
 
 export class MatriculaComponent implements OnInit {
+    jornadasOperativa: any;
+    estados: any;
     fechaActual: Date;
     estudiantesHistoricos: Array<Estudiante>;
     periodoLectivoSeleccionado: PeriodoLectivo;
@@ -86,6 +88,7 @@ export class MatriculaComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.estados = catalogos.estados;
         this.buscadorEstudianteGeneral = '';
         this.fechaActual = new Date();
         this.estudiantesHistoricos = new Array<Estudiante>();
@@ -103,6 +106,7 @@ export class MatriculaComponent implements OnInit {
         this.total_pages = 1;
         this.paralelos = catalogos.paralelos;
         this.jornadas = catalogos.jornadas;
+        this.jornadasOperativa = catalogos.jornadasOperativa;
         this.numerosMatricula = catalogos.numerosMatricula;
         this.flagAsignaturasCupo = false;
         this.rutaActual = this.router.url;
@@ -197,7 +201,7 @@ export class MatriculaComponent implements OnInit {
         }
     }
 
-    async deleteMatricula(matricula: Matricula, campo: string) {
+    async deleteMatricula(matricula: Matricula) {
         const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
         if (razonAnularMatricula) {
             swal.fire(this.messages['deleteRegistrationQuestion'])
@@ -212,7 +216,7 @@ export class MatriculaComponent implements OnInit {
                                 } else {
                                     this.getAprobado();
                                 }
-                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula: ' + campo, razonAnularMatricula);
+                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula', razonAnularMatricula);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
 
@@ -230,7 +234,40 @@ export class MatriculaComponent implements OnInit {
         }
     }
 
-    async desertMatricula(matricula: Matricula, campo: string) {
+    async unregisterMatricula(matricula: Matricula) {
+        const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
+        if (razonAnularMatricula) {
+            swal.fire(this.messages['deleteRegistrationQuestion'])
+                .then((result) => {
+                    if (result.value) {
+                        this.spinner.show();
+                        this.service.delete('matriculas/unregister?id=' + matricula.id).subscribe(
+                            response => {
+                                if (this.buscador.trim() === '') {
+                                    this.getDetalleMatriculasForMalla();
+                                    this.getAprobados(this.actual_page);
+                                } else {
+                                    this.getAprobado();
+                                }
+                                this.sendEmailNotificacion('cupos', 'Anulación Matrícula', razonAnularMatricula);
+                                this.spinner.hide();
+                                swal.fire(this.messages['deleteSuccess']);
+
+                            },
+                            error => {
+                                this.spinner.hide();
+                                swal.fire(this.messages['error500']);
+                            });
+                    }
+                });
+        } else {
+            if (!(razonAnularMatricula === undefined)) {
+                swal.fire('Motivo', 'Debe contener por lo menos un motivo', 'warning');
+            }
+        }
+    }
+
+    async desertMatricula(matricula: Matricula) {
         const {value: razonAnularMatricula} = await swal.fire(this.messages['deleteInputQuestion']);
         if (razonAnularMatricula) {
             swal.fire(this.messages['deleteRegistrationQuestion'])
@@ -245,7 +282,7 @@ export class MatriculaComponent implements OnInit {
                                 } else {
                                     this.getAprobado();
                                 }
-                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante: ' + campo, razonAnularMatricula);
+                                this.sendEmailNotificacion('cupos', 'Desertar Estudiante', razonAnularMatricula);
                                 this.spinner.hide();
                                 swal.fire(this.messages['deleteSuccess']);
 
@@ -569,7 +606,6 @@ export class MatriculaComponent implements OnInit {
         const {value: razonModificarMatricula} = await swal.fire(this.messages['updateInputQuestion']);
         if (razonModificarMatricula) {
             this.spinner.show();
-            matricula.jornada_operativa = matricula.jornada;
             this.service.update('matriculas/matricula', {'matricula': matricula})
                 .subscribe(
                     response => {

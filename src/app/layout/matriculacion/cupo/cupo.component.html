@@ -4,7 +4,8 @@
             <tr>
                 <td>
                     <span [ngClass]="{'text-danger':periodoLectivoSeleccionado.estado!=estados.periodoLectivo.actual,
-                    'text-success':periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual}" class="form-control">
+                    'text-success':periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual}"
+                          class="form-control">
                         <strong>{{txtPeridoActualHistorico}} :</strong>
                     </span>
                 </td>
@@ -118,55 +119,59 @@
 </div>
 
 <div class="row" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
-    <div class="col-lg-4 col-xs-12 mt-1">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control text-uppercase" id="buscador" name="buscador" [(ngModel)]="buscador"
-                   (keyup)="filter($event)"
-                   placeholder="Identificación, Apellido o Nombre">
-            <div class="input-group-prepend">
-                <span class="btn input-group-text fa fa-search" id="basic-addon-buscar" (click)="filter($event)"></span>
+    <table class="table-sm table-responsive">
+        <thead>
+        <th width="35%">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control text-uppercase" id="buscador" name="buscador"
+                       [(ngModel)]="buscador"
+                       (keyup)="filter($event)"
+                       placeholder="Identificación, Apellido o Nombre">
+                <div class="input-group-prepend">
+                    <span class="btn input-group-text fa fa-search" id="basic-addon-buscar"
+                          (click)="filter($event)"></span>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<div class="row ml-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0 && flagPagination ">
-    <div class="col-lg-2">
-        <h6>
-            MATRICULADOS: {{total_detalle_matriculas_matriculados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            APROBADOS: {{total_detalle_matriculas_aprobados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            EN PROCESO: {{total_detalle_matriculas_en_proceso}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            ANULADOS: {{total_detalle_matriculas_anulados}}
-        </h6>
-    </div>
-    <div class="col-lg-2">
-        <h6>
-            DESERTORES: {{total_detalle_matriculas_desertores}}
-        </h6>
-    </div>
+        </th>
+        <th>
+            <button class="btn btn-link" (click)="getCuposPorEstado(1,'MATRICULADO')">
+                MATRICULADOS: {{total_detalle_matriculas_matriculados}}
+            </button>
+        </th>
+        <th>
+            <button class="btn btn-link" (click)="getCuposPorEstado(1,'APROBADO')">
+                APROBADOS: {{total_detalle_matriculas_aprobados}}
+            </button>
+        </th>
+        <th>
+            <button class="btn btn-link" (click)="getCuposPorEstado(1,'EN_PROCESO')">
+                EN PROCESO: {{total_detalle_matriculas_en_proceso}}
+            </button>
+        </th>
+        <th>
+            <button class="btn btn-link" (click)="getCuposPorEstado(1,'ANULADO')">
+                ANULADOS: {{total_detalle_matriculas_anulados}}
+            </button>
+        </th>
+        <th>
+            <button class="btn btn-link" (click)="getCuposPorEstado(1,'DESERTOR')">
+                DESERTORES: {{total_detalle_matriculas_desertores}}
+            </button>
+        </th>
+        </thead>
+    </table>
 </div>
 <!--Tabla cupos-->
 <div class="row mt-1" *ngIf="!flagAsignaturasCupo && carrera.id!=0">
     <div class="col-lg-12">
-        <table class="table table-responsive table-hover">
-            <thead class="table-default text-center">
+        <table class="table-sm table-responsive table-hover">
+            <thead class="table text-center">
             <th width="10%">Indetificación</th>
-            <th width="25%">Apellidos y Nombres</th>
-            <th width="15%">Tipo Matrícula</th>
+            <th width="20%">Apellidos y Nombres</th>
+            <th width="10%">Tipo Matrícula</th>
             <th width="10%">Periodo</th>
             <th width="10%">Jornada</th>
+            <th width="10%">Jornada Operativa</th>
             <th width="10%">Estado</th>
             <th width="20%">
 
@@ -211,10 +216,21 @@
                 <td>
                     <select name="jornadaPrincipal" id="jornadaPrincipal" [(ngModel)]="cupo.jornada"
                             class="text-uppercase form-control-sm"
-                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')&&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')
+                            && periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
                             (change)="updateMatricula(cupo,'Jornada Principal')">
                         <option value={{jornada.codigo}}
                                 *ngFor="let jornada of jornadas">{{jornada.descripcion}}</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="jornadaOperativa" id="jornadaOperativa" [(ngModel)]="cupo.jornada_operativa"
+                            class="text-uppercase form-control-sm"
+                            [disabled]="!((cupo.estado=='EN_PROCESO' || cupo.estado=='APROBADO')
+                            &&periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual)"
+                            (change)="updateMatricula(cupo,'Jornada Operativa')">
+                        <option value={{jornada.codigo}}
+                                *ngFor="let jornada of jornadasOperativa">{{jornada.descripcion}}</option>
                     </select>
                 </td>
                 <td>
@@ -268,7 +284,12 @@
                 <li class="page-item " [ngClass]="{'active':page === actual_page}"
                     *ngFor="let page of total_pages_pagination"
                     (click)="getCupos(page)">
-                    <a class="page-link" href="javascript:void(0)">{{page}}</a>
+                    <a class="page-link" href="javascript:void(0)" *ngIf="!flagCuposEstado">{{page}}</a>
+                </li>
+                <li class="page-item " [ngClass]="{'active':page === actual_page}"
+                    *ngFor="let page of total_pages_pagination"
+                    (click)="getCuposPorEstado(page,estadoCupos)">
+                    <a class="page-link" href="javascript:void(0)" *ngIf="flagCuposEstado">{{page}}</a>
                 </li>
                 <li class="page-item">
                     <a class="page-link" href="javascript:void(0)" (click)="paginacion(true)">Next</a>
@@ -598,7 +619,7 @@
         <div class="modal-body">
             <!--Formatos-->
             <div class="form-group">
-                <label>Formatos Cupos:</label>
+                <label class="bg-primary form-control text-white">FORMATOS CUPOS:</label>
             </div>
             <div class="form-group row">
                 <div class="col-lg-6">
@@ -619,7 +640,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Cupos:</label>
+                <label class="bg-primary form-control text-white">LISTA ESTUDIANTES:</label>
             </div>
             <!--Cupos-->
             <div class="form-group row">
@@ -641,7 +662,7 @@
 
             <!--Matriz Sniese-->
             <div class="form-group">
-                <label>Matriz Sniese:</label>
+                <label class="bg-primary form-control text-white">MATRIZ SNIESE:</label>
             </div>
             <div class="form-group row">
                 <div class="col-lg-6">
