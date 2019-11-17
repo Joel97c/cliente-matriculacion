@@ -15,8 +15,6 @@ export class ServiceService {
     }
 
     get(url: string) {
-
-
         this.headers = new HttpHeaders().set('Authorization', 'Bearer ' + localStorage.getItem('token').replace('"', ''));
         this.headers.set('Content-Type', 'application/json');
         return this._http.get(environment.API_URL + url, {headers: this.headers});
@@ -57,7 +55,9 @@ export class ServiceService {
     postPublic(url: string, data: any) {
         url = environment.API_URL_PUBLIC + url;
         this.headers = new HttpHeaders().set('Content-Type', 'application/json');
+        this.headers.set('X-Requested-With', 'XMLHttpRequest');
         return this._http.post(url, data, {headers: this.headers});
+
     }
 
 }
