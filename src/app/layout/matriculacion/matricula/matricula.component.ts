@@ -881,6 +881,31 @@ export class MatriculaComponent implements OnInit {
         }
     }
 
+    uploadNotas(ev) {
+
+        this.spinner.show();
+        this.archivo = ev.target;
+        if (this.archivo.files.length > 0) {
+            const form = new FormData();
+            form.append('archivo', this.archivo.files[0]);
+            this.service.upload('imports/notas?carrera_id=' + this.carrera.id + '&periodo_lectivo_id=4', form).subscribe(
+                response => {
+                    this.getAprobados(1);
+                    this.spinner.hide();
+                    swal.fire('CARCA DE PARALELOS');
+                    this.archivoTemp = '';
+                    // this.exportErroresCargaCupos(response['errores']);
+                    // this.sendEmailNotificacionCargaCupos();
+                },
+                error => {
+                    this.spinner.hide();
+                    this.archivoTemp = '';
+                    swal.fire(this.messages['uploadError']);
+                }
+            );
+        }
+    }
+
     cambiarPeriodoLectivoActual() {
         this.buscadorEstudianteGeneral = '';
         this.periodosLectivos.forEach(value => {
