@@ -41,6 +41,7 @@ export class CupoComponent implements OnInit {
     erroresCargaCupos: Array<any>;
     urlExportCuposPeriodoAcademico: string;
     urlExportCuposCarrera: string;
+    urlExportListasPeriodoAcademico: string;
     buscador: string;
     archivo: any;
     archivoTemp: any;
@@ -302,6 +303,8 @@ export class CupoComponent implements OnInit {
         this.buscador = '';
         this.spinner.show();
         this.getDetalleMatriculasForMalla();
+        this.urlExportListasPeriodoAcademico = environment.API_URL + 'exports/listas/periodo?carrera_id=' + this.carrera.id
+            + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.urlExportCuposPeriodoAcademico = environment.API_URL + 'exports/cupos_periodo_academico?carrera_id=' + this.carrera.id
             + '&periodo_academico_id=' + this.periodoAcademico + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id;
         this.urlExportCuposCarrera = environment.API_URL + 'exports/cupos_carrera?carrera_id=' + this.carrera.id
@@ -714,6 +717,14 @@ export class CupoComponent implements OnInit {
         window.open(this.urlExportCuposCarrera);
     }
 
+    exportListasPeriodo() {
+        if (this.periodoAcademico) {
+            window.open(this.urlExportListasPeriodoAcademico);
+        } else {
+            swal.fire('Seleccione un periodo', '', 'warning');
+        }
+    }
+
     exportCuposPeriodo() {
         if (this.periodoAcademico) {
             window.open(this.urlExportCuposPeriodoAcademico);
@@ -1004,5 +1015,34 @@ export class CupoComponent implements OnInit {
             }), (resultCancel => {
 
             }));
+    }
+
+    uploadParalelos(ev) {
+        if (this.periodoAcademico) {
+            this.spinner.show();
+            this.archivo = ev.target;
+            if (this.archivo.files.length > 0) {
+                const form = new FormData();
+                form.append('archivo', this.archivo.files[0]);
+                this.service.upload('imports/paralelos?carrera_id=' + this.carrera.id
+                    + '&periodo_lectivo_id=' + this.periodoLectivoSeleccionado.id, form).subscribe(
+                    response => {
+                        this.getCupos(1);
+                        this.spinner.hide();
+                        swal.fire('CARCA DE PARALELOS', 'Se cargaron los paralelos', 'success');
+                        this.archivoTemp = '';
+                        this.exportErroresCargaCupos(response['errores']);
+                    },
+                    error => {
+                        this.spinner.hide();
+                        this.archivoTemp = '';
+                        swal.fire(this.messages['uploadError']);
+                    }
+                );
+            }
+        } else {
+            this.archivoTemp = '';
+            swal.fire('Seleccione un periodo', '', 'warning');
+        }
     }
 }

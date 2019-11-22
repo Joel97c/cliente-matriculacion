@@ -852,35 +852,6 @@ export class MatriculaComponent implements OnInit {
                 });
     }
 
-    uploadParalelos(ev) {
-        if (this.periodoAcademico) {
-            this.spinner.show();
-            this.archivo = ev.target;
-            if (this.archivo.files.length > 0) {
-                const form = new FormData();
-                form.append('archivo', this.archivo.files[0]);
-                this.service.upload('imports/paralelos?carrera_id=' + this.carrera.id, form).subscribe(
-                    response => {
-                        this.getAprobados(1);
-                        this.spinner.hide();
-                        swal.fire('CARCA DE PARALELOS');
-                        this.archivoTemp = '';
-                        // this.exportErroresCargaCupos(response['errores']);
-                        // this.sendEmailNotificacionCargaCupos();
-                    },
-                    error => {
-                        this.spinner.hide();
-                        this.archivoTemp = '';
-                        swal.fire(this.messages['uploadError']);
-                    }
-                );
-            }
-        } else {
-            this.archivoTemp = '';
-            swal.fire('Seleccione un periodo', '', 'warning');
-        }
-    }
-
     uploadNotas(ev) {
 
         this.spinner.show();

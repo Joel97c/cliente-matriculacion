@@ -51,7 +51,7 @@
             <tbody>
             <tr>
                 <td *ngIf="periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
-                    <label for="file-upload" class="btn btn-light fa fa-upload btn-sm form-control-sm"
+                    <label for="file-upload-cupos" class="btn btn-light fa fa-upload btn-sm form-control-sm"
                            title="Subir archivo de cupos" [ngClass]="{'disabled':false}">
                         <!--                           [title]="!((periodoLectivoSeleccionado.fecha_fin_anulacion|date:'yyyy-MM-dd')<-->
                         <!--                            (fechaActual|date:'yyyy-MM-dd'))?'Está  fuera del tiempo '-->
@@ -60,7 +60,7 @@
 
                         Subir cupos
                     </label>
-                    <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                    <input id="file-upload-cupos" type="file" style='display: none;' [(ngModel)]="archivoTemp"
                            name="fileExcel"
                            (change)="uploadCupos($event)"
                            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
@@ -71,6 +71,16 @@
                     <!--                           (fechaActual|date:'yyyy-MM-dd')<=(periodoLectivoSeleccionado.fecha_fin_cupo|date:'yyyy-MM-dd')-->
                     <!--                           )"-->
 
+                </td>
+                <td>
+                    <label for="file-upload-paralelos" class="btn btn-light fa fa-upload btn-sm"
+                           title="Subir archivo de cupos" *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
+                        Cargar Paralelos
+                    </label>
+                    <input id="file-upload-paralelos" type="file" style='display: none;' [(ngModel)]="archivoTemp"
+                           name="fileExcel"
+                           (change)="uploadParalelos($event)"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                 </td>
                 <td *ngIf="carrera.id!=0 && periodoLectivoSeleccionado.estado==estados.periodoLectivo.actual">
                     <button type="button" class="btn btn-light btn-sm form-control-sm"
@@ -109,6 +119,7 @@
                         <span class="fa fa-download"> Descargas</span>
                     </button>
                 </td>
+
                 <td>
 
                 </td>
@@ -638,6 +649,14 @@
                         Antiguos Estudiantes
                     </a>
                 </div>
+                <div class="col-lg-6">
+                    <a class="fa fa-download btn btn-light btn-lg form-control"
+                       href="assets/formats/archivo_carga_paralelos.xlsx"
+                       target="_blank"
+                       title="Formato para carga de paralelos">
+                        Paralelos
+                    </a>
+                </div>
             </div>
             <div class="form-group">
                 <label class="bg-primary form-control text-white">LISTA ESTUDIANTES:</label>
@@ -656,6 +675,13 @@
                             (click)="exportCuposPeriodo()"
                             title="Descargar todos los cupos del periodo académico">
                         <span class="fa fa-download"> Cupos por periodo</span>
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <button type="button" class="btn btn-light btn-lg form-control"
+                            (click)="exportListasPeriodo()"
+                            title="Descargar todas las listas del periodo académico">
+                        <span class="fa fa-download"> Listas por asignatura</span>
                     </button>
                 </div>
             </div>

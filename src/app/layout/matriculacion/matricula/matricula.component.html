@@ -64,14 +64,14 @@
             <tr *ngIf="carrera.id!=0">
                 <td>
                     <button type="button" class="btn btn-light btn-sm" (click)="exportCuposCarrera()"
-                            title="Descargar matriculados de la carrera">
-                        <span class="fa fa-download"> Matriculados por Carrera</span>
+                            title="Descargar cupos de la carrera">
+                        <span class="fa fa-download"> Cupos por Carrera</span>
                     </button>
                 </td>
                 <td>
                     <button type="button" class="btn btn-light btn-sm" (click)="exportCuposPeriodo()"
-                            title="Descargar matriculados del periodo académico">
-                        <span class="fa fa-download"> Matriculados por Periodo</span>
+                            title="Descargar cupos del periodo académico">
+                        <span class="fa fa-download"> Cupos por Periodo</span>
                     </button>
                 </td>
                 <td>
@@ -79,16 +79,6 @@
                             title="Descargar matriz SNIESE">
                         <span class="fa fa-download"> Matriz SNIESE</span>
                     </button>
-                </td>
-                <td>
-                    <label for="file-upload" class="btn btn-light fa fa-upload btn-sm"
-                           title="Subir archivo de cupos" *ngIf="periodoLectivoSeleccionado.estado=='ACTUAL'">
-                        Cargar Paralelos
-                    </label>
-                    <input id="file-upload" type="file" style='display: none;' [(ngModel)]="archivoTemp"
-                           name="fileExcel"
-                           (change)="uploadParalelos($event)"
-                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                 </td>
             </tr>
         </table>
