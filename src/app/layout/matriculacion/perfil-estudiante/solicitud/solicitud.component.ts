@@ -365,7 +365,7 @@ export class SolicitudComponent implements OnInit {
                         this.doc.addImage(this.asignaturasImg, 'JPG', 60, 260 + inicioY, 500, 350);
                     }
 
-                    this.doc.save('SOLICITUD-MATRICULA-' + nombresEstudiante + '.pdf');
+                    this.doc.save('SOLICITUD-MATRICULA-' + nombresEstudiante + '-' + datos['estudiante']['identificacion'] + '.pdf');
                 });
 
             } else {
