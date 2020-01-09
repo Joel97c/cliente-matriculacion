@@ -114,7 +114,6 @@ export const catalogos = {
         {codigo: 7, descripcion: 'BLANCO'},
         {codigo: 8, descripcion: 'OTRO'},
         {codigo: 9, descripcion: 'NO REGISTRA'}
-
     ],
 
     generos: [
