@@ -61,6 +61,11 @@ export class AuthGuard implements CanActivate {
                         return true;
                     }
                     break;
+                case '/perfil-estudiante-secretaria':
+                    if (this.user.role.rol === '3' || this.user.role.rol === '4') {
+                        return true;
+                    }
+                    break;
                 default:
                     this.router.navigate(['/access-denied']);
                     return false;

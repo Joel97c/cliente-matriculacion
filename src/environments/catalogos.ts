@@ -440,15 +440,6 @@ export const catalogos = {
                 'showConfirmButton': true,
                 'backdrop': 'rgba(255, 0, 0,0.4)'
             },
-            uploadError: {
-                'position': 'center',
-                'type': 'error',
-                'title': 'Oops! Tuvimos problemas al subir tu archivo',
-                'text': 'Vuelve a intentar',
-                'timer': 3000,
-                'showConfirmButton': false,
-                'backdrop': 'rgba(255,0,0,0.4)'
-            },
             error500: {
                 'position': 'center',
                 'type': 'error',
@@ -458,6 +449,25 @@ export const catalogos = {
                 'showConfirmButton': false,
                 'backdrop': 'rgba(255,0,0,0.4)'
             },
+            error404: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'Oops! No encontramos lo que buscabas!',
+                'text': 'Vuelve a intentar',
+                'timer': 5000,
+                'showConfirmButton': true,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+            uploadError: {
+                'position': 'center',
+                'type': 'error',
+                'title': 'Oops! Tuvimos problemas al subir tu archivo',
+                'text': 'Vuelve a intentar',
+                'timer': 3000,
+                'showConfirmButton': false,
+                'backdrop': 'rgba(255,0,0,0.4)'
+            },
+
             deleteQuestion: {
                 position: 'center',
                 type: 'warning',

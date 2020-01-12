@@ -27,6 +27,10 @@ import {User} from '../modelos/user.model';
 })
 
 export class CupoComponent implements OnInit {
+    generos: Array<any>;
+    sexos: Array<any>;
+    etnias: Array<any>;
+    tiposSangre: Array<any>;
     flagCuposEstado: boolean;
     jornadasOperativa: any;
     estados: any;
@@ -89,7 +93,10 @@ export class CupoComponent implements OnInit {
     }
 
     ngOnInit() {
-
+        this.generos = catalogos.generos;
+        this.sexos = catalogos.sexos;
+        this.etnias = catalogos.etnias;
+        this.tiposSangre = catalogos.tiposSangre;
         this.estados = catalogos.estados;
         this.estudianteSeleccionado = new Estudiante();
         this.fechaActual = new Date();

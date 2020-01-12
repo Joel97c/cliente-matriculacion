@@ -44,6 +44,12 @@ const routes: Routes = [
                 loadChildren: () => import('./matriculacion/usuario/usuario.module').then(m => m.UsuarioModule),
                 canActivate: [AuthGuard]
             },
+            {
+                path: 'perfil-estudiante-secretaria',
+                loadChildren: () => import('./matriculacion/perfil-estudiante-secretaria/perfil-estudiante-secretaria.module')
+                    .then(m => m.PerfilEstudianteSecretariaModule),
+                canActivate: [AuthGuard]
+            },
         ]
     }
 ];

@@ -33,8 +33,7 @@
                                     <b class="text-danger">*</b> 3. Sexo:
                                 </label>
                                 <select [(ngModel)]="estudiante.sexo" class="form-control" id="sexo"
-                                        [ngClass]="{'backgroundTextFieldWarning':estudiante.sexo=='0','backgroundTextFieldSuccess':estudiante.sexo=='1'||estudiante.sexo=='2'}"
-                                        name="sexo" required (change)="updateEstudiante()">
+                                        name="sexo" required (change)="updateEstudiante()" disabled>
                                     <option value="0" selected>SELECCIONE...</option>
                                     <option value="{{sexo.codigo}}" *ngFor="let sexo of sexos">
                                         {{sexo.descripcion}}
@@ -46,8 +45,7 @@
                                     <b class="text-danger">*</b> 4. Género:
                                 </label>
                                 <select [(ngModel)]="estudiante.genero" class="form-control" id="genero" name="genero"
-                                        [ngClass]="{'backgroundTextFieldWarning':estudiante.genero=='0','backgroundTextFieldSuccess':estudiante.genero=='1'||estudiante.genero=='2'}"
-                                        required (change)="updateEstudiante()">
+                                        required (change)="updateEstudiante()" disabled>
                                     <option value="0" selected>SELECCIONE...</option>
                                     <option value="{{genero.codigo}}" *ngFor="let genero of generos">
                                         {{genero.descripcion}}
