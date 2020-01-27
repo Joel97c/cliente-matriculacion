@@ -50,6 +50,18 @@ const routes: Routes = [
                     .then(m => m.PerfilEstudianteSecretariaModule),
                 canActivate: [AuthGuard]
             },
+            {
+                path: 'dashboard-docente',
+                loadChildren: () =>
+                    import('./matriculacion/matricula/dashboard/dashboard-matricula.module')
+                        .then(m => m.DashboardMatriculaModule), canActivate: [AuthGuard]
+            },
+            {
+                path: 'eva-estudiante-docente',
+                loadChildren: () =>
+                    import('./matriculacion/eva-estudiante-docente/eva-estudiante-docente.module')
+                        .then(m => m.EvaEstudianteDocenteModule), canActivate: [AuthGuard]
+            },
         ]
     }
 ];

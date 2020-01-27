@@ -80,6 +80,9 @@ export class LoginComponent implements OnInit {
                             if (response2['usuario']['role']['rol'] === '6') {
                                 this.router.navigate(['dashboard-matricula']);
                             }
+                            if (response2['usuario']['role']['rol'] === '7') {
+                                this.router.navigate(['dashboard-docente']);
+                            }
                         } else if (response2['usuario']['estado'] === 'INACTIVO') {
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');

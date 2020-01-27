@@ -47,6 +47,11 @@
             <i class="fa fa-fw fa-graduation-cap"></i>&nbsp;
             <span>{{ 'Student Profile' | translate }}</span>
         </a>
+        <a [routerLink]="['/eva-estudiante-docente']" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           *ngIf="user.role.rol=='2'">
+            <i class="fa fa-fw fa-id-card"></i>&nbsp;
+            <span>{{ 'Teacher Evaluation' | translate }}</span>
+        </a>
 
 
         <!--    <div class="nested-menu">-->
